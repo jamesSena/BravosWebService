@@ -4,13 +4,13 @@ package br.com.bravos.webservices.model;
  * @author JamessonSena
  *
  */
-public class LoginBean {
+public class UsuarioLoginBean {
 	private String usuario, email, senha;
 
 	/**
 	 * 
 	 */
-	public LoginBean() {
+	public UsuarioLoginBean() {
 		super();
 	}
 
@@ -19,7 +19,7 @@ public class LoginBean {
 	 * @param email
 	 * @param senha
 	 */
-	public LoginBean(String usuario, String email, String senha) {
+	public UsuarioLoginBean(String usuario, String email, String senha) {
 		super();
 		this.usuario = usuario;
 		this.email = email;

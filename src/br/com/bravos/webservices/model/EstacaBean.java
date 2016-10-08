@@ -3,12 +3,23 @@
  */
 package br.com.bravos.webservices.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 /**
  * @author JamessonSena
  *
  */
+
+@Entity
 public class EstacaBean {
-	private int idOperacao,	idEstaca, idArea;
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int idEstaca;
+	private int idOperacao;
+	private int idArea;
 	private String nomeEstaca, localizacaoEstaca;
 
 	/**
