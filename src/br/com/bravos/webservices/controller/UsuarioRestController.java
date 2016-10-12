@@ -53,6 +53,7 @@ public class UsuarioRestController {
 		return usuarioDAO.execUsuarioCadastrar(idUsuario, usuario.getLogin(),  usuario.getSenha(), usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getEmail(), usuario.getNome(), usuario.getIdPerfil());
 	}
 
+	
 	@RequestMapping(
 			value="/consultarUsuarios",
 			method=RequestMethod.GET,
