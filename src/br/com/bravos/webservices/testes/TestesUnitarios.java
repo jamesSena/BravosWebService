@@ -10,29 +10,33 @@ import br.com.bravos.webservices.dao.PerfilUsuarioDAO;
  */
 public class TestesUnitarios {
 	
-	static int idOperacao = 3,idUsuario = 1,idPropriedade = 3,idPerfil = 1;
+	static int idOperacao = 1,idUsuario = 5,idPropriedade = 4,idPerfil = 1;
 	static String email = "a@aaa", nome = "jamesson Sales de Sena", login = "jamesson9", senha = "admin";
 	static boolean ativo = false;
 	
 
 	public static void main(String[] args) {
-		procedureLogincTest();
+		usuarioRetornarEspecificoTest();
 	}
 	
 	
 	//Teste de conexão com o sqlServer 2014
 	public static void conexaoTest(){new ConexaoDAO().dbConnect();}
-
-	//Teste execUsuarioCadastro
-	private static void procedureLoginTest(){
-		UsuarioDAO loginDAO = new UsuarioDAO(new ConexaoDAO().dbConnect());
-		loginDAO.execUsuarioRetornarEspecifico(idOperacao, idUsuario, login, senha, idPropriedade, ativo, email, nome, idPerfil);
-	}
 	
 	//Teste execUsuarioConsultar
-	private static void procedureLogincTest(){
+	private static void usuarioCadastrarTest(){
 		UsuarioDAO loginDAO = new UsuarioDAO(new ConexaoDAO().dbConnect());
-		loginDAO.execUsuarioCadastrar(idOperacao, idUsuario, login, senha, idPropriedade, ativo, email, nome, idPerfil);
+		loginDAO.execUsuarioCadastrar(idUsuario, login, senha, idPropriedade, ativo, email, nome, idPerfil);
+	}
+	//Teste usuarioRetornarTodos
+	private static void usuarioRetornarTodosTest(){
+		UsuarioDAO loginDAO = new UsuarioDAO(new ConexaoDAO().dbConnect());
+		loginDAO.execUsuarioRetornarTodos();
+	}
+	//Teste execUsuarioRetornarEspecifico
+	private static void usuarioRetornarEspecificoTest(){
+		UsuarioDAO loginDAO = new UsuarioDAO(new ConexaoDAO().dbConnect());
+		loginDAO.execUsuarioRetornarEspecifico(idOperacao, idUsuario, login, senha, idPropriedade, ativo, email, nome, idPerfil);
 	}
 	//Teste de conexão com a procedure
 	private static void procedurePerfilUsuarioTest(){

@@ -4,74 +4,80 @@ package br.com.bravos.webservices.model;
  * @author JamessonSena
  *
  */
-public class UsuarioLoginBean {
-	private String usuario, email, senha;
-
-	/**
-	 * 
-	 */
-	public UsuarioLoginBean() {
+public class UsuarioBean {
+	private String login, senha, email, nome;
+	private int idPropriedade, idPerfil;
+	private boolean ativo;
+	
+	
+	
+	
+	public UsuarioBean(String login, String senha, String email, String nome, int idPropriedade, int idPerfil,
+			boolean ativo) {
 		super();
-	}
-
-	/**
-	 * @param usuario
-	 * @param email
-	 * @param senha
-	 */
-	public UsuarioLoginBean(String usuario, String email, String senha) {
-		super();
-		this.usuario = usuario;
-		this.email = email;
+		this.login = login;
 		this.senha = senha;
-	}
-
-	/**
-	 * @return the usuario
-	 */
-	public String getUsuario() {
-		return usuario;
-	}
-
-	/**
-	 * @param usuario the usuario to set
-	 */
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
-	}
-
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
 		this.email = email;
+		this.nome = nome;
+		this.idPropriedade = idPropriedade;
+		this.idPerfil = idPerfil;
+		this.ativo = ativo;
+	}
+	
+	
+	public UsuarioBean() {
+		super();
 	}
 
-	/**
-	 * @return the senha
-	 */
+
+	public String getLogin() {
+		return login;
+	}
+	public void setLogin(String login) {
+		this.login = login;
+	}
 	public String getSenha() {
 		return senha;
 	}
-
-	/**
-	 * @param senha the senha to set
-	 */
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
-
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getNome() {
+		return nome;
+	}
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	public int getIdPropriedade() {
+		return idPropriedade;
+	}
+	public void setIdPropriedade(int idPropriedade) {
+		this.idPropriedade = idPropriedade;
+	}
+	public int getIdPerfil() {
+		return idPerfil;
+	}
+	public void setIdPerfil(int idPerfil) {
+		this.idPerfil = idPerfil;
+	}
+	public boolean isAtivo() {
+		return ativo;
+	}
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
+	}
 	@Override
 	public String toString() {
-		return "Login [usuario=" + usuario + ", email=" + email + ", senha=" + senha + "]";
+		return "UsuarioBean [login=" + login + ", senha=" + senha + ", email=" + email + ", nome=" + nome
+				+ ", idPropriedade=" + idPropriedade + ", idPerfil=" + idPerfil + ", ativo=" + ativo + "]";
 	}
 
-	
+
+
 }
