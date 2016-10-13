@@ -6,27 +6,39 @@ package br.com.bravos.webservices.model;
  */
 public class UsuarioBean {
 	private String login, senha, email, nome;
-	private int idPropriedade, idPerfil;
+	private int idUsuario, idPropriedade, idPerfil;
 	private boolean ativo;
 	
 	
 	
+
 	
-	public UsuarioBean(String login, String senha, String email, String nome, int idPropriedade, int idPerfil,
-			boolean ativo) {
+	public UsuarioBean(String login, String senha, String email, String nome, int idUsuario, int idPropriedade,
+			int idPerfil, boolean ativo) {
 		super();
 		this.login = login;
 		this.senha = senha;
 		this.email = email;
 		this.nome = nome;
+		this.idUsuario = idUsuario;
 		this.idPropriedade = idPropriedade;
 		this.idPerfil = idPerfil;
 		this.ativo = ativo;
 	}
-	
-	
+
+
 	public UsuarioBean() {
 		super();
+	}
+
+
+	public int getIdUsuario() {
+		return idUsuario;
+	}
+
+
+	public void setIdUsuario(int idUsuario) {
+		this.idUsuario = idUsuario;
 	}
 
 
