@@ -12,6 +12,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class Json {
 
+	/**
+	 * @param Object
+	 * @return JSON
+	 * @throws JsonProcessingException
+	 */
 	public String convertObjectToJson(Object obj) throws JsonProcessingException{
 		try {
 			return new ObjectMapper().writeValueAsString(obj);
