@@ -16,12 +16,12 @@ public class ConexaoDAO {
 
 	/**
 	 * @return connection
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
 	 */
 	protected Connection getConnection() throws SQLException, ClassNotFoundException {
-		if (connection == null || connection.isClosed()) 
-		return dbConnect();
+		if (connection == null || connection.isClosed())
+			return dbConnect();
 		return connection;
 
 	}
@@ -41,7 +41,7 @@ public class ConexaoDAO {
 		// "jdbc:sqlserver://192.168.3.20:1433;databaseName=BDBovControl";
 		// usuario = "sa";
 		// senha = "1014231563";
-		stringConexao = "jdbc:sqlserver://localhost:1433;databaseName=BovControl";
+		stringConexao = "jdbc:sqlserver://llocalhost:1433;databaseName=BovControl";
 		usuario = "sa";
 		senha = "jamessonsena";
 	}
@@ -70,10 +70,9 @@ public class ConexaoDAO {
 
 		try {
 
-				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-				connection = DriverManager.getConnection(stringConexao, usuario, senha);
-				System.out.println("Conexao realizada com sucesso");
-			
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			connection = DriverManager.getConnection(stringConexao, usuario, senha);
+			System.out.println("Conexao realizada com sucesso");
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
