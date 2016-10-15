@@ -1,0 +1,75 @@
+/**
+ * 
+ */
+package br.com.bravos.webservices.dao;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.SQLException;
+
+import br.com.bravos.webservices.model.NotificacaoBean;
+
+/**
+ * @author JamessonSena
+ *
+ */
+public class NotificacaoDAO extends ConexaoDAO {
+	private CallableStatement callableStatement = null;
+	private Connection connection = null;
+	private String retorno = "-1";
+	private NotificacaoBean notificacaoBean;
+	/**
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * 
+	 */
+	public NotificacaoDAO() throws ClassNotFoundException, SQLException {
+		connection = super.getConnection();
+	}
+	/**
+	 * #Construtor que recebe a instancia da conexao
+	 * 
+	 * @param connection
+	 */
+	public NotificacaoDAO(Connection connection) {
+		super.setConnection(connection);
+	}
+	
+	
+	
+	//	-- idoperacao = 1 -> Cadastrar Notificação
+	public String execNotificacaoCadastrar(int idUsuario, int idSensor, int  idArea, int idPropriedade, int idStatus,
+			Date dataInicio, Date dataFim, int idNotificacao) throws SQLException {
+			retorno = "-1";
+			try {
+				callableStatement = connection.prepareCall("{ CALL spSensor (?,?,?,?,?,?,?,?,?,?)}");
+				callableStatement.setInt(1, 1);
+				callableStatement.setInt(2, idUsuario);
+				callableStatement.setInt(3, idSensor);
+				callableStatement.setInt(4, idArea);
+				callableStatement.setInt(5, idPropriedade);
+				callableStatement.setInt(6, idStatus);
+				callableStatement.setDate(7, dataInicio);
+				callableStatement.setDate(8, dataFim);
+				callableStatement.setInt(9, idNotificacao);
+				callableStatement.registerOutParameter(10, java.sql.Types.VARCHAR);
+				callableStatement.execute();
+				retorno = callableStatement.getString(10);
+				System.out.println("retorno: " + retorno);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				super.dbClose(connection, callableStatement);
+			}
+			return retorno;
+		}
+
+//	-- idoperacao = 2 -> retornar todas as notificações de uma propriedade
+//	-- idoperacao = 3 -> retornar notificação entre datas de uma propriedade
+//	-- idoperacao = 4 -> deletar notificação especifica de uma propriedade
+//	-- idoperacao = 5 -> deletar todas notificações de uma propriedade
+	
+	
+}
