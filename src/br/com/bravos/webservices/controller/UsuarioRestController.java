@@ -6,7 +6,6 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -98,7 +97,9 @@ public class UsuarioRestController {
 	/**
 	 * @return JSON: lista de usuario
 	 */
-	@RequestMapping(value = "/consultarUsuarios", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/consultarUsuarios", 
+			        method = RequestMethod.GET,
+			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<UsuarioBean> consultarUsuarios() {
 		try {
 			usuarioDAO = new UsuarioDAO();
@@ -116,15 +117,22 @@ public class UsuarioRestController {
 	 * @param senha
 	 * @return JSON: usuario
 	 */
-	@RequestMapping(value = "/consultarUsuario/{login}/{senha}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public UsuarioBean consultarUsuario(@PathVariable("login") String login, @PathVariable("senha") String senha) {
+	@RequestMapping(value = "/consultarUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public UsuarioBean consultarUsuario(@RequestBody String jsonConsultarUsuario) {
 		try {
+			JSONObject jsonObject = new JSONObject(jsonConsultarUsuario);
+			System.out.println(jsonObject.toString());
+			String login = jsonObject.getString("login");
+			String senha = jsonObject.getString("senha");
 			usuarioDAO = new UsuarioDAO();
 			usuario = usuarioDAO.execUsuarioRetornarEspecifico(login, senha);
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return usuario;

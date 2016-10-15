@@ -5,8 +5,8 @@ package br.com.bravos.webservices.model;
  *
  */
 public class _BeanAbstract {
-	private boolean success = false;
-	private String detail ="Erro", reason = "-1";
+	private boolean success = true;
+	private String detail ="sucesso", reason = "1";
 
 	/**
 	 * @param success

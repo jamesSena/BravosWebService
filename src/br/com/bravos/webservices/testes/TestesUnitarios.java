@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import br.com.bravos.webservices.dao.ConexaoDAO;
 import br.com.bravos.webservices.dao.UsuarioDAO;
 import br.com.bravos.webservices.dao.PerfilUsuarioDAO;
+import br.com.bravos.webservices.dao.SensorDAO;
 
 /**
  * @author JamessonSena
@@ -12,18 +13,33 @@ import br.com.bravos.webservices.dao.PerfilUsuarioDAO;
  */
 public class TestesUnitarios {
 	
-	static int idOperacao = 1,idUsuario = 9,idPropriedade = 4,idPerfil = 1;
-	static String email = "a@aaa", nome = "jamesson Sales de Sena", login = "jamesson", senha = "jamesson";
+	static int idOperacao = 1,idUsuario = 9,idPropriedade = 4,idPerfil = 1, idArea = 1, idSensor = 1;
+	static String email = "a@aaa", nome = "jamesson Sales de Sena", login = "jamesson", senha = "jamesson",
+			latitude ="435435435", longitude = "435435435" ;
 	static boolean ativo = false;
 	
 
-//	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-//		usuarioBloquearTest();
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		deletarSensorTest();
+	}
+	//Teste execSensorCadastrars
+	private static void deletarSensorTest() throws ClassNotFoundException, SQLException{
+		SensorDAO loginDAO = new SensorDAO();
+		loginDAO.execSensorRemover(idArea, idSensor);
+	}
+//	//Teste execSensorCadastrar
+//	private static void sensorbuscarTodosTest() throws ClassNotFoundException, SQLException{
+//		SensorDAO loginDAO = new SensorDAO();
+//		loginDAO.execSensorRetornarTodos(idArea);
 //	}
-//	
+//	//Teste execSensorCadastrar
+//	private static void sensorCadastrarTest() throws ClassNotFoundException, SQLException{
+//		SensorDAO loginDAO = new SensorDAO();
+//		loginDAO.execSensorCadastrar(idUsuario, idSensor, idArea, nome, latitude, longitude);
+//	}
 //	//Teste execUsuarioCadastrar
 //	private static void usuarioCadastrarTest() throws ClassNotFoundException, SQLException{
-//		UsuarioDAO loginDAO = new UsuarioDAO(new ConexaoDAO().dbConnect());
+//		UsuarioDAO loginDAO = new UsuarioDAO();
 //		loginDAO.execUsuarioCadastrar(idUsuario, login, senha, idPropriedade, ativo, email, nome, idPerfil);
 //	}
 //	//Teste usuarioRetornarTodos

@@ -11,6 +11,7 @@ import java.sql.SQLException;
  */
 public class ConexaoDAO {
 
+	private String ambiente = "welton";
 	private String stringConexao, usuario, senha;
 	private Connection connection;
 
@@ -37,13 +38,21 @@ public class ConexaoDAO {
 	 * #Construtor default com as informações básicas de conexao
 	 */
 	public ConexaoDAO() {
-		// stringConexao =
-		// "jdbc:sqlserver://192.168.3.20:1433;databaseName=BDBovControl";
-		// usuario = "sa";
-		// senha = "1014231563";
-		stringConexao = "jdbc:sqlserver://llocalhost:1433;databaseName=BovControl";
-		usuario = "sa";
-		senha = "jamessonsena";
+		switch (ambiente) {
+		case "welton":
+			stringConexao = "jdbc:sqlserver://192.168.3.21:1433;databaseName=BDBovControl";
+			usuario = "sa";
+			senha = "1014231563";
+			break;
+		case "jamesson":
+			stringConexao = "jdbc:sqlserver://localhost:1433;databaseName=BovControl";
+			usuario = "sa";
+			senha = "jamessonsena";
+		default:
+			break;
+		}
+		
+		
 	}
 
 	/**
