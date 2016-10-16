@@ -3,123 +3,91 @@
  */
 package br.com.bravos.webservices.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * @author JamessonSena
  *
  */
 
-@Entity
-public class EstacaBean {
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idEstaca;
-	private int idOperacao;
-	private int idArea;
-	private String nomeEstaca, localizacaoEstaca;
-
+public class EstacaBean extends _BeanAbstract {
+	private int idEstaca, idArea;
+	private String nome, latitude, longitude;
+	private Date dataCadastro;
+	
+	
 	/**
-	 * 
+	 * @return the dataCadastro
 	 */
-	public EstacaBean() {
+	public Date getDataCadastro() {
+		return dataCadastro;
 	}
-
 	/**
-	 * @param idOperacao
-	 * @param idEstaca
-	 * @param idArea
-	 * @param nomeEstaca
-	 * @param localizacaoEstaca
+	 * @param dataCadastro the dataCadastro to set
 	 */
-	public EstacaBean(int idOperacao, int idEstaca, int idArea, String nomeEstaca, String localizacaoEstaca) {
-		this.idOperacao = idOperacao;
-		this.idEstaca = idEstaca;
-		this.idArea = idArea;
-		this.nomeEstaca = nomeEstaca;
-		this.localizacaoEstaca = localizacaoEstaca;
+	public void setDataCadastro(Date dataCadastro) {
+		this.dataCadastro = dataCadastro;
 	}
-
-	/**
-	 * @return the idOperacao
-	 */
-	public int getIdOperacao() {
-		return idOperacao;
-	}
-
-	/**
-	 * @param idOperacao the idOperacao to set
-	 */
-	public void setIdOperacao(int idOperacao) {
-		this.idOperacao = idOperacao;
-	}
-
 	/**
 	 * @return the idEstaca
 	 */
 	public int getIdEstaca() {
 		return idEstaca;
 	}
-
 	/**
 	 * @param idEstaca the idEstaca to set
 	 */
 	public void setIdEstaca(int idEstaca) {
 		this.idEstaca = idEstaca;
 	}
-
 	/**
 	 * @return the idArea
 	 */
 	public int getIdArea() {
 		return idArea;
 	}
-
 	/**
 	 * @param idArea the idArea to set
 	 */
 	public void setIdArea(int idArea) {
 		this.idArea = idArea;
 	}
-
 	/**
-	 * @return the nomeEstaca
+	 * @return the nome
 	 */
-	public String getNomeEstaca() {
-		return nomeEstaca;
+	public String getNome() {
+		return nome;
 	}
-
 	/**
-	 * @param nomeEstaca the nomeEstaca to set
+	 * @param nome the nome to set
 	 */
-	public void setNomeEstaca(String nomeEstaca) {
-		this.nomeEstaca = nomeEstaca;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
-
 	/**
-	 * @return the localizacaoEstaca
+	 * @return the latitude
 	 */
-	public String getLocalizacaoEstaca() {
-		return localizacaoEstaca;
+	public String getLatitude() {
+		return latitude;
 	}
-
 	/**
-	 * @param localizacaoEstaca the localizacaoEstaca to set
+	 * @param latitude the latitude to set
 	 */
-	public void setLocalizacaoEstaca(String localizacaoEstaca) {
-		this.localizacaoEstaca = localizacaoEstaca;
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+	/**
+	 * @return the longitude
+	 */
+	public String getLongitude() {
+		return longitude;
+	}
+	/**
+	 * @param longitude the longitude to set
+	 */
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
 	}
 
-	@Override
-	public String toString() {
-		return "EstacaBean [idOperacao=" + idOperacao + ", idEstaca=" + idEstaca + ", idArea=" + idArea
-				+ ", nomeEstaca=" + nomeEstaca + ", localizacaoEstaca=" + localizacaoEstaca + "]";
-	}
-	
-	
-	
 
 }

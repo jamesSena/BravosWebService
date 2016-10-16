@@ -1,50 +1,104 @@
 package br.com.bravos.webservices.dao;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
+/**
+ * @author JamessonSena
+ *
+ */
 public class ConexaoDAO {
 
+	private String ambiente = "welton";
 	private String stringConexao, usuario, senha;
 	private Connection connection;
-	
-	
-	public Connection getConnection() {
+
+	/**
+	 * @return connection
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
+	protected Connection getConnection() throws SQLException, ClassNotFoundException {
+		if (connection == null || connection.isClosed())
+			return dbConnect();
 		return connection;
+
 	}
 
-	public void setConnection(Connection connection) {
+	/**
+	 * @param connection
+	 */
+	protected void setConnection(Connection connection) {
 		this.connection = connection;
 	}
 
-	//Construtor default com as informações básicas de conexao
-	public ConexaoDAO(){
-		//stringConexao = "jdbc:sqlserver://192.168.3.20:1433;databaseName=BDBovControl";
-		stringConexao = "jdbc:sqlserver://localhost:1433;databaseName=BovControl";
-		usuario ="sa";
-		//senha = "1014231563";
-		senha = "jamessonsena";
+	/**
+	 * #Construtor default com as informações básicas de conexao
+	 */
+	public ConexaoDAO() {
+		switch (ambiente) {
+		case "welton":
+			stringConexao = "jdbc:sqlserver://192.168.3.21:1433;databaseName=BDBovControl";
+			usuario = "sa";
+			senha = "1014231563";
+			break;
+		case "jamesson":
+			stringConexao = "jdbc:sqlserver://localhost:1433;databaseName=BovControl";
+			usuario = "sa";
+			senha = "jamessonsena";
+		default:
+			break;
+		}
+		
+		
 	}
-	
-	//Construtor passando as informações de conexao
-	public ConexaoDAO(String stringConexao, String usuario, String senha){
-		this.stringConexao =stringConexao;
-		this.usuario =usuario;
+
+	/**
+	 * #Construtor passando as informações de conexao
+	 * 
+	 * @param stringConexao
+	 * @param usuario
+	 * @param senha
+	 */
+	public ConexaoDAO(String stringConexao, String usuario, String senha) {
+		this.stringConexao = stringConexao;
+		this.usuario = usuario;
 		this.senha = senha;
 	}
-	
-	//Conexão com o banco de dados sql server
-	 public Connection dbConnect(){
-	      
-		 try {	    	  
-	         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-	         connection = DriverManager.getConnection(stringConexao, usuario, senha);
-	         System.out.println("Conexao realizada com sucesso");
-	         
-	      } catch (Exception e) {
-	         e.printStackTrace();
-	         System.out.println("Erro durante a conexão com a base de dados: " + e.toString());
-	      }
-		 return connection;
-	   }
+
+	/**
+	 * #Conexão com o banco de dados sql server
+	 * 
+	 * @return Connection
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	protected Connection dbConnect() throws ClassNotFoundException, SQLException {
+
+		try {
+
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			connection = DriverManager.getConnection(stringConexao, usuario, senha);
+			System.out.println("Conexao realizada com sucesso");
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw e;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+		return connection;
+	}
+
+	protected void dbClose(Connection connection, CallableStatement callableStatement) throws SQLException {
+		if (connection != null && !connection.isClosed() && callableStatement != null && !callableStatement.isClosed())
+			callableStatement.close();
+
+		if (connection != null && !connection.isClosed())
+			connection.close();
+	}
 }

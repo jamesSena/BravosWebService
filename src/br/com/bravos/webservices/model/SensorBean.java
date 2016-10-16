@@ -3,43 +3,96 @@
  */
 package br.com.bravos.webservices.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 /**
  * @author JamessonSena
  *
  */
-@Entity
-public class SensorBean {
+public class SensorBean extends _BeanAbstract {
 
-	private int idOperacao;
+	private int idSensor,idCodArea, idUsuario,iDPropriedade;
+	private String nome, longitude, latitude, Data;
+
+
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idSensor;
-	private int idCodArea;
-	private String nome, localizacao;
+	
+	/**
+	 * @param success
+	 * @param detail
+	 * @param reason
+	 */
+	public SensorBean(boolean success, String detail, String reason) {
+		super(success, detail, reason);
+	}
+
+
+	/**
+	 * @param success
+	 * @param detail
+	 * @param reason
+	 * @param idOperacao
+	 * @param idSensor
+	 * @param idCodArea
+	 * @param idUsuario
+	 * @param nome
+	 * @param longitude
+	 * @param latitude
+	 */
+	public SensorBean(boolean success, String detail, String reason,  int idSensor, int idCodArea,
+			int idUsuario, String nome, String longitude, String latitude) {
+		super(success, detail, reason);
+	
+		this.idSensor = idSensor;
+		this.idCodArea = idCodArea;
+		this.idUsuario = idUsuario;
+		this.nome = nome;
+		this.longitude = longitude;
+		this.latitude = latitude;
+	}
+
+
 	/**
 	 * 
 	 */
 	public SensorBean() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
+	
+	
+	
+	
 	/**
-	 * @return the idOperacao
+	 * @return the iDPropriedade
 	 */
-	public int getIdOperacao() {
-		return idOperacao;
+	public int getiDPropriedade() {
+		return iDPropriedade;
 	}
+
+
 	/**
-	 * @param idOperacao the idOperacao to set
+	 * @param iDPropriedade the iDPropriedade to set
 	 */
-	public void setIdOperacao(int idOperacao) {
-		this.idOperacao = idOperacao;
+	public void setiDPropriedade(int iDPropriedade) {
+		this.iDPropriedade = iDPropriedade;
 	}
+
+
+	/**
+	 * @return the data
+	 */
+	public String getData() {
+		return Data;
+	}
+
+
+	/**
+	 * @param data the data to set
+	 */
+	public void setData(String data) {
+		Data = data;
+	}
+
+
 	/**
 	 * @return the idSensor
 	 */
@@ -65,6 +118,18 @@ public class SensorBean {
 		this.idCodArea = idCodArea;
 	}
 	/**
+	 * @return the idUsuario
+	 */
+	public int getIdUsuario() {
+		return idUsuario;
+	}
+	/**
+	 * @param idUsuario the idUsuario to set
+	 */
+	public void setIdUsuario(int idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+	/**
 	 * @return the nome
 	 */
 	public String getNome() {
@@ -77,16 +142,43 @@ public class SensorBean {
 		this.nome = nome;
 	}
 	/**
-	 * @return the localizacao
+	 * @return the longitude
 	 */
-	public String getLocalizacao() {
-		return localizacao;
+	public String getLongitude() {
+		return longitude;
 	}
 	/**
-	 * @param localizacao the localizacao to set
+	 * @param longitude the longitude to set
 	 */
-	public void setLocalizacao(String localizacao) {
-		this.localizacao = localizacao;
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
 	}
+	/**
+	 * @return the latitude
+	 */
+	public String getLatitude() {
+		return latitude;
+	}
+	/**
+	 * @param latitude the latitude to set
+	 */
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "SensorBean [idSensor=" + idSensor + ", idCodArea=" + idCodArea
+				+ ", idUsuario=" + idUsuario + ", nome=" + nome + ", longitude=" + longitude + ", latitude=" + latitude
+				+ ", isSuccess()=" + isSuccess() + ", getDetail()=" + getDetail() + ", getReason()=" + getReason()
+				+ "]";
+	}
+
+
+	
 
 }
