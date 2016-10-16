@@ -1,6 +1,8 @@
 package br.com.bravos.webservices.controller;
 
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,9 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import br.com.bravos.webservices.dao.NotificacaoDAO;
-import br.com.bravos.webservices.dao.PropriedadeDAO;
 import br.com.bravos.webservices.model.NotificacaoBean;
-import br.com.bravos.webservices.model.PropriedadeBean;
 
 @RestController
 public class NotificacaoRestController {
@@ -24,26 +24,33 @@ public class NotificacaoRestController {
 	private NotificacaoDAO notificacaoDAO;
 	
 	public NotificacaoRestController() {
+	
 	}
+	
+	
 	@RequestMapping(value = "/cadastrarNotificacao", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public PropriedadeBean cadastrarNotificacao(@RequestBody String jsonCadastro) throws JsonProcessingException {
+	public NotificacaoBean cadastrarNotificacao(@RequestBody String jsonCadastro) throws JsonProcessingException {
 		notificacaoBean = new NotificacaoBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
 			System.out.println(jsonObject.toString());
 			notificacaoBean.setIdUsuario(jsonObject.getInt("idUsuario"));
 			notificacaoBean.setIdPropriedade(jsonObject.getInt("idPropriedade"));
-			notificacaoBean.setNomePropriedade(jsonObject.getString("nomePropriedade"));
-			notificacaoBean.setResponsavel(jsonObject.getString("responsavel"));
-			notificacaoBean.setLatitude(jsonObject.getString("latitude"));
-			notificacaoBean.setLongitude(jsonObject.getString("longitude"));
+			notificacaoBean.setIdArea(jsonObject.getInt("idArea"));
+			notificacaoBean.setIdNotificacao(jsonObject.getInt("idNotificacao"));
+			notificacaoBean.setIdSensor(jsonObject.getInt("idSensor"));
+			notificacaoBean.setIdStatus(jsonObject.getInt("idStatus"));
+			String strDataInicio =jsonObject.getString("dataInicio");
+			String strDataFim= jsonObject.getString("dataFim");
 			// Json ok
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			sdf.setLenient(false);		
+			notificacaoBean.setDataFim(sdf.parse(strDataInicio));
+			notificacaoBean.setDataInicio(sdf.parse(strDataFim));
+			//Formatação Data ok
 			notificacaoDAO = new NotificacaoDAO();
-			String codigo = notificacaoDAO.execNotificacaoCadastrar(notificacaoBean.getIdUsuario(), idSensor, idArea, idPropriedade, idStatus, dataInicio, dataFim, idNotificacao)
-			if (notificacaoBean.getReason().equals("1")) {
-				notificacaoBean.setSuccess(true);
-				notificacaoBean.setDetail("sucesso");
-			}
+			notificacaoDAO.execNotificacaoCadastrar(notificacaoBean.getIdUsuario(), notificacaoBean.getIdSensor(), notificacaoBean.getIdArea(), notificacaoBean.getIdPropriedade(), notificacaoBean.getIdStatus(), notificacaoBean.getDataInicio(), notificacaoBean.getDataFim(), notificacaoBean.getIdNotificacao());
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 			notificacaoBean.setSuccess(false);
@@ -59,6 +66,11 @@ public class NotificacaoRestController {
 			notificacaoBean.setSuccess(false);
 			notificacaoBean.setReason("-7");
 			notificacaoBean.setDetail("Erro ao localizar o Driver de conexão");
+		} catch (ParseException e) {
+			e.printStackTrace();
+			notificacaoBean.setSuccess(false);
+			notificacaoBean.setReason("-8");
+			notificacaoBean.setDetail("Erro no Formato da Data. [padrão: dd/MM/yyyy] ");
 		}
 		return notificacaoBean;
 
