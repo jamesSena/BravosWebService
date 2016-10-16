@@ -40,14 +40,13 @@ public class PropriedadeRestController {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
 			System.out.println(jsonObject.toString());
 			proprieade.setIdUsuario(jsonObject.getInt("idUsuario"));
-			proprieade.setIdPropriedade(jsonObject.getInt("idPropriedade"));
 			proprieade.setNomePropriedade(jsonObject.getString("nomePropriedade"));
 			proprieade.setResponsavel(jsonObject.getString("responsavel"));
 			proprieade.setLatitude(jsonObject.getString("latitude"));
 			proprieade.setLongitude(jsonObject.getString("longitude"));
 			// Json ok
 			propriedadeDAO = new PropriedadeDAO();
-			String codigo = propriedadeDAO.execPropriedadeCadastrar(proprieade.getIdUsuario(), proprieade.getIdPropriedade(), proprieade.getNomePropriedade(), proprieade.getResponsavel(), proprieade.getEmailResponsavel(), proprieade.getLatitude(), proprieade.getLongitude());
+			String codigo = propriedadeDAO.execPropriedadeCadastrar(proprieade.getIdUsuario(), proprieade.getNomePropriedade(), proprieade.getResponsavel(), proprieade.getEmailResponsavel(), proprieade.getLatitude(), proprieade.getLongitude());
 			proprieade.setReason(codigo);
 			if (proprieade.getReason().equals("1")) {
 				proprieade.setSuccess(true);
@@ -73,12 +72,12 @@ public class PropriedadeRestController {
 
 	}
 
-	@RequestMapping(value = "/consultarPropriedade/{idPropriedade}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public PropriedadeBean consultarPropriedade(@PathVariable("idPropriedade") int idPropriedade) throws JsonProcessingException {
+	@RequestMapping(value = "/consultarPropriedade/{idUsuario}/{idPropriedade}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public PropriedadeBean consultarPropriedade(@PathVariable("idPropriedade") int idPropriedade, @PathVariable("idUsuario") int idUsuario) throws JsonProcessingException {
 		proprieade = new PropriedadeBean();
 		try {
 			propriedadeDAO = new PropriedadeDAO();
-			proprieade = propriedadeDAO.execPropriedadeRetornar(idPropriedade);
+			proprieade = propriedadeDAO.execPropriedadeRetornar(idPropriedade, idUsuario);
 	
 		} catch (SQLException e) {
 			e.printStackTrace();

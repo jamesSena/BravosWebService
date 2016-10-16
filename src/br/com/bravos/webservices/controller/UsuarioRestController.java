@@ -132,7 +132,6 @@ public class UsuarioRestController {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return usuario;
@@ -222,10 +221,8 @@ public class UsuarioRestController {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return retorno;

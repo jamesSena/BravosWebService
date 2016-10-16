@@ -29,7 +29,6 @@ public class SensorRestController {
 	List<SensorBean> sensorList;
 	private String retorno;
 	public SensorRestController() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	

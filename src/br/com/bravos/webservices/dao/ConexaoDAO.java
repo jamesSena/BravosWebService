@@ -11,7 +11,7 @@ import java.sql.SQLException;
  */
 public class ConexaoDAO {
 
-	private String ambiente = "welton";
+	private String ambiente = "jamesson";
 	private String stringConexao, usuario, senha;
 	private Connection connection;
 
@@ -45,7 +45,7 @@ public class ConexaoDAO {
 			senha = "1014231563";
 			break;
 		case "jamesson":
-			stringConexao = "jdbc:sqlserver://localhost:1433;databaseName=BovControl";
+			stringConexao = "jdbc:sqlserver://localhost:1433;databaseName=BDBovControl";
 			usuario = "sa";
 			senha = "jamessonsena";
 		default:

@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.bravos.webservices.model.NotificacaoBean;
-import br.com.bravos.webservices.model.SensorBean;
 
 /**
  * @author JamessonSena

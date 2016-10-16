@@ -12,7 +12,6 @@ public class PerfilUsuarioBean {
 	 * 
 	 */
 	public PerfilUsuarioBean() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

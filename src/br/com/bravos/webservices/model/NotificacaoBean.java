@@ -26,11 +26,9 @@ public class NotificacaoBean extends _BeanAbstract{
 	}
 	public NotificacaoBean() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public NotificacaoBean(boolean success, String detail, String reason) {
 		super(success, detail, reason);
-		// TODO Auto-generated constructor stub
 	}
 	/**
 	 * @return the idUsuario

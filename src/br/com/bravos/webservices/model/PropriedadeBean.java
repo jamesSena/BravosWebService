@@ -8,6 +8,8 @@ package br.com.bravos.webservices.model;
  *
  */
 public class PropriedadeBean extends _BeanAbstract{
+
+
 	private int idUsuario,	idPropriedade;
 	private String nomePropriedade, responsavel, emailResponsavel, latitude, longitude, dataCadastro;
 
@@ -15,7 +17,6 @@ public class PropriedadeBean extends _BeanAbstract{
 	 * 
 	 */
 	public PropriedadeBean() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getDataCadastro() {
@@ -82,6 +83,15 @@ public class PropriedadeBean extends _BeanAbstract{
 		this.longitude = longitude;
 	}
 
- 
+
+	@Override
+	public String toString() {
+		return "PropriedadeBean [idUsuario=" + idUsuario + ", idPropriedade=" + idPropriedade + ", nomePropriedade="
+				+ nomePropriedade + ", responsavel=" + responsavel + ", emailResponsavel=" + emailResponsavel
+				+ ", latitude=" + latitude + ", longitude=" + longitude + ", dataCadastro=" + dataCadastro
+				+ ", isSuccess()=" + isSuccess() + ", getDetail()=" + getDetail() + ", getReason()=" + getReason()
+				+ ", toString()=" + super.toString() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
+				+ "]";
+	}
 
 }
