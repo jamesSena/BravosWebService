@@ -6,6 +6,7 @@ import br.com.bravos.webservices.dao.AreaDAO;
 import br.com.bravos.webservices.dao.ConexaoDAO;
 import br.com.bravos.webservices.dao.PropriedadeDAO;
 import br.com.bravos.webservices.dao.UsuarioDAO;
+import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.dao.SensorDAO;
 
 /**
@@ -22,7 +23,7 @@ public class TestesUnitarios {
 	
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		areaRetornarPorPropriedade();
+		new UsuarioDAO().execUsuarioRetornarTodos();
 	}
 	//Teste areaAtualizar
 	private static void areaRetornarPorPropriedade() throws ClassNotFoundException, SQLException{

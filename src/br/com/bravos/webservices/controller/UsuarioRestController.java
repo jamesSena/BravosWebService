@@ -1,6 +1,7 @@
 package br.com.bravos.webservices.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
@@ -13,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import br.com.bravos.webservices.dao.UsuarioDAO;
+import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.model.UsuarioBean;
-import br.com.bravos.webservices.utils.Json;
 
 /**
  * @author JamessonSena
@@ -26,7 +27,7 @@ public class UsuarioRestController {
 	private UsuarioBean usuario;
 	private UsuarioDAO usuarioDAO;
 	private String retorno;
-	List<UsuarioBean> usuarioList;
+	private List<UsuarioBean> usuarioList;
 
 	/**
 	 * Construtor default
@@ -38,11 +39,11 @@ public class UsuarioRestController {
 	/**
 	 * @param JSON:
 	 *            ativo, email, idPerfil, idPropriedade, login, nome, senha
-	 * @return JSON: usuario
+	 * @return JSON: UsuarioBean
 	 * @throws JsonProcessingException
 	 */
 	@RequestMapping(value = "/cadastrarUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String cadastrarUsuario(@RequestBody String jsonCadastro) throws JsonProcessingException {
+	public UsuarioBean cadastrarUsuario(@RequestBody String jsonCadastro) throws JsonProcessingException {
 		usuario = new UsuarioBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
@@ -55,59 +56,46 @@ public class UsuarioRestController {
 			usuario.setNome(jsonObject.getString("nome"));
 			usuario.setSenha(jsonObject.getString("senha"));
 			// Json ok
-			usuarioDAO = new UsuarioDAO();
-			String codigo = usuarioDAO.execUsuarioCadastrar(1, usuario.getLogin(), usuario.getSenha(),
-					usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getEmail(), usuario.getNome(),
-					usuario.getIdPerfil());
-			usuario.setReason(codigo);
-			if (usuario.getReason().equals("1")) {
-				usuario.setSuccess(true);
-				usuario.setDetail("sucesso");
-			}
-			retorno = new Json().convertObjectToJson(usuario);
+			usuario.setReason(new UsuarioDAO().execUsuarioCadastrar(1, usuario.getLogin(), usuario.getSenha(),usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getEmail(), usuario.getNome(),
+							   								usuario.getIdPerfil()));
+			traducaoRetornoErro(usuario.getReason());
 		} catch (JSONException e) {
 			e.printStackTrace();
 			usuario.setSuccess(false);
-			usuario.setReason("-4");
-			usuario.setDetail("Formato JSON invalido ou campo faltando, por favor verificar");
-			retorno = new Json().convertObjectToJson(usuario);
+			usuario.setReason("-5");
+			usuario.setDetail(EnumErroUsuario._5_JSONException.toString());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			usuario.setSuccess(false);
-			usuario.setReason("-5");
-			usuario.setDetail("Inconsistência no SQL: " + e.getMessage());
-			retorno = new Json().convertObjectToJson(usuario);
+			usuario.setReason("-6");
+			usuario.setDetail(EnumErroUsuario._6_SQLException.toString());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			usuario.setSuccess(false);
-			usuario.setReason("-5");
-			usuario.setDetail("Erro ao localizar o Driver de conexão");
-			retorno = new Json().convertObjectToJson(usuario);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			usuario.setSuccess(false);
-			usuario.setReason("-6");
-			usuario.setDetail("Erro ao realizar Parse de retorno");
-
-		}
-		return retorno;
+			usuario.setReason("-7");
+			usuario.setDetail(EnumErroUsuario._7_ClassNotFoundException.toString());
+		} 
+		return usuario;
 
 	}
 
 	/**
-	 * @return JSON: lista de usuario
+	 * @return JSON: lista de UsuarioBean
 	 */
 	@RequestMapping(value = "/consultarUsuarios", 
 			        method = RequestMethod.GET,
 			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<UsuarioBean> consultarUsuarios() {
 		try {
-			usuarioDAO = new UsuarioDAO();
-			usuarioList = usuarioDAO.execUsuarioRetornarTodos();
+			usuarioList = new UsuarioDAO().execUsuarioRetornarTodos();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			usuarioList = new ArrayList<UsuarioBean>(); 
+			usuarioList.add(new UsuarioBean(false, "-6", EnumErroUsuario._6_SQLException.toString()));
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			usuarioList = new ArrayList<UsuarioBean>(); 
+			usuarioList.add(new UsuarioBean(false, "-7", EnumErroUsuario._7_ClassNotFoundException.toString()));
 		}
 		return usuarioList;
 	}
@@ -115,7 +103,7 @@ public class UsuarioRestController {
 	/**
 	 * @param login
 	 * @param senha
-	 * @return JSON: usuario
+	 * @return JSON: UsuarioBean
 	 */
 	@RequestMapping(value = "/consultarUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public UsuarioBean consultarUsuario(@RequestBody String jsonConsultarUsuario) {
@@ -126,13 +114,18 @@ public class UsuarioRestController {
 			String senha = jsonObject.getString("senha");
 			usuarioDAO = new UsuarioDAO();
 			usuario = usuarioDAO.execUsuarioRetornarEspecifico(login, senha);
+			traducaoRetornoErro(usuario.getReason());
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(false, "-7", EnumErroUsuario._7_ClassNotFoundException.toString());
 		} catch (SQLException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(false, "-6", EnumErroUsuario._6_SQLException.toString());
 		} catch (JSONException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(false, "-5", EnumErroUsuario._5_JSONException.toString());
+
 		}
 		return usuario;
 	}
@@ -141,10 +134,10 @@ public class UsuarioRestController {
 	 * @param JSON:
 	 *            idUsuario, ativo, email, idPerfil, idPropriedade, login, nome,
 	 *            senha
-	 * @return codigo de sucesso/erro
+	 * @return UsuarioBean
 	 */
 	@RequestMapping(value = "/atualizarUsuario", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String atualizarUsuario(@RequestBody String jsonAtualizar) {
+	public UsuarioBean atualizarUsuario(@RequestBody String jsonAtualizar) {
 		System.out.println(jsonAtualizar.toString());
 		usuario = new UsuarioBean();
 		int idUsuario = 0;
@@ -163,14 +156,24 @@ public class UsuarioRestController {
 					usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getEmail(), usuario.getNome(),
 					usuario.getIdPerfil());
 
+			traducaoRetornoErro(retorno);
 		} catch (JSONException e) {
 			e.printStackTrace();
+			usuario.setSuccess(false);
+			usuario.setReason("-5");
+			usuario.setDetail(EnumErroUsuario._5_JSONException.toString());
 		} catch (SQLException e) {
 			e.printStackTrace();
+			usuario.setSuccess(false);
+			usuario.setReason("-6");
+			usuario.setDetail(EnumErroUsuario._6_SQLException.toString());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		}
-		return jsonAtualizar;
+			usuario.setSuccess(false);
+			usuario.setReason("-7");
+			usuario.setDetail(EnumErroUsuario._7_ClassNotFoundException.toString());
+		} 
+		return usuario;
 
 	}
 
@@ -180,7 +183,7 @@ public class UsuarioRestController {
 	 * @return codigo de sucesso/erro
 	 */
 	@RequestMapping(value = "/excluirUsuario", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String excluirUsuario(@RequestBody String jsonExcluir) {
+	public UsuarioBean excluirUsuario(@RequestBody String jsonExcluir) {
 		System.out.println(jsonExcluir.toString());
 		usuario = new UsuarioBean();
 		try {
@@ -191,41 +194,48 @@ public class UsuarioRestController {
 			usuario.setSenha(jsonObject.getString("senha"));
 			usuarioDAO = new UsuarioDAO();
 			retorno = usuarioDAO.execUsuarioRemover(usuario.getIdUsuario(), usuario.getLogin(), usuario.getSenha());
+			traducaoRetornoErro(retorno);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._5_JSONException.toString(), "-5");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7");
 		} catch (SQLException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._6_SQLException.toString(), "-6");
 		}
-		return retorno;
+		return usuario;
 	}
 
 	/**
 	 * @param JSON:
 	 *            idUsuario
-	 * @return codigo de sucesso/erro
+	 * @return UsuarioBean
 	 */
 	@RequestMapping(value = "/excluirTodosUsuario", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String excluirTodosUsuario(@RequestBody String jsonExcluirTodos) {
+	public UsuarioBean excluirTodosUsuario(@RequestBody String jsonExcluirTodos) {
 		System.out.println(jsonExcluirTodos.toString());
 		usuario = new UsuarioBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonExcluirTodos);
 			System.out.println(jsonObject.toString());
 			usuario.setIdUsuario(jsonObject.getInt("idUsuario"));
-			usuarioDAO = new UsuarioDAO();
-			retorno = usuarioDAO.execUsuarioRemoverTodos(usuario.getIdUsuario());
+			retorno = new UsuarioDAO().execUsuarioRemoverTodos(usuario.getIdUsuario());
+			traducaoRetornoErro(retorno);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._5_JSONException.toString(), "-5");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7");
 		} catch (SQLException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._6_SQLException.toString(), "-6");
 		}
-		return retorno;
+		return usuario;
 	}
 
 	/**
@@ -235,7 +245,7 @@ public class UsuarioRestController {
 	 */
 	@RequestMapping(value = "/bloquearUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
-	public String bloquearUsuario(@RequestBody String jsonBloquear) {
+	public UsuarioBean bloquearUsuario(@RequestBody String jsonBloquear) {
 		System.out.println(jsonBloquear.toString());
 		usuario = new UsuarioBean();
 		try {
@@ -244,26 +254,28 @@ public class UsuarioRestController {
 			usuario.setIdUsuario(jsonObject.getInt("idUsuario"));
 			usuario.setLogin(jsonObject.getString("login"));
 			usuario.setSenha(jsonObject.getString("senha"));
-			usuarioDAO = new UsuarioDAO();
-			retorno = usuarioDAO.execUsuarioBloquear(usuario.getIdUsuario(), usuario.getLogin(), false);
-
+			retorno = new UsuarioDAO().execUsuarioBloquear(usuario.getIdUsuario(), usuario.getLogin(), false);
+			traducaoRetornoErro(retorno);
 		} catch (JSONException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._5_JSONException.toString(), "-5");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7");
 		} catch (SQLException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._6_SQLException.toString(), "-6");
 		}
-		return retorno;
+		return usuario;
 	}
 
 	/**
 	 * @param JSON:
 	 *            idUsuario, login, senha
-	 * @return codigo de sucesso/erro
+	 * @return UsuarioBean
 	 */
 	@RequestMapping(value = "/desbloquearUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String desbloquearUsuario(@RequestBody String jsonDesbloquar) {
+	public UsuarioBean desbloquearUsuario(@RequestBody String jsonDesbloquar) {
 		System.out.println(jsonDesbloquar.toString());
 		usuario = new UsuarioBean();
 		try {
@@ -272,15 +284,42 @@ public class UsuarioRestController {
 			usuario.setIdUsuario(jsonObject.getInt("idUsuario"));
 			usuario.setLogin(jsonObject.getString("login"));
 			usuario.setSenha(jsonObject.getString("senha"));
-			usuarioDAO = new UsuarioDAO();
-			retorno = usuarioDAO.execUsuarioBloquear(usuario.getIdUsuario(), usuario.getLogin(), true);
+			retorno = new UsuarioDAO().execUsuarioBloquear(usuario.getIdUsuario(), usuario.getLogin(), true);
+			traducaoRetornoErro(retorno);
 		} catch (JSONException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._5_JSONException.toString(), "-5");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7");
 		} catch (SQLException e) {
 			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._6_SQLException.toString(), "-6");
 		}
-		return retorno;
+		return usuario;
+	}
+
+	//Traducao de todos os erros retornado pelo banco de dados para a consultas de usuario
+	public void traducaoRetornoErro(String erro){
+		switch (usuario.getReason()) {
+		case "-1":
+			usuario.setSuccess(false);
+			usuario.setDetail(EnumErroUsuario._1.toString());
+			break;
+		case "-2":
+			usuario.setSuccess(false);
+			usuario.setDetail(EnumErroUsuario._2.toString());
+			break;
+		case "-3":
+			usuario.setSuccess(false);
+			usuario.setDetail(EnumErroUsuario._3.toString());
+			break;
+		case "-4":
+			usuario.setSuccess(false);
+			usuario.setDetail(EnumErroUsuario._4.toString());
+			break;
+		default:
+			break;
+		}
 	}
 }
