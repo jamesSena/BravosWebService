@@ -8,16 +8,6 @@ package br.com.bravos.webservices.model;
  *
  */
 public class AreaBean extends _BeanAbstract{
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "AreaBean [nomeArea=" + nomeArea + ", idArea=" + idArea + ", idPropriedade=" + idPropriedade
-				+ ", isSuccess()=" + isSuccess() + ", getDetail()=" + getDetail() + ", getReason()=" + getReason()
-				+ "]";
-	}
 	private String nomeArea;
 	private int idArea,idPropriedade;
 	
@@ -58,7 +48,13 @@ public class AreaBean extends _BeanAbstract{
 	public void setIdPropriedade(int idPropriedade) {
 		this.idPropriedade = idPropriedade;
 	}
+	@Override
+	public String toString() {
+		return String.format("AreaBean [nomeArea=%s, idArea=%s, idPropriedade=%s, super()=%s]", nomeArea, idArea,
+				idPropriedade, super.toString());
+	}
 	
+
 	
 
 }

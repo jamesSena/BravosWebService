@@ -4,10 +4,6 @@ package br.com.bravos.webservices.model;
  * @author JamessonSena
  *
  */
-/**
- * @author JamessonSena
- *
- */
 public class UsuarioBean extends _BeanAbstract {
 	private String login, senha, email, nome;
 	private int idUsuario, idPropriedade, idPerfil;
@@ -152,15 +148,14 @@ public class UsuarioBean extends _BeanAbstract {
 		this.ativo = ativo;
 	}
 
+
 	@Override
 	public String toString() {
-		return "UsuarioBean [login=" + login + ", senha=" + senha + ", email=" + email + ", nome=" + nome
-				+ ", idUsuario=" + idUsuario + ", idPropriedade=" + idPropriedade + ", idPerfil=" + idPerfil
-				+ ", ativo=" + ativo + ", isSuccess()=" + isSuccess() + ", getDetail()=" + getDetail()
-				+ ", getReason()=" + getReason() + "]";
+		return String.format(
+				"UsuarioBean [login=%s, senha=%s, email=%s, nome=%s, idUsuario=%s, idPropriedade=%s, idPerfil=%s, ativo=%s, super()=%s]",
+				login, senha, email, nome, idUsuario, idPropriedade, idPerfil, ativo, super.toString());
 	}
-	
-	
+
 
 
 

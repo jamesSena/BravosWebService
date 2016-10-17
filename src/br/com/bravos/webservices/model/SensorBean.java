@@ -172,10 +172,9 @@ public class SensorBean extends _BeanAbstract {
 	 */
 	@Override
 	public String toString() {
-		return "SensorBean [idSensor=" + idSensor + ", idCodArea=" + idCodArea
-				+ ", idUsuario=" + idUsuario + ", nome=" + nome + ", longitude=" + longitude + ", latitude=" + latitude
-				+ ", isSuccess()=" + isSuccess() + ", getDetail()=" + getDetail() + ", getReason()=" + getReason()
-				+ "]";
+		return String.format(
+				"SensorBean [idSensor=%s, idCodArea=%s, idUsuario=%s, iDPropriedade=%s, nome=%s, longitude=%s, latitude=%s, Data=%s, super()=%s]",
+				idSensor, idCodArea, idUsuario, iDPropriedade, nome, longitude, latitude, Data, super.toString());
 	}
 
 

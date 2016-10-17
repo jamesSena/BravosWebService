@@ -88,6 +88,14 @@ public class EstacaBean extends _BeanAbstract {
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
+	@Override
+	public String toString() {
+		return String.format(
+				"EstacaBean [idEstaca=%s, idArea=%s, nome=%s, latitude=%s, longitude=%s, dataCadastro=%s, super()=%s]",
+				idEstaca, idArea, nome, latitude, longitude, dataCadastro, super.toString());
+	}
+	
+
 
 
 }

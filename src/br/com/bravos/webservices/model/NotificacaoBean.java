@@ -12,8 +12,19 @@ import java.util.Date;
 public class NotificacaoBean extends _BeanAbstract{
 	private int idUsuario, idSensor, idArea, idPropriedade, idStatus, idNotificacao;
 	private Date dataInicio, dataFim;
-	public NotificacaoBean(int idUsuario, int idSensor, int idArea, int idPropriedade, int idStatus, int idNotificacao,
-			Date dataInicio, Date dataFim) {
+	
+	
+	/**
+	 * @param idUsuario
+	 * @param idSensor
+	 * @param idArea
+	 * @param idPropriedade
+	 * @param idStatus
+	 * @param idNotificacao
+	 * @param dataInicio
+	 * @param dataFim
+	 */
+	public NotificacaoBean(int idUsuario, int idSensor, int idArea, int idPropriedade, int idStatus, int idNotificacao, Date dataInicio, Date dataFim) {
 		super();
 		this.idUsuario = idUsuario;
 		this.idSensor = idSensor;
@@ -27,6 +38,11 @@ public class NotificacaoBean extends _BeanAbstract{
 	public NotificacaoBean() {
 		super();
 	}
+	/**
+	 * @param success
+	 * @param detail
+	 * @param reason
+	 */
 	public NotificacaoBean(boolean success, String detail, String reason) {
 		super(success, detail, reason);
 	}
@@ -125,6 +141,13 @@ public class NotificacaoBean extends _BeanAbstract{
 	 */
 	public void setDataFim(Date dataFim) {
 		this.dataFim = dataFim;
+	}
+	@Override
+	public String toString() {
+		return String.format(
+				"NotificacaoBean [idUsuario=%s, idSensor=%s, idArea=%s, idPropriedade=%s, idStatus=%s, idNotificacao=%s, dataInicio=%s, dataFim=%s, super()=%s]",
+				idUsuario, idSensor, idArea, idPropriedade, idStatus, idNotificacao, dataInicio, dataFim,
+				super.toString());
 	}
 
 	

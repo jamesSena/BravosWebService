@@ -70,9 +70,15 @@ public class _BeanAbstract {
 		this.reason = reason;
 	}
 
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return "_BeanAbstract [success=" + success + ", detail=" + detail + ", reason=" + reason + "]";
+		return String.format("_BeanAbstract [success=%s, detail=%s, reason=%s]", success, detail, reason);
 	}
+
+
 
 }
