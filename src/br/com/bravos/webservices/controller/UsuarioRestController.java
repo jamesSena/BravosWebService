@@ -91,17 +91,17 @@ public class UsuarioRestController {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			usuarioList = new ArrayList<UsuarioBean>(); 
-			usuarioList.add(new UsuarioBean(false, "-6", EnumErroUsuario._6_SQLException.toString()));
+			usuarioList.add(new UsuarioBean(false, EnumErroUsuario._6_SQLException.toString(), "-6"));
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			usuarioList = new ArrayList<UsuarioBean>(); 
-			usuarioList.add(new UsuarioBean(false, "-7", EnumErroUsuario._7_ClassNotFoundException.toString()));
+			usuarioList.add(new UsuarioBean(false, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7" ));
 		}
 		return usuarioList;
 	}
 
 	/**
-	 * @param login
+	 * @param email
 	 * @param senha
 	 * @return JSON: UsuarioBean
 	 */
@@ -110,7 +110,7 @@ public class UsuarioRestController {
 		try {
 			JSONObject jsonObject = new JSONObject(jsonConsultarUsuario);
 			System.out.println(jsonObject.toString());
-			String login = jsonObject.getString("login");
+			String login = jsonObject.getString("email");
 			String senha = jsonObject.getString("senha");
 			usuarioDAO = new UsuarioDAO();
 			usuario = usuarioDAO.execUsuarioRetornarEspecifico(login, senha);

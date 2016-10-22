@@ -11,8 +11,8 @@ public class UsuarioBean extends _BeanAbstract {
 	
 	/**
 	 * @param success
-	 * @param detail
-	 * @param reason
+	 * @param detail 
+	 * @param reason  - codigo de erro
 	 * @param login
 	 * @param senha
 	 * @param email
