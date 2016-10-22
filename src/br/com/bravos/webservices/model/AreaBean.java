@@ -11,7 +11,32 @@ public class AreaBean extends _BeanAbstract{
 	private String nomeArea;
 	private int idArea,idPropriedade;
 	
+	public AreaBean() {
 
+	}
+	/**
+	 * @param success
+	 * @param detail
+	 * @param reason
+	 * @param nomeArea
+	 * @param idArea
+	 * @param idPropriedade
+	 */
+	public AreaBean(boolean success, String detail, String reason, String nomeArea, int idArea, int idPropriedade) {
+		super(success, detail, reason);
+		this.nomeArea = nomeArea;
+		this.idArea = idArea;
+		this.idPropriedade = idPropriedade;
+	}
+	/**
+	 * @param success
+	 * @param detail
+	 * @param reason
+	 */
+	public AreaBean(boolean success, String detail, String reason) {
+		super(success, detail, reason);
+		// TODO Auto-generated constructor stub
+	}
 	/**
 	 * @return the nomeArea
 	 */

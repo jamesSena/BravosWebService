@@ -22,8 +22,8 @@ import br.com.bravos.webservices.model.UsuarioBean;
  *
  */
 @RestController
-public class UsuarioRestController {
-
+public class UsuarioRestController implements TratamentoRetorno{
+	
 	private UsuarioBean usuario;
 	private UsuarioDAO usuarioDAO;
 	private String retorno;
@@ -58,7 +58,7 @@ public class UsuarioRestController {
 			// Json ok
 			usuario.setReason(new UsuarioDAO().execUsuarioCadastrar(1, usuario.getLogin(), usuario.getSenha(),usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getEmail(), usuario.getNome(),
 							   								usuario.getIdPerfil()));
-			traducaoRetornoErro(usuario.getReason());
+			tratamentoRetorno(usuario.getReason());
 		} catch (JSONException e) {
 			e.printStackTrace();
 			usuario.setSuccess(false);
@@ -114,7 +114,7 @@ public class UsuarioRestController {
 			String senha = jsonObject.getString("senha");
 			usuarioDAO = new UsuarioDAO();
 			usuario = usuarioDAO.execUsuarioRetornarEspecifico(login, senha);
-			traducaoRetornoErro(usuario.getReason());
+			tratamentoRetorno(usuario.getReason());
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -156,7 +156,7 @@ public class UsuarioRestController {
 					usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getEmail(), usuario.getNome(),
 					usuario.getIdPerfil());
 
-			traducaoRetornoErro(retorno);
+			tratamentoRetorno(retorno);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			usuario.setSuccess(false);
@@ -194,7 +194,7 @@ public class UsuarioRestController {
 			usuario.setSenha(jsonObject.getString("senha"));
 			usuarioDAO = new UsuarioDAO();
 			retorno = usuarioDAO.execUsuarioRemover(usuario.getIdUsuario(), usuario.getLogin(), usuario.getSenha());
-			traducaoRetornoErro(retorno);
+			tratamentoRetorno(retorno);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -223,7 +223,7 @@ public class UsuarioRestController {
 			System.out.println(jsonObject.toString());
 			usuario.setIdUsuario(jsonObject.getInt("idUsuario"));
 			retorno = new UsuarioDAO().execUsuarioRemoverTodos(usuario.getIdUsuario());
-			traducaoRetornoErro(retorno);
+			tratamentoRetorno(retorno);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -255,7 +255,7 @@ public class UsuarioRestController {
 			usuario.setLogin(jsonObject.getString("login"));
 			usuario.setSenha(jsonObject.getString("senha"));
 			retorno = new UsuarioDAO().execUsuarioBloquear(usuario.getIdUsuario(), usuario.getLogin(), false);
-			traducaoRetornoErro(retorno);
+			tratamentoRetorno(retorno);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			usuario = new UsuarioBean(true, EnumErroUsuario._5_JSONException.toString(), "-5");
@@ -285,7 +285,7 @@ public class UsuarioRestController {
 			usuario.setLogin(jsonObject.getString("login"));
 			usuario.setSenha(jsonObject.getString("senha"));
 			retorno = new UsuarioDAO().execUsuarioBloquear(usuario.getIdUsuario(), usuario.getLogin(), true);
-			traducaoRetornoErro(retorno);
+			tratamentoRetorno(retorno);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			usuario = new UsuarioBean(true, EnumErroUsuario._5_JSONException.toString(), "-5");
@@ -299,8 +299,10 @@ public class UsuarioRestController {
 		return usuario;
 	}
 
+
 	//Traducao de todos os erros retornado pelo banco de dados para a consultas de usuario
-	public void traducaoRetornoErro(String erro){
+	@Override
+	public void tratamentoRetorno(String erro) {
 		switch (usuario.getReason()) {
 		case "-1":
 			usuario.setSuccess(false);
@@ -320,6 +322,6 @@ public class UsuarioRestController {
 			break;
 		default:
 			break;
-		}
+		}		
 	}
 }

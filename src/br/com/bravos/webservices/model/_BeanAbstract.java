@@ -19,6 +19,7 @@ public class _BeanAbstract {
 		this.detail = detail;
 		this.reason = reason;
 	}
+	
 
 	
 	/**
@@ -27,7 +28,11 @@ public class _BeanAbstract {
 	public _BeanAbstract() {
 	}
 
-
+	public void set_BeanAbstract(boolean success, String detail, String reason) {
+		this.success = success;
+		this.detail = detail;
+		this.reason = reason;
+		}
 	/**
 	 * @return transação realizada com sucesso
 	 */

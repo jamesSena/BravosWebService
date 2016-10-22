@@ -1,5 +1,6 @@
 package br.com.bravos.webservices.controller;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import br.com.bravos.webservices.dao.AreaDAO;
+import br.com.bravos.webservices.enums.EnumErroArea;
+import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.model.AreaBean;
+import br.com.bravos.webservices.model._BeanAbstract;
 import br.com.bravos.webservices.utils.Json;
 
 /**
@@ -19,12 +23,12 @@ import br.com.bravos.webservices.utils.Json;
  *
  */
 @RestController
-public class AreaRestController {
+public class AreaRestController implements TratamentoRetorno {
 	
-	private AreaBean area;
+	private AreaBean areaBean;
 	private AreaDAO areaDAO;
 	private String retorno;
-	List<AreaBean> areaList;
+	private List<AreaBean> areaList;
 	
 	/**
 	 * Construtor default
@@ -35,59 +39,38 @@ public class AreaRestController {
 	
 	/**
 	 * @param JSON:
-	 *            idarea, idpropriedade, nomearea
-	 * @return JSON: area
+	 *            idUsuario, idPropriedade, nomeArea
+	 * @return JSON: areaBean
 	 * @throws JsonProcessingException
 	 */
 	
 	@RequestMapping(value = "/cadastrarArea", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String cadastrarArea(@RequestBody String jsonCadastro) throws JsonProcessingException {
-		area = new AreaBean();
+	public _BeanAbstract cadastrarArea(@RequestBody String jsonCadastro) throws JsonProcessingException {
+		areaBean = new AreaBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
 			System.out.println(jsonObject.toString());
-			area.setIdPropriedade(jsonObject.getInt("idPropriedade"));
-			area.setNomeArea(jsonObject.getString("nomeArea"));
-			
+			areaBean.setIdPropriedade(jsonObject.getInt("idPropriedade"));
+			areaBean.setNomeArea(jsonObject.getString("nomeArea"));
+			int idUsuario = jsonObject.getInt("idUsuario");
 			// Json ok
-			areaDAO = new AreaDAO();
-			String codigo = areaDAO.execAreaCadastrar(1, area.getIdPropriedade(), area.getNomeArea());
-			area.setReason(codigo);
-			if (area.getReason().equals("1")) {
-				area.setSuccess(true);
-				area.setDetail("sucesso");
-			}
-			retorno = new Json().convertObjectToJson(area);
+			String codigo = new AreaDAO().execAreaCadastrar(idUsuario, areaBean.getIdPropriedade(), areaBean.getNomeArea());
+			areaBean.setReason(codigo);
+			tratamentoRetorno(areaBean.getReason());
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
-			area.setSuccess(false);
-			area.setReason("-4");
-			area.setDetail("Formato JSON invalido ou campo faltando, por favor verificar");
-			retorno = new Json().convertObjectToJson(area);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			area.setSuccess(false);
-			area.setReason("-5");
-			area.setDetail("Inconsistência no SQL: " + e.getMessage());
-			retorno = new Json().convertObjectToJson(area);
+			areaBean.set_BeanAbstract(false, EnumErroArea._5_JSONException.toString(), "-5");
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			area.setSuccess(false);
-			area.setReason("-5");
-			area.setDetail("Erro ao localizar o Driver de conexão");
-			retorno = new Json().convertObjectToJson(area);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			area.setSuccess(false);
-			area.setReason("-6");
-			area.setDetail("Erro ao realizar Parse de retorno");
+			areaBean.set_BeanAbstract(false, EnumErroArea._7_ClassNotFoundException.toString(), "-7");
 
-		} catch(Exception e){
-			
-			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			areaBean.set_BeanAbstract(false, EnumErroArea._6_SQLException.toString(), "-5");
 		}
-		return retorno;
+		return areaBean;
 
 	}
 	
@@ -99,12 +82,17 @@ public class AreaRestController {
 	@RequestMapping(value = "/consultarAreas/{idPropriedade}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<AreaBean> consultarAreas(@PathVariable("idPropriedade") int idpropriedade) {
 		try {
-			areaDAO = new AreaDAO();
-			areaList = areaDAO.execRetornarAreasPropriedade(1, idpropriedade);
+			areaList = new AreaDAO().execRetornarAreasPropriedade(1, idpropriedade);
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			areaList = new ArrayList<AreaBean>();
+			areaList.add(new AreaBean(true, EnumErroArea._6_SQLException.toString(), "-6"));
+	
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			areaList = new ArrayList<AreaBean>();
+			areaList.add(new AreaBean(true, EnumErroArea._7_ClassNotFoundException.toString(), "-7"));
 		}
 		return areaList;
 	}
@@ -118,14 +106,19 @@ public class AreaRestController {
 	@RequestMapping(value = "/consultarAreaEspecifica/{idPropriedade}/{idArea}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public AreaBean consultarAreaEspecifica(@PathVariable("idPropriedade") int idpropriedade, @PathVariable("idArea") int idarea) {
 		try {
-			areaDAO = new AreaDAO();
-			area = areaDAO.execRetornarAreaPropriedadeEspecifica(1, idpropriedade, "", idarea);
-		} catch (SQLException e) {
-			e.printStackTrace();
+			
+			areaBean = new AreaDAO().execRetornarAreaPropriedadeEspecifica(1, idpropriedade, "", idarea);
+			tratamentoRetorno(retorno);
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			areaBean = new AreaBean(false, EnumErroArea._6_SQLException.toString(), "-5");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			areaBean = new AreaBean(false, EnumErroArea._6_SQLException.toString(), "-5");
 		}
-		return area;
+		return areaBean;
 	}
 	
 	
@@ -137,14 +130,15 @@ public class AreaRestController {
 	@RequestMapping(value = "/excluirArea", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String excluirAreaEspecifica(@RequestBody String jsonExcluir) {
 		System.out.println(jsonExcluir.toString());
-		area = new AreaBean();
+		areaBean = new AreaBean();
 		try {
 			areaDAO = new AreaDAO();
 			JSONObject jsonObject = new JSONObject(jsonExcluir);
 			System.out.println(jsonObject.toString());
-			area.setIdArea(jsonObject.getInt("idArea"));
-			area.setIdPropriedade(jsonObject.getInt("idPropriedade"));
-			retorno = areaDAO.execDeletarAreaPropriedadeEspecifica(1, area.getIdPropriedade(), "", area.getIdArea());
+			areaBean.setIdArea(jsonObject.getInt("idArea"));
+			areaBean.setIdPropriedade(jsonObject.getInt("idPropriedade"));
+			retorno = areaDAO.execDeletarAreaPropriedadeEspecifica(1, areaBean.getIdPropriedade(), "", areaBean.getIdArea());
+			tratamentoRetorno(retorno);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -166,14 +160,14 @@ public class AreaRestController {
 	@RequestMapping(value = "/excluirTodasAreas", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String excluirTodasAreas(@RequestBody String jsonExcluir) {
 		System.out.println(jsonExcluir.toString());
-		area = new AreaBean();
+		areaBean = new AreaBean();
 		try {
 			areaDAO = new AreaDAO();
 			JSONObject jsonObject = new JSONObject(jsonExcluir);
 			System.out.println(jsonObject.toString());
-			area.setIdPropriedade(jsonObject.getInt("idPropriedade"));
-			retorno = areaDAO.execDeletarAreaPropriedadeEspecifica(1, area.getIdPropriedade(), "", 0);
-
+			areaBean.setIdPropriedade(jsonObject.getInt("idPropriedade"));
+			retorno = areaDAO.execDeletarAreaPropriedadeEspecifica(1, areaBean.getIdPropriedade(), "", 0);
+			tratamentoRetorno(retorno);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		
@@ -183,6 +177,27 @@ public class AreaRestController {
 			e.printStackTrace();
 		}
 		return retorno;
+	}
+
+	@Override
+	public void tratamentoRetorno(String erro) {
+		// TODO Auto-generated method stub
+		switch (erro) {
+		case "-1":
+			areaBean.setSuccess(false);
+			areaBean.setDetail(EnumErroUsuario._1.toString());
+			break;
+		case "-2":
+			areaBean.setSuccess(false);
+			areaBean.setDetail(EnumErroUsuario._2.toString());
+			break;
+		case "-3":
+			areaBean.setSuccess(false);
+			areaBean.setDetail(EnumErroUsuario._3.toString());
+			break;
+		default:
+			break;
+		}		
 	}
 
 	

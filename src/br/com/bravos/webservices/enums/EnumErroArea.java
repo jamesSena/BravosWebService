@@ -1,18 +1,10 @@
-/**
- * 
- */
 package br.com.bravos.webservices.enums;
 
-/**
- * @author JamessonSena
- *
- */
-
-public enum EnumErroNotificacao {
+public enum EnumErroArea {
 	  _1 ("Falha (Genérico)"),
-	  _2 ("Propriedade não existe"),
-	  _3 ("Area não existe"),
-	  _4 ("Sensor não existe"),
+	  _2 ("Area já existe"),
+	  _3 ("Area não cadastrado"),
+	  _4 (""),
 	  _5_JSONException ("Formato JSON invalido ou campo faltando, por favor verificar"),
 	  _6_SQLException ("Inconsistência no SQL"),
 	  _7_ClassNotFoundException ("Erro ao localizar o Driver de conexão"),	
@@ -20,12 +12,10 @@ public enum EnumErroNotificacao {
 
 	private String name = "";
 	   
-	  //Construtor
-	 EnumErroNotificacao(String name){
-	    this.name = name;
-	  }
-	   
-	  public String toString(){
-	    return name;
-	  }
+	//Construtor
+	EnumErroArea(String name){this.name = name;  }
+	
+	//Retorno
+	public String toString(){ return name;}
+
 }

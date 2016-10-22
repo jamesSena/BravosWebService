@@ -3,6 +3,7 @@ package br.com.bravos.webservices.controller;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,13 +16,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import br.com.bravos.webservices.dao.NotificacaoDAO;
-import br.com.bravos.webservices.enums.EnumErroUsuario;
+import br.com.bravos.webservices.enums.EnumErroNotificacao;
 import br.com.bravos.webservices.model.NotificacaoBean;
 import br.com.bravos.webservices.model._BeanAbstract;
 
+/**
+ * @author JamessonSena
+ *
+ */
 @RestController
 public class NotificacaoRestController {
 
@@ -32,8 +35,12 @@ public class NotificacaoRestController {
 	
 	public NotificacaoRestController() {}
 	
+	/**
+	 * @param jsonCadastro -> idUsuario, idPropriedade, idArea, idNotificacao, idSensor, idStatus, dataInicio, dataFim
+	 * @return NotificacaoBean
+	 */
 	@RequestMapping(value = "/cadastrarNotificacao", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public NotificacaoBean cadastrarNotificacao(@RequestBody String jsonCadastro) throws JsonProcessingException {
+	public NotificacaoBean cadastrarNotificacao(@RequestBody String jsonCadastro) {
 		notificacaoBean = new NotificacaoBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
@@ -59,27 +66,30 @@ public class NotificacaoRestController {
 			e.printStackTrace();
 			notificacaoBean.setSuccess(false);
 			notificacaoBean.setReason("-5");
-			notificacaoBean.setDetail(EnumErroUsuario._5_JSONException.toString());
+			notificacaoBean.setDetail(EnumErroNotificacao._5_JSONException.toString());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			notificacaoBean.setSuccess(false);
 			notificacaoBean.setReason("-6");
-			notificacaoBean.setDetail(EnumErroUsuario._6_SQLException.toString());
+			notificacaoBean.setDetail(EnumErroNotificacao._6_SQLException.toString());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			notificacaoBean.setSuccess(false);
 			notificacaoBean.setReason("-7");
-			notificacaoBean.setDetail(EnumErroUsuario._7_ClassNotFoundException.toString());
+			notificacaoBean.setDetail(EnumErroNotificacao._7_ClassNotFoundException.toString());
 		} catch (ParseException e) {
 			e.printStackTrace();
 			notificacaoBean.setSuccess(false);
+			notificacaoBean.setDetail(EnumErroNotificacao._8_ParseException.toString());
 			notificacaoBean.setReason("-8");
-			notificacaoBean.setDetail("Erro no Formato da Data. [padrão: dd/MM/yyyy] ");
 		}
 		return notificacaoBean;
 
 	}
-
+	/**
+	 * @param jsonCadastro -> idUsuario, idPropriedade, idArea, idNotificacao, idSensor, idStatus, dataInicio, dataFim
+	 * @return NotificacaoBean
+	 */
 	@RequestMapping(value = "/consultarNotificacoes/{idUsuario}/{idPropriedade}", 
 			        method = RequestMethod.GET,
 			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -87,14 +97,28 @@ public class NotificacaoRestController {
 		try {
 			notificacaoDAO = new NotificacaoDAO();
 			notificacaoList = notificacaoDAO.execNotificacaoRetornarTodas(idUsuario, idPropriedade);
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			notificacaoBean.setDetail(EnumErroNotificacao._7_ClassNotFoundException.toString());
+			notificacaoBean.setReason("-7");
+			notificacaoBean.setSuccess(false);
+			List<NotificacaoBean> notificacaoList =  new ArrayList<NotificacaoBean>();
+			notificacaoList.add(notificacaoBean);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			retornoGenerico.setDetail(EnumErroNotificacao._6_SQLException.toString());
+			retornoGenerico.setReason("-6");
+			retornoGenerico.setSuccess(false);
+			List<NotificacaoBean> notificacaoList =  new ArrayList<NotificacaoBean>();
+			notificacaoList.add(notificacaoBean);
 		}
 		return notificacaoList;
 	}	
 
+	/**
+	 * @param jsonConsultarNotificao -> idUsuario, idPropriedade, dataInicio, dataFim
+	 * @return Lista de NotificacaoBean
+	 */
 	@RequestMapping(value = "/consultarNotificao", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<NotificacaoBean> consultarNotificao(@RequestBody String jsonConsultarNotificao) {
 		try {
@@ -103,7 +127,7 @@ public class NotificacaoRestController {
 			int idUsuario = jsonObject.getInt("idUsuario");
 			int idPropriedade = jsonObject.getInt("idPropriedade");
 			String strDataInicio = jsonObject.getString("dataInicio");
-			String strDataFim = jsonObject.getString("dataFim");
+			String strDataFim = jsonObject.getString("");
 			
 			// Json ok
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -113,19 +137,44 @@ public class NotificacaoRestController {
 
 			notificacaoList = new NotificacaoDAO().execNotificacaoRetornar(idUsuario, idPropriedade, dataInicio, dataFim);
 		
-
+		} catch (JSONException e) {
+			
+			e.printStackTrace();
+			notificacaoBean.setDetail(EnumErroNotificacao._5_JSONException.toString());
+			notificacaoBean.setReason("-5");
+			notificacaoBean.setSuccess(false);
+			List<NotificacaoBean> notificacaoList =  new ArrayList<NotificacaoBean>();
+			notificacaoList.add(notificacaoBean);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			notificacaoBean.setDetail(EnumErroNotificacao._7_ClassNotFoundException.toString());
+			notificacaoBean.setReason("-7");
+			notificacaoBean.setSuccess(false);	
+			List<NotificacaoBean> notificacaoList =  new ArrayList<NotificacaoBean>();
+			notificacaoList.add(notificacaoBean);
+
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} catch (JSONException e) {
+			notificacaoBean.setDetail(EnumErroNotificacao._6_SQLException.toString());
+			notificacaoBean.setReason("-6");
+			notificacaoBean.setSuccess(false);
+			List<NotificacaoBean> notificacaoList =  new ArrayList<NotificacaoBean>();
+			notificacaoList.add(notificacaoBean);
+		}catch (ParseException e) {
 			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+			notificacaoBean.setDetail(EnumErroNotificacao._8_ParseException.toString());
+			notificacaoBean.setReason("-8");
+			notificacaoBean.setSuccess(false);	
+			List<NotificacaoBean> notificacaoList =  new ArrayList<NotificacaoBean>();
+			notificacaoList.add(notificacaoBean);
+	}
 		return notificacaoList;
 	}
 	
+	/**
+	 * @param jsonDeletarNotificacao ->  idUsuario, idPropriedade, idNotificacao
+	 * @return _BeanAbstract -> success, detail, reason
+	 */
 	@RequestMapping(value = "/deletarNotificacaoEspecifica", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public _BeanAbstract deletarNotificacaoEspecifica(@RequestBody String jsonDeletarNotificacao){
 			try {
@@ -139,14 +188,27 @@ public class NotificacaoRestController {
 				retornoGenerico.setReason(retorno);
 			} catch (JSONException e) {
 				e.printStackTrace();
+				retornoGenerico.setDetail(EnumErroNotificacao._5_JSONException.toString());
+				retornoGenerico.setReason("-5");
+				retornoGenerico.setSuccess(false);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
+				retornoGenerico.setDetail(EnumErroNotificacao._7_ClassNotFoundException.toString());
+				retornoGenerico.setReason("-7");
+				retornoGenerico.setSuccess(false);
 			} catch (SQLException e) {
 				e.printStackTrace();
+				retornoGenerico.setDetail(EnumErroNotificacao._6_SQLException.toString());
+				retornoGenerico.setReason("-6");
+				retornoGenerico.setSuccess(false);
 			}
 		return retornoGenerico;
 	}
 	
+	/**
+	 * @param jsonDeletarNotificacao ->  idUsuario, idPropriedade
+	 * @return _BeanAbstract -> success, detail, reason
+	 */
 	@RequestMapping(value = "/deletarNotificacao", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public _BeanAbstract deletarNotificacao(@RequestBody String jsonDeletarNotificacao){
 			try {
@@ -159,10 +221,19 @@ public class NotificacaoRestController {
 				retornoGenerico.setReason(retorno);
 			} catch (JSONException e) {
 				e.printStackTrace();
+				retornoGenerico.setDetail(EnumErroNotificacao._5_JSONException.toString());
+				retornoGenerico.setReason("-5");
+				retornoGenerico.setSuccess(false);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
+				retornoGenerico.setDetail(EnumErroNotificacao._7_ClassNotFoundException.toString());
+				retornoGenerico.setReason("-7");
+				retornoGenerico.setSuccess(false);
 			} catch (SQLException e) {
 				e.printStackTrace();
+				retornoGenerico.setDetail(EnumErroNotificacao._6_SQLException.toString());
+				retornoGenerico.setReason("-6");
+				retornoGenerico.setSuccess(false);
 			}
 		return retornoGenerico;
 	}
