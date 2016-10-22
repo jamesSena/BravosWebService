@@ -4,6 +4,7 @@
 package br.com.bravos.webservices.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
@@ -15,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import br.com.bravos.webservices.dao.EstacaDAO;
+import br.com.bravos.webservices.enums.EnumErroArea;
+import br.com.bravos.webservices.enums.EnumErroEstaca;
 import br.com.bravos.webservices.model.EstacaBean;
 
 
@@ -27,18 +28,22 @@ import br.com.bravos.webservices.model.EstacaBean;
  *
  */
 @RestController
-public class EstacaRestController {
+public class EstacaRestController implements _TratamentoRetorno {
 	private EstacaBean estacaBean;
-	private EstacaDAO estacaDAO;
-	List<EstacaBean> estacaList;
+	private List<EstacaBean> estacaList;
 	private String retorno;
-	/**
-	 * 
-	 */
-	public EstacaRestController() {
+
+	
+	public EstacaRestController()  {
 	}
+	
+	/**
+	 * @method POST
+	 * @param JSON
+	 * @return EstacaBean
+	 */
 	@RequestMapping(value = "/cadastrarEstaca", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public EstacaBean cadastrarEstaca(@RequestBody String jsonCadastro) throws JsonProcessingException {
+	public EstacaBean cadastrarEstaca(@RequestBody String jsonCadastro){
 		estacaBean = new EstacaBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
@@ -50,8 +55,7 @@ public class EstacaRestController {
 			estacaBean.setLatitude(jsonObject.getString("latitude"));
 			estacaBean.setLongitude(jsonObject.getString("longitude"));
 			// Json ok
-			estacaDAO = new EstacaDAO();
-			retorno = estacaDAO.execEstacaCadastrar(idUsuario, estacaBean.getIdEstaca(), estacaBean.getIdArea(), estacaBean.getNome(),  estacaBean.getLatitude(), estacaBean.getLongitude());
+			retorno = new EstacaDAO().execEstacaCadastrar(idUsuario, estacaBean.getIdEstaca(), estacaBean.getIdArea(), estacaBean.getNome(),  estacaBean.getLatitude(), estacaBean.getLongitude());
 			estacaBean.setReason(retorno);
 			if (estacaBean.getReason().equals("1")) {
 				estacaBean.setSuccess(true);
@@ -59,26 +63,26 @@ public class EstacaRestController {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-			estacaBean.setSuccess(false);
-			estacaBean.setReason("-5");
-			estacaBean.setDetail("Formato JSON invalido ou campo faltando, por favor verificar");
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._5_JSONException.toString(), "-5");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			estacaBean.setSuccess(false);
-			estacaBean.setReason("-6");
-			estacaBean.setDetail("Inconsistência no SQL: " + e.getMessage());
+			e.printStackTrace();			
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._6_SQLException.toString(), "-6");
+
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			estacaBean.setSuccess(false);
-			estacaBean.setReason("-7");
-			estacaBean.setDetail("Erro ao localizar o Driver de conexão");
+			e.printStackTrace();		
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._7_ClassNotFoundException.toString(), "-7");
+
 		}
 		return estacaBean;
 
 	}
 
+
 	/**
-	 * @return JSON: lista de estaca
+	 * @method GET
+	 * @param idArea
+	 * @param idUsuario
+	 * @return JSON: lista de EstacaBean
 	 */
 	@RequestMapping(value = "/consultarEstacas/{idArea}/{idUsuario}", 
 			        method = RequestMethod.GET,
@@ -88,15 +92,23 @@ public class EstacaRestController {
 			estacaList = new EstacaDAO().execEstacaRetornarTodos(idArea, idUsuario);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			estacaList = new ArrayList<EstacaBean>();
+			estacaList.add(new EstacaBean(true, EnumErroArea._6_SQLException.toString(), "-6"));
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			estacaList = new ArrayList<EstacaBean>();
+			estacaList.add(new EstacaBean(true, EnumErroArea._7_ClassNotFoundException.toString(), "-7"));
 		}
 		return estacaList;
 	}	
 	
 	
+
 	/**
-	 * @return JSON: EstacaBean
+	 * @method GET
+	 * @param idEstaca
+	 * @param idArea
+	 * @return EstacaBean
 	 */
 	@RequestMapping(value = "/consultarEstaca/{idArea}/{idEstaca}", 
 			        method = RequestMethod.GET,
@@ -107,18 +119,24 @@ public class EstacaRestController {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._6_SQLException.toString().toString(), "-6");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._7_ClassNotFoundException.toString(), "-7");
 		}
 		return estacaBean;
 	}
+
 	/**
-	 * @return JSON: codigo
+	 * @method DELETE
+	 * @param JSON -> idEstaca, idArea
+	 * @return EstacaBean
 	 */
 	@RequestMapping(value = "/deletarEstaca", 
 			        method = RequestMethod.DELETE,
 			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String deletarSensor(@RequestBody String jsonDeletarEstaca) {
+	public EstacaBean deletarSensor(@RequestBody String jsonDeletarEstaca) {
+		estacaBean = new EstacaBean();
 		try {
 			
 			JSONObject jsonObject = new JSONObject(jsonDeletarEstaca);
@@ -126,22 +144,29 @@ public class EstacaRestController {
 			int idEstaca = jsonObject.getInt("idEstaca");
 			int idArea = jsonObject.getInt("idArea");
 			retorno = new EstacaDAO().execEstacaRemover(idEstaca, idArea);
-		} catch (SQLException e) {
+		} catch (SQLException e) {		
+			estacaBean.set_BeanAbstract(false, EnumErroArea._6_SQLException.toString(), "-6");
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			estacaBean.set_BeanAbstract(false, EnumErroArea._7_ClassNotFoundException.toString(), "-7");
 		} catch (JSONException e) {
 			e.printStackTrace();
+			estacaBean.set_BeanAbstract(false, EnumErroArea._5_JSONException.toString(), "-5");
 		}
-		return retorno;
+		return estacaBean;
 	}
+
 	/**
-	 * @return JSON: codigo
+	 * @method DELETE
+	 * @param JSON -> idUsuario, idArea, idEstaca
+	 * @return EstacaBean
 	 */
 	@RequestMapping(value = "/deletarTodasEstacas", 
 			        method = RequestMethod.DELETE,
 			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String deletarTodasEstacas(@RequestBody String jsonDeletarEstacas) {
+	public EstacaBean deletarTodasEstacas(@RequestBody String jsonDeletarEstacas) {
+		estacaBean = new EstacaBean();
 		try {
 			
 			JSONObject jsonObject = new JSONObject(jsonDeletarEstacas);
@@ -150,18 +175,27 @@ public class EstacaRestController {
 			int idArea = jsonObject.getInt("idArea");
 			int idEstaca = jsonObject.getInt("idEstaca");
 			retorno = new EstacaDAO().execEstacaRemoverTodos(idUsuario, idArea, idEstaca);
+			tratamentoRetorno(retorno);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			estacaBean.set_BeanAbstract(false, EnumErroArea._6_SQLException.toString(), "-6");
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			e.printStackTrace();	
+			estacaBean.set_BeanAbstract(false, EnumErroArea._7_ClassNotFoundException.toString(), "-7");
 		} catch (JSONException e) {
 			e.printStackTrace();
+			estacaBean.set_BeanAbstract(false, EnumErroArea._5_JSONException.toString(), "-5");
 		}
-		return retorno;
+		return estacaBean;
 	}
 
+	/**
+	 * @method PUT
+	 * @param JSON -> idUsuario, idSensor, idArea, nome, latitude, longitude
+	 * @return EstacaBean
+	 */
 	@RequestMapping(value = "/atualizarEstaca", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public EstacaBean atualizarEstaca(@RequestBody String jsonAtualizar) throws JsonProcessingException {
+	public EstacaBean atualizarEstaca(@RequestBody String jsonAtualizar) {
 		estacaBean = new EstacaBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonAtualizar);
@@ -174,28 +208,37 @@ public class EstacaRestController {
 			estacaBean.setLongitude(jsonObject.getString("longitude"));
 			// Json ok
 			String codigo = new EstacaDAO().execEstacaAtualzar(idUsuario, estacaBean.getIdEstaca(), estacaBean.getIdArea(), estacaBean.getNome(),  estacaBean.getLatitude(), estacaBean.getLongitude());
-			estacaBean.setReason(codigo);
-			if (estacaBean.getReason().equals("1")) {
-				estacaBean.setSuccess(true);
-				estacaBean.setDetail("sucesso");
-			}
+			tratamentoRetorno(codigo);
 		} catch (JSONException e) {
 			e.printStackTrace();
-			estacaBean.setSuccess(false);
-			estacaBean.setReason("-5");
-			estacaBean.setDetail("Formato JSON invalido ou campo faltando, por favor verificar");
+			estacaBean.set_BeanAbstract(false, EnumErroArea._5_JSONException.toString(), "-5");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			estacaBean.setSuccess(false);
-			estacaBean.setReason("-6");
-			estacaBean.setDetail("Inconsistência no SQL: " + e.getMessage());
+			estacaBean.set_BeanAbstract(false, EnumErroArea._6_SQLException.toString(), "-6");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			estacaBean.setSuccess(false);
-			estacaBean.setReason("-7");
-			estacaBean.setDetail("Erro ao localizar o Driver de conexão");
+			estacaBean.set_BeanAbstract(false, EnumErroArea._7_ClassNotFoundException.toString(), "-7");
 		}
 		return estacaBean;
 
+	}
+	@Override
+	public void tratamentoRetorno(String erro) {
+		switch (erro) {
+		case "-1":
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._1.toString(), "-1");
+			break;
+		case "-2":
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._2.toString(), "-2");
+			break;
+		case "-3":
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._3.toString(), "-3");
+			break;
+		case "-4":
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._4.toString(), "-4");
+			break;
+		default:
+			break;
+		}		
 	}
 }

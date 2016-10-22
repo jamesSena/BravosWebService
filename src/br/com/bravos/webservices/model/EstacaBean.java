@@ -16,6 +16,20 @@ public class EstacaBean extends _BeanAbstract {
 	private Date dataCadastro;
 	
 	
+	
+	
+	
+	public EstacaBean() {super();}
+	
+	/**
+	 * @param success
+	 * @param detail
+	 * @param reason
+	 */
+	public EstacaBean(boolean success, String detail, String reason) {
+		super(success, detail, reason);
+		}
+	
 	/**
 	 * @return the dataCadastro
 	 */
