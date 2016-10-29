@@ -16,6 +16,47 @@ public class EstacaBean extends _BeanAbstract {
 	private Date dataCadastro;
 	
 	
+	
+	
+	
+	
+	/**
+	 * 
+	 */
+	public EstacaBean() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	/**
+	 * @param success
+	 * @param detail
+	 * @param reason
+	 */
+	public EstacaBean(boolean success, String detail, String reason) {
+		super(success, detail, reason);
+		// TODO Auto-generated constructor stub
+	}
+	/**
+	 * @param success
+	 * @param detail
+	 * @param reason
+	 * @param idEstaca
+	 * @param idArea
+	 * @param nome
+	 * @param latitude
+	 * @param longitude
+	 * @param dataCadastro
+	 */
+	public EstacaBean(boolean success, String detail, String reason, int idEstaca, int idArea, String nome,
+			String latitude, String longitude, Date dataCadastro) {
+		super(success, detail, reason);
+		this.idEstaca = idEstaca;
+		this.idArea = idArea;
+		this.nome = nome;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.dataCadastro = dataCadastro;
+	}
 	/**
 	 * @return the dataCadastro
 	 */

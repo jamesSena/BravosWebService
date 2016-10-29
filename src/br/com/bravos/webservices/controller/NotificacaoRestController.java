@@ -18,20 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.bravos.webservices.dao.NotificacaoDAO;
 import br.com.bravos.webservices.enums.EnumErroNotificacao;
+import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.model.NotificacaoBean;
-import br.com.bravos.webservices.model._BeanAbstract;
 
 /**
  * @author JamessonSena
  *
  */
 @RestController
-public class NotificacaoRestController {
+public class NotificacaoRestController implements TratamentoRetorno {
 
 	private NotificacaoBean notificacaoBean;
 	private NotificacaoDAO notificacaoDAO;
 	private List<NotificacaoBean> notificacaoList;
-	private _BeanAbstract retornoGenerico;
 	
 	public NotificacaoRestController() {}
 	
@@ -95,8 +94,8 @@ public class NotificacaoRestController {
 			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<NotificacaoBean> consultarNotificacoes(@PathVariable("idUsuario")int idUsuario, @PathVariable("idPropriedade")int idPropriedade) {
 		try {
-			notificacaoDAO = new NotificacaoDAO();
-			notificacaoList = notificacaoDAO.execNotificacaoRetornarTodas(idUsuario, idPropriedade);
+
+			notificacaoList = new NotificacaoDAO().execNotificacaoRetornarTodas(idUsuario, idPropriedade);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			notificacaoBean.setDetail(EnumErroNotificacao._7_ClassNotFoundException.toString());
@@ -106,9 +105,9 @@ public class NotificacaoRestController {
 			notificacaoList.add(notificacaoBean);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			retornoGenerico.setDetail(EnumErroNotificacao._6_SQLException.toString());
-			retornoGenerico.setReason("-6");
-			retornoGenerico.setSuccess(false);
+			notificacaoBean.setDetail(EnumErroNotificacao._6_SQLException.toString());
+			notificacaoBean.setReason("-6");
+			notificacaoBean.setSuccess(false);
 			List<NotificacaoBean> notificacaoList =  new ArrayList<NotificacaoBean>();
 			notificacaoList.add(notificacaoBean);
 		}
@@ -176,7 +175,7 @@ public class NotificacaoRestController {
 	 * @return _BeanAbstract -> success, detail, reason
 	 */
 	@RequestMapping(value = "/deletarNotificacaoEspecifica", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public _BeanAbstract deletarNotificacaoEspecifica(@RequestBody String jsonDeletarNotificacao){
+	public NotificacaoBean deletarNotificacaoEspecifica(@RequestBody String jsonDeletarNotificacao){
 			try {
 				JSONObject jsonObject = new JSONObject(jsonDeletarNotificacao);
 				System.out.println(jsonObject.toString());
@@ -184,25 +183,25 @@ public class NotificacaoRestController {
 				int idPropriedade = jsonObject.getInt("idPropriedade");
 				int idNotificacao = jsonObject.getInt("idNotificacao");
 				String retorno = new NotificacaoDAO().execDeletarNotificacao(idUsuario, idPropriedade, idNotificacao);
-				retornoGenerico = new _BeanAbstract();
-				retornoGenerico.setReason(retorno);
+				notificacaoBean.set_BeanAbstract(true, "sucesso", retorno);
+				tratamentoRetorno(notificacaoBean.getReason());
 			} catch (JSONException e) {
 				e.printStackTrace();
-				retornoGenerico.setDetail(EnumErroNotificacao._5_JSONException.toString());
-				retornoGenerico.setReason("-5");
-				retornoGenerico.setSuccess(false);
+				notificacaoBean.setDetail(EnumErroNotificacao._5_JSONException.toString());
+				notificacaoBean.setReason("-5");
+				notificacaoBean.setSuccess(false);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
-				retornoGenerico.setDetail(EnumErroNotificacao._7_ClassNotFoundException.toString());
-				retornoGenerico.setReason("-7");
-				retornoGenerico.setSuccess(false);
+				notificacaoBean.setDetail(EnumErroNotificacao._7_ClassNotFoundException.toString());
+				notificacaoBean.setReason("-7");
+				notificacaoBean.setSuccess(false);
 			} catch (SQLException e) {
 				e.printStackTrace();
-				retornoGenerico.setDetail(EnumErroNotificacao._6_SQLException.toString());
-				retornoGenerico.setReason("-6");
-				retornoGenerico.setSuccess(false);
+				notificacaoBean.setDetail(EnumErroNotificacao._6_SQLException.toString());
+				notificacaoBean.setReason("-6");
+				notificacaoBean.setSuccess(false);
 			}
-		return retornoGenerico;
+		return notificacaoBean;
 	}
 	
 	/**
@@ -210,32 +209,56 @@ public class NotificacaoRestController {
 	 * @return _BeanAbstract -> success, detail, reason
 	 */
 	@RequestMapping(value = "/deletarNotificacao", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public _BeanAbstract deletarNotificacao(@RequestBody String jsonDeletarNotificacao){
+	public NotificacaoBean deletarNotificacao(@RequestBody String jsonDeletarNotificacao){
 			try {
 				JSONObject jsonObject = new JSONObject(jsonDeletarNotificacao);
 				System.out.println(jsonObject.toString());
 				int idUsuario = jsonObject.getInt("idUsuario");
 				int idPropriedade = jsonObject.getInt("idPropriedade");
 				String retorno = new NotificacaoDAO().execDeletarNotificacao(idUsuario, idPropriedade);
-				retornoGenerico = new _BeanAbstract();
-				retornoGenerico.setReason(retorno);
+				notificacaoBean.set_BeanAbstract(true, "sucesso", retorno);
+				tratamentoRetorno(notificacaoBean.getReason());
 			} catch (JSONException e) {
 				e.printStackTrace();
-				retornoGenerico.setDetail(EnumErroNotificacao._5_JSONException.toString());
-				retornoGenerico.setReason("-5");
-				retornoGenerico.setSuccess(false);
+				notificacaoBean.setDetail(EnumErroNotificacao._5_JSONException.toString());
+				notificacaoBean.setReason("-5");
+				notificacaoBean.setSuccess(false);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
-				retornoGenerico.setDetail(EnumErroNotificacao._7_ClassNotFoundException.toString());
-				retornoGenerico.setReason("-7");
-				retornoGenerico.setSuccess(false);
+				notificacaoBean.setDetail(EnumErroNotificacao._7_ClassNotFoundException.toString());
+				notificacaoBean.setReason("-7");
+				notificacaoBean.setSuccess(false);
 			} catch (SQLException e) {
 				e.printStackTrace();
-				retornoGenerico.setDetail(EnumErroNotificacao._6_SQLException.toString());
-				retornoGenerico.setReason("-6");
-				retornoGenerico.setSuccess(false);
+				notificacaoBean.setDetail(EnumErroNotificacao._6_SQLException.toString());
+				notificacaoBean.setReason("-6");
+				notificacaoBean.setSuccess(false);
 			}
-		return retornoGenerico;
+		return notificacaoBean;
+	}
+
+	@Override
+	public void tratamentoRetorno(String erro) {
+		switch (erro) {
+		case "-1":
+			notificacaoBean.setSuccess(false);
+			notificacaoBean.setDetail(EnumErroUsuario._1.toString());
+			break;
+		case "-2":
+			notificacaoBean.setSuccess(false);
+			notificacaoBean.setDetail(EnumErroUsuario._2.toString());
+			break;
+		case "-3":
+			notificacaoBean.setSuccess(false);
+			notificacaoBean.setDetail(EnumErroUsuario._3.toString());
+			break;
+		case "-4":
+			notificacaoBean.setSuccess(false);
+			notificacaoBean.setDetail(EnumErroUsuario._4.toString());
+			break;
+		default:
+			break;
+		}		
 	}
 
 	

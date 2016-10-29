@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import br.com.bravos.webservices.dao.UsuarioDAO;
 import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.model.UsuarioBean;
@@ -23,6 +24,9 @@ import br.com.bravos.webservices.model.UsuarioBean;
  */
 @RestController
 public class UsuarioRestController implements TratamentoRetorno{
+	
+	public static final String SECRET = "todolistrenan";
+	public static final String ISSUER = "http://www.sp.senai.br";
 	
 	private UsuarioBean usuario;
 	private UsuarioDAO usuarioDAO;
@@ -42,7 +46,7 @@ public class UsuarioRestController implements TratamentoRetorno{
 	 * @return JSON: UsuarioBean
 	 * @throws JsonProcessingException
 	 */
-	@RequestMapping(value = "/cadastrarUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/cadastrarUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes= MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public UsuarioBean cadastrarUsuario(@RequestBody String jsonCadastro) throws JsonProcessingException {
 		usuario = new UsuarioBean();
 		try {
@@ -108,10 +112,12 @@ public class UsuarioRestController implements TratamentoRetorno{
 	@RequestMapping(value = "/consultarUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public UsuarioBean consultarUsuario(@RequestBody String jsonConsultarUsuario) {
 		try {
+			System.out.println(jsonConsultarUsuario);
 			JSONObject jsonObject = new JSONObject(jsonConsultarUsuario);
 			System.out.println(jsonObject.toString());
-			String login = jsonObject.getString("email");
+			String login = jsonObject.getString("login");
 			String senha = jsonObject.getString("senha");
+			System.out.println(usuario);
 			usuarioDAO = new UsuarioDAO();
 			usuario = usuarioDAO.execUsuarioRetornarEspecifico(login, senha);
 			tratamentoRetorno(usuario.getReason());

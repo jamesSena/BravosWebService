@@ -16,7 +16,6 @@ import br.com.bravos.webservices.enums.EnumErroArea;
 import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.model.AreaBean;
 import br.com.bravos.webservices.model._BeanAbstract;
-import br.com.bravos.webservices.utils.Json;
 
 /**
  * @author WeltonBatista
