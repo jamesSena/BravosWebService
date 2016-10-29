@@ -114,15 +114,9 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			System.out.println(jsonObject.toString());
 			String login = jsonObject.getString("login");
 			String senha = jsonObject.getString("senha");
-<<<<<<< HEAD
 			System.out.println(usuario);
-			usuarioDAO = new UsuarioDAO();
-			usuario = usuarioDAO.execUsuarioRetornarEspecifico(login, senha);
-=======
 			usuario = new UsuarioDAO().execUsuarioRetornarEspecifico(login, senha);
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
 			tratamentoRetorno(usuario.getReason());
-
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			usuario = new UsuarioBean(false, "-7", EnumErroUsuario._7_ClassNotFoundException.toString());

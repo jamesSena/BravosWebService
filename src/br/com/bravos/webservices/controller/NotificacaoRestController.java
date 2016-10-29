@@ -26,7 +26,7 @@ import br.com.bravos.webservices.model.NotificacaoBean;
  *
  */
 @RestController
-public class NotificacaoRestController implements TratamentoRetorno {
+public class NotificacaoRestController implements _TratamentoRetorno {
 
 	private NotificacaoBean notificacaoBean;
 	private NotificacaoDAO notificacaoDAO;

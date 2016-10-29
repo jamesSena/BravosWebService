@@ -14,11 +14,6 @@ import br.com.bravos.webservices.dao.AreaDAO;
 import br.com.bravos.webservices.enums.EnumErroArea;
 import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.model.AreaBean;
-<<<<<<< HEAD
-import br.com.bravos.webservices.model._BeanAbstract;
-=======
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
-
 /**
  * @author WeltonBatista
  *

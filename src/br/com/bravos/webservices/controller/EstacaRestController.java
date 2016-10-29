@@ -17,15 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.bravos.webservices.dao.EstacaDAO;
-<<<<<<< HEAD
+
 import br.com.bravos.webservices.enums.EnumErroEstaca;
-import br.com.bravos.webservices.enums.EnumErroUsuario;
-=======
-import br.com.bravos.webservices.enums.EnumErroArea;
-import br.com.bravos.webservices.enums.EnumErroEstaca;
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
 import br.com.bravos.webservices.model.EstacaBean;
-import br.com.bravos.webservices.model.UsuarioBean;
 
 
 
@@ -34,11 +28,6 @@ import br.com.bravos.webservices.model.UsuarioBean;
  *
  */
 @RestController
-<<<<<<< HEAD
-public class EstacaRestController implements TratamentoRetorno {
-	private EstacaBean estacaBean;
-	List<EstacaBean> estacaList;
-=======
 public class EstacaRestController implements _TratamentoRetorno {
 	private EstacaBean estacaBean;
 	private List<EstacaBean> estacaList;
@@ -48,7 +37,6 @@ public class EstacaRestController implements _TratamentoRetorno {
 	public EstacaRestController()  {
 	}
 	
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
 	/**
 	 * @method POST
 	 * @param JSON
@@ -67,17 +55,12 @@ public class EstacaRestController implements _TratamentoRetorno {
 			estacaBean.setLatitude(jsonObject.getString("latitude"));
 			estacaBean.setLongitude(jsonObject.getString("longitude"));
 			// Json ok
-<<<<<<< HEAD
+
 			estacaBean.setReason(new EstacaDAO().execEstacaCadastrar(idUsuario, estacaBean.getIdEstaca(), estacaBean.getIdArea(), estacaBean.getNome(),  estacaBean.getLatitude(), estacaBean.getLongitude()));
 			tratamentoRetorno(estacaBean.getReason());
-=======
+
 			retorno = new EstacaDAO().execEstacaCadastrar(idUsuario, estacaBean.getIdEstaca(), estacaBean.getIdArea(), estacaBean.getNome(),  estacaBean.getLatitude(), estacaBean.getLongitude());
 			estacaBean.setReason(retorno);
-			if (estacaBean.getReason().equals("1")) {
-				estacaBean.setSuccess(true);
-				estacaBean.setDetail("sucesso");
-			}
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
 		} catch (JSONException e) {
 			e.printStackTrace();
 			estacaBean.set_BeanAbstract(false, EnumErroEstaca._5_JSONException.toString(), "-5");
@@ -109,21 +92,12 @@ public class EstacaRestController implements _TratamentoRetorno {
 			estacaList = new EstacaDAO().execEstacaRetornarTodos(idArea, idUsuario);
 		} catch (SQLException e) {
 			e.printStackTrace();
-<<<<<<< HEAD
 			estacaList = new ArrayList<EstacaBean>(); 
-			estacaList.add(new EstacaBean(false, EnumErroUsuario._6_SQLException.toString(), "-6"));
+			estacaList.add(new EstacaBean(false, EnumErroEstaca._6_SQLException.toString(), "-6"));
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			estacaList = new ArrayList<EstacaBean>(); 
-			estacaList.add(new EstacaBean(false, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7"));
-=======
-			estacaList = new ArrayList<EstacaBean>();
-			estacaList.add(new EstacaBean(true, EnumErroArea._6_SQLException.toString(), "-6"));
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			estacaList = new ArrayList<EstacaBean>();
-			estacaList.add(new EstacaBean(true, EnumErroArea._7_ClassNotFoundException.toString(), "-7"));
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
+			estacaList.add(new EstacaBean(false, EnumErroEstaca._7_ClassNotFoundException.toString(), "-7"));
 		}
 		return estacaList;
 	}	
@@ -146,19 +120,11 @@ public class EstacaRestController implements _TratamentoRetorno {
 			tratamentoRetorno(estacaBean.getReason());
 		} catch (SQLException e) {
 			e.printStackTrace();
-<<<<<<< HEAD
 			estacaBean.setReason("-6");	
 			estacaBean.setDetail(EnumErroEstaca._6_SQLException.toString());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			estacaBean.setReason("-7");	
-			estacaBean.setDetail(EnumErroEstaca._7_ClassNotFoundException.toString());
-=======
-			estacaBean.set_BeanAbstract(false, EnumErroEstaca._6_SQLException.toString().toString(), "-6");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			estacaBean.set_BeanAbstract(false, EnumErroEstaca._7_ClassNotFoundException.toString(), "-7");
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._7_ClassNotFoundException.toString().toString(), "-7");
 		}
 		return estacaBean;
 	}
@@ -179,32 +145,16 @@ public class EstacaRestController implements _TratamentoRetorno {
 			System.out.println(jsonObject.toString());
 			int idEstaca = jsonObject.getInt("idEstaca");
 			int idArea = jsonObject.getInt("idArea");
-<<<<<<< HEAD
 			estacaBean.setReason(new EstacaDAO().execEstacaRemover(idEstaca, idArea));
-		} catch (SQLException e) {
-=======
-			retorno = new EstacaDAO().execEstacaRemover(idEstaca, idArea);
 		} catch (SQLException e) {		
-			estacaBean.set_BeanAbstract(false, EnumErroArea._6_SQLException.toString(), "-6");
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._6_SQLException.toString(), "-6");
 			e.printStackTrace();
-			estacaBean.setDetail(EnumErroEstaca._6_SQLException.toString());
-			estacaBean.setReason("-6");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-<<<<<<< HEAD
-			estacaBean.setDetail(EnumErroEstaca._7_ClassNotFoundException.toString());
-			estacaBean.setReason("-7");
+		} catch (ClassNotFoundException e1) {
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._7_ClassNotFoundException.toString(), "-7");
+			e1.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
-			estacaBean.setDetail(EnumErroEstaca._5_JSONException.toString());
-			estacaBean.setReason("-5");
-=======
-			estacaBean.set_BeanAbstract(false, EnumErroArea._7_ClassNotFoundException.toString(), "-7");
-		} catch (JSONException e) {
-			e.printStackTrace();
-			estacaBean.set_BeanAbstract(false, EnumErroArea._5_JSONException.toString(), "-5");
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._5_JSONException.toString(), "-5");
 		}
 		return estacaBean;
 	}
@@ -219,45 +169,24 @@ public class EstacaRestController implements _TratamentoRetorno {
 			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public EstacaBean deletarTodasEstacas(@RequestBody String jsonDeletarEstacas) {
 		estacaBean = new EstacaBean();
-<<<<<<< HEAD
+
 		try {			
-=======
-		try {
-			
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
 			JSONObject jsonObject = new JSONObject(jsonDeletarEstacas);
 			System.out.println(jsonObject.toString());
 			int idUsuario = jsonObject.getInt("idUsuario");
 			int idArea = jsonObject.getInt("idArea");
 			int idEstaca = jsonObject.getInt("idEstaca");
-<<<<<<< HEAD
 			estacaBean.setReason(new EstacaDAO().execEstacaRemoverTodos(idUsuario, idArea, idEstaca));
 			tratamentoRetorno(estacaBean.getReason());
 		} catch (SQLException e) {
 			e.printStackTrace();
-			estacaBean.setReason("-6");
-			estacaBean.setDetail(EnumErroEstaca._6_SQLException.toString());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			estacaBean.setReason("-7");
-			estacaBean.setDetail(EnumErroEstaca._7_ClassNotFoundException.toString());
-		} catch (JSONException e) {
-			e.printStackTrace();
-			estacaBean.setReason("-5");
-			estacaBean.setDetail(EnumErroEstaca._5_JSONException.toString());
-=======
-			retorno = new EstacaDAO().execEstacaRemoverTodos(idUsuario, idArea, idEstaca);
-			tratamentoRetorno(retorno);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			estacaBean.set_BeanAbstract(false, EnumErroArea._6_SQLException.toString(), "-6");
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._6_SQLException.toString(), "-6");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();	
-			estacaBean.set_BeanAbstract(false, EnumErroArea._7_ClassNotFoundException.toString(), "-7");
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._7_ClassNotFoundException.toString(), "-7");
 		} catch (JSONException e) {
 			e.printStackTrace();
-			estacaBean.set_BeanAbstract(false, EnumErroArea._5_JSONException.toString(), "-5");
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._5_JSONException.toString(), "-5");
 		}
 		return estacaBean;
 	}
@@ -280,46 +209,24 @@ public class EstacaRestController implements _TratamentoRetorno {
 			estacaBean.setLatitude(jsonObject.getString("latitude"));
 			estacaBean.setLongitude(jsonObject.getString("longitude"));
 			// Json ok
-<<<<<<< HEAD
 			estacaBean.setReason(new EstacaDAO().execEstacaAtualzar(idUsuario, estacaBean.getIdEstaca(), estacaBean.getIdArea(), estacaBean.getNome(),  estacaBean.getLatitude(), estacaBean.getLongitude()));
-		
-=======
-			String codigo = new EstacaDAO().execEstacaAtualzar(idUsuario, estacaBean.getIdEstaca(), estacaBean.getIdArea(), estacaBean.getNome(),  estacaBean.getLatitude(), estacaBean.getLongitude());
-			tratamentoRetorno(codigo);
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
+			tratamentoRetorno(estacaBean.getReason());
 		} catch (JSONException e) {
 			e.printStackTrace();
-			estacaBean.set_BeanAbstract(false, EnumErroArea._5_JSONException.toString(), "-5");
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._5_JSONException.toString(), "-5");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			estacaBean.set_BeanAbstract(false, EnumErroArea._6_SQLException.toString(), "-6");
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._6_SQLException.toString(), "-6");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			estacaBean.set_BeanAbstract(false, EnumErroArea._7_ClassNotFoundException.toString(), "-7");
+			estacaBean.set_BeanAbstract(false, EnumErroEstaca._7_ClassNotFoundException.toString(), "-7");
 		}
 		return estacaBean;
 
 	}
-	@Override
 	public void tratamentoRetorno(String erro) {
 		switch (erro) {
 		case "-1":
-<<<<<<< HEAD
-			estacaBean.setSuccess(false);
-			estacaBean.setDetail(EnumErroUsuario._1.toString());
-			break;
-		case "-2":
-			estacaBean.setSuccess(false);
-			estacaBean.setDetail(EnumErroUsuario._2.toString());
-			break;
-		case "-3":
-			estacaBean.setSuccess(false);
-			estacaBean.setDetail(EnumErroUsuario._3.toString());
-			break;
-		case "-4":
-			estacaBean.setSuccess(false);
-			estacaBean.setDetail(EnumErroUsuario._4.toString());
-=======
 			estacaBean.set_BeanAbstract(false, EnumErroEstaca._1.toString(), "-1");
 			break;
 		case "-2":
@@ -330,7 +237,6 @@ public class EstacaRestController implements _TratamentoRetorno {
 			break;
 		case "-4":
 			estacaBean.set_BeanAbstract(false, EnumErroEstaca._4.toString(), "-4");
->>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
 			break;
 		default:
 			break;
