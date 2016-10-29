@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import br.com.bravos.webservices.dao.PropriedadeDAO;
+import br.com.bravos.webservices.enums.EnumErroPropriedade;
 import br.com.bravos.webservices.model.PropriedadeBean;
 
 /**
@@ -24,17 +25,22 @@ import br.com.bravos.webservices.model.PropriedadeBean;
  *
  */
 @RestController
-public class PropriedadeRestController {
+public class PropriedadeRestController implements _TratamentoRetorno {
+	
 	private PropriedadeBean proprieade;
 	private PropriedadeDAO propriedadeDAO;
 	/**
 	 * 
 	 */
-	public PropriedadeRestController() {
-	}
+	public PropriedadeRestController() {}
 
+	
+	/**
+	 * @param jsonCadastro
+	 * @return PropriedadeBean
+	 */
 	@RequestMapping(value = "/cadastrarPropriedade", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public PropriedadeBean cadastrarPropriedade(@RequestBody String jsonCadastro) throws JsonProcessingException {
+	public PropriedadeBean cadastrarPropriedade(@RequestBody String jsonCadastro){
 		proprieade = new PropriedadeBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
@@ -45,28 +51,23 @@ public class PropriedadeRestController {
 			proprieade.setLatitude(jsonObject.getString("latitude"));
 			proprieade.setLongitude(jsonObject.getString("longitude"));
 			// Json ok
-			propriedadeDAO = new PropriedadeDAO();
-			String codigo = propriedadeDAO.execPropriedadeCadastrar(proprieade.getIdUsuario(), proprieade.getNomePropriedade(), proprieade.getResponsavel(), proprieade.getEmailResponsavel(), proprieade.getLatitude(), proprieade.getLongitude());
-			proprieade.setReason(codigo);
-			if (proprieade.getReason().equals("1")) {
-				proprieade.setSuccess(true);
-				proprieade.setDetail("sucesso");
-			}
+			proprieade.setReason(new PropriedadeDAO().execPropriedadeCadastrar(proprieade.getIdUsuario(), proprieade.getNomePropriedade(), proprieade.getResponsavel(), proprieade.getEmailResponsavel(), proprieade.getLatitude(), proprieade.getLongitude()));
+			tratamentoRetorno(proprieade.getReason());
 		} catch (JSONException e) {
 			e.printStackTrace();
 			proprieade.setSuccess(false);
 			proprieade.setReason("-5");
-			proprieade.setDetail("Formato JSON invalido ou campo faltando, por favor verificar");
+			proprieade.setDetail(EnumErroPropriedade._5_JSONException.toString());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			proprieade.setSuccess(false);
 			proprieade.setReason("-6");
-			proprieade.setDetail("Inconsistência no SQL: " + e.getMessage());
+			proprieade.setDetail(EnumErroPropriedade._6_SQLException.toString());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			proprieade.setSuccess(false);
 			proprieade.setReason("-7");
-			proprieade.setDetail("Erro ao localizar o Driver de conexão");
+			proprieade.setDetail(EnumErroPropriedade._7_ClassNotFoundException.toString());
 		}
 		return proprieade;
 
@@ -76,19 +77,18 @@ public class PropriedadeRestController {
 	public PropriedadeBean consultarPropriedade(@PathVariable("idPropriedade") int idPropriedade, @PathVariable("idUsuario") int idUsuario) throws JsonProcessingException {
 		proprieade = new PropriedadeBean();
 		try {
-			propriedadeDAO = new PropriedadeDAO();
-			proprieade = propriedadeDAO.execPropriedadeRetornar(idPropriedade, idUsuario);
+			proprieade = new PropriedadeDAO().execPropriedadeRetornar(idPropriedade, idUsuario);
 	
 		} catch (SQLException e) {
 			e.printStackTrace();
 			proprieade.setSuccess(false);
 			proprieade.setReason("-6");
-			proprieade.setDetail("Inconsistência no SQL: " + e.getMessage());
+			proprieade.setDetail(EnumErroPropriedade._6_SQLException.toString());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			proprieade.setSuccess(false);
 			proprieade.setReason("-7");
-			proprieade.setDetail("Erro ao localizar o Driver de conexão");
+			proprieade.setDetail(EnumErroPropriedade._7_ClassNotFoundException.toString());
 		}
 		return proprieade;
 
@@ -103,14 +103,14 @@ public class PropriedadeRestController {
 			System.out.println(jsonObject.toString());
 			int idUsuario = jsonObject.getInt("idUsuario");
 			int idPropriedade = jsonObject.getInt("idPropriedade");
-			propriedadeDAO = new PropriedadeDAO();
-			proprieade = propriedadeDAO.execPropriedadeDeletar(idUsuario, idPropriedade);
+
+			proprieade = new PropriedadeDAO().execPropriedadeDeletar(idUsuario, idPropriedade);
 	
 		} catch (SQLException e) {
 			e.printStackTrace();
 			proprieade.setSuccess(false);
 			proprieade.setReason("-6");
-			proprieade.setDetail("Inconsistência no SQL: " + e.getMessage());
+			proprieade.setDetail(EnumErroPropriedade._7_ClassNotFoundException.toString());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			proprieade.setSuccess(false);
@@ -164,6 +164,13 @@ public class PropriedadeRestController {
 		}
 		return proprieade;
 
+	}
+
+
+	@Override
+	public void tratamentoRetorno(String erro) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
