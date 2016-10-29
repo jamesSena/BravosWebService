@@ -12,63 +12,59 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import br.com.bravos.webservices.dao.SensorDAO;
+import br.com.bravos.webservices.enums.EnumErroSensor;
+import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.model.SensorBean;
 /**
  * @author JamessonSena
  *
  */
 @RestController
-public class SensorRestController {
+public class SensorRestController implements _TratamentoRetorno{
 	
 	
-	private SensorBean sensor;
+	private SensorBean sensorBean;
 	private SensorDAO sensorDAO;
-	List<SensorBean> sensorList;
-	private String retorno;
+	private List<SensorBean> sensorList;
 	public SensorRestController() {
+		sensorBean = new SensorBean();
 	}
 	
 	
 	@RequestMapping(value = "/cadastrarSensor", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public SensorBean cadastrarSensor(@RequestBody String jsonCadastro) throws JsonProcessingException {
-		sensor = new SensorBean();
+	public SensorBean cadastrarSensor(@RequestBody String jsonCadastro){
 		try {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
 			System.out.println(jsonObject.toString());
-			sensor.setIdUsuario(jsonObject.getInt("idUsuario"));
-			sensor.setIdSensor(jsonObject.getInt("idSensor"));
-			sensor.setIdCodArea(jsonObject.getInt("idArea"));
-			sensor.setNome(jsonObject.getString("nome"));
-			sensor.setLatitude(jsonObject.getString("latitude"));
-			sensor.setLongitude(jsonObject.getString("longitude"));
+			sensorBean.setIdUsuario(jsonObject.getInt("idUsuario"));
+			sensorBean.setIdSensor(jsonObject.getInt("idSensor"));
+			sensorBean.setIdCodArea(jsonObject.getInt("idArea"));
+			sensorBean.setNome(jsonObject.getString("nome"));
+			sensorBean.setLatitude(jsonObject.getString("latitude"));
+			sensorBean.setLongitude(jsonObject.getString("longitude"));
 			// Json ok
-			sensorDAO = new SensorDAO();
-			String codigo = sensorDAO.execSensorCadastrar(sensor.getIdUsuario(), sensor.getIdSensor(), sensor.getIdCodArea(), sensor.getNome(),  sensor.getLatitude(), sensor.getLongitude());
-			sensor.setReason(codigo);
-			if (sensor.getReason().equals("1")) {
-				sensor.setSuccess(true);
-				sensor.setDetail("sucesso");
-			}
+			String codigo = new SensorDAO().execSensorCadastrar(sensorBean.getIdUsuario(), sensorBean.getIdSensor(), sensorBean.getIdCodArea(), sensorBean.getNome(),  sensorBean.getLatitude(), sensorBean.getLongitude());
+			sensorBean.setReason(codigo);
+			tratamentoRetorno(sensorBean.getReason());
+
 		} catch (JSONException e) {
 			e.printStackTrace();
-			sensor.setSuccess(false);
-			sensor.setReason("-5");
-			sensor.setDetail("Formato JSON invalido ou campo faltando, por favor verificar");
+			sensorBean.setSuccess(false);
+			sensorBean.setReason("-5");
+			sensorBean.setDetail("Formato JSON invalido ou campo faltando, por favor verificar");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			sensor.setSuccess(false);
-			sensor.setReason("-6");
-			sensor.setDetail("Inconsistência no SQL: " + e.getMessage());
+			sensorBean.setSuccess(false);
+			sensorBean.setReason("-6");
+			sensorBean.setDetail("Inconsistência no SQL: " + e.getMessage());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			sensor.setSuccess(false);
-			sensor.setReason("-7");
-			sensor.setDetail("Erro ao localizar o Driver de conexão");
+			sensorBean.setSuccess(false);
+			sensorBean.setReason("-7");
+			sensorBean.setDetail("Erro ao localizar o Driver de conexão");
 		}
-		return sensor;
+		return sensorBean;
 
 	}
 
@@ -80,8 +76,7 @@ public class SensorRestController {
 			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<SensorBean> consultarSensores(@PathVariable("idArea")int idArea) {
 		try {
-			sensorDAO = new SensorDAO();
-			sensorList = sensorDAO.execSensorRetornarTodos(idArea);
+			sensorList = new SensorDAO().execSensorRetornarTodos(idArea);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -96,15 +91,17 @@ public class SensorRestController {
 			        method = RequestMethod.GET,
 			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public SensorBean consultarSensor(@PathVariable("idArea")int idArea, @PathVariable("idSensor")int idSensor) {
+
 		try {
-			sensorDAO = new SensorDAO();
-			sensor = sensorDAO.execSensorRetornarEspecifico(idArea, idSensor);
+			sensorBean =  new SensorDAO().execSensorRetornarEspecifico(idArea, idSensor);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._6_SQLException.toString(), "-6");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._6_SQLException.toString(), "-6");
 		}
-		return sensor;
+		return sensorBean;
 	}
 	/**
 	 * @return JSON: codigo
@@ -112,23 +109,25 @@ public class SensorRestController {
 	@RequestMapping(value = "/deletarSensor", 
 			        method = RequestMethod.DELETE,
 			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String deletarSensor(@RequestBody String jsonDeletarSensor) {
-		try {
-			
+	public SensorBean deletarSensor(@RequestBody String jsonDeletarSensor) {
+		try {			
 			JSONObject jsonObject = new JSONObject(jsonDeletarSensor);
 			System.out.println(jsonObject.toString());
 			int idArea = jsonObject.getInt("idArea");
 			int idSensor = jsonObject.getInt("idSensor");
-			sensorDAO = new SensorDAO();
-			retorno = sensorDAO.execSensorRemover(idArea, idSensor);
+			sensorBean.setReason(new SensorDAO().execSensorRemover(idArea, idSensor));
+			tratamentoRetorno(sensorBean.getReason());
 		} catch (SQLException e) {
 			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._6_SQLException.toString(), "-6");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._7_ClassNotFoundException.toString(), "-7");
 		} catch (JSONException e) {
 			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._5_JSONException.toString(), "-5");
 		}
-		return retorno;
+		return sensorBean;
 	}
 	
 	/**
@@ -137,62 +136,82 @@ public class SensorRestController {
 	@RequestMapping(value = "/deletarTodosSensores", 
 			        method = RequestMethod.DELETE,
 			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String deletarTodosSensores(@RequestBody String jsonDeletarSensor) {
+	public SensorBean deletarTodosSensores(@RequestBody String jsonDeletarSensor) {
 		try {
 			
 			JSONObject jsonObject = new JSONObject(jsonDeletarSensor);
 			System.out.println(jsonObject.toString());
 			int idArea = jsonObject.getInt("idArea");
 			int idSensor = jsonObject.getInt("idSensor");
-			sensorDAO = new SensorDAO();
-			retorno = sensorDAO.execSensorRemoverTodos(idArea, idSensor);
+			sensorBean.setReason(new SensorDAO().execSensorRemoverTodos(idArea, idSensor));
+			tratamentoRetorno(sensorBean.getReason());
 		} catch (SQLException e) {
 			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._6_SQLException.toString(), "-6");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._7_ClassNotFoundException.toString(), "-7");
 		} catch (JSONException e) {
 			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._5_JSONException.toString(), "-5");
+
 		}
-		return retorno;
+		return sensorBean;
 	}
 	
 	@RequestMapping(value = "/atualizarSensor", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public SensorBean atualizarSensor(@RequestBody String jsonCadastro) throws JsonProcessingException {
-		sensor = new SensorBean();
+	public SensorBean atualizarSensor(@RequestBody String jsonCadastro) {
+		sensorBean = new SensorBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
 			System.out.println(jsonObject.toString());
-			sensor.setIdUsuario(jsonObject.getInt("idUsuario"));
-			sensor.setIdSensor(jsonObject.getInt("idSensor"));
-			sensor.setIdCodArea(jsonObject.getInt("idArea"));
-			sensor.setNome(jsonObject.getString("nome"));
-			sensor.setLatitude(jsonObject.getString("latitude"));
-			sensor.setLongitude(jsonObject.getString("longitude"));
+			sensorBean.setIdUsuario(jsonObject.getInt("idUsuario"));
+			sensorBean.setIdSensor(jsonObject.getInt("idSensor"));
+			sensorBean.setIdCodArea(jsonObject.getInt("idArea"));
+			sensorBean.setNome(jsonObject.getString("nome"));
+			sensorBean.setLatitude(jsonObject.getString("latitude"));
+			sensorBean.setLongitude(jsonObject.getString("longitude"));
 			// Json ok
 			sensorDAO = new SensorDAO();
-			String codigo = sensorDAO.execSensorAtualzar(sensor.getIdUsuario(), sensor.getIdSensor(), sensor.getIdCodArea(), sensor.getNome(),  sensor.getLatitude(), sensor.getLongitude());
-			sensor.setReason(codigo);
-			if (sensor.getReason().equals("1")) {
-				sensor.setSuccess(true);
-				sensor.setDetail("sucesso");
-			}
+			String codigo = sensorDAO.execSensorAtualzar(sensorBean.getIdUsuario(), sensorBean.getIdSensor(), sensorBean.getIdCodArea(), sensorBean.getNome(),  sensorBean.getLatitude(), sensorBean.getLongitude());
+			sensorBean.setReason(codigo);
+			tratamentoRetorno(sensorBean.getReason());
 		} catch (JSONException e) {
 			e.printStackTrace();
-			sensor.setSuccess(false);
-			sensor.setReason("-5");
-			sensor.setDetail("Formato JSON invalido ou campo faltando, por favor verificar");
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._5_JSONException.toString(), "-5");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			sensor.setSuccess(false);
-			sensor.setReason("-6");
-			sensor.setDetail("Inconsistência no SQL: " + e.getMessage());
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._6_SQLException.toString(), "-6");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			sensor.setSuccess(false);
-			sensor.setReason("-7");
-			sensor.setDetail("Erro ao localizar o Driver de conexão");
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._7_ClassNotFoundException.toString(), "-7");
 		}
-		return sensor;
+		return sensorBean;
 
+	}
+
+
+	@Override
+	public void tratamentoRetorno(String erro) {
+		switch (erro) {
+		case "-1":
+			sensorBean.setSuccess(false);
+			sensorBean.setDetail(EnumErroSensor._1.toString());
+			break;
+		case "-2":
+			sensorBean.setSuccess(false);
+			sensorBean.setDetail(EnumErroSensor._2.toString());
+			break;
+		case "-3":
+			sensorBean.setSuccess(false);
+			sensorBean.setDetail(EnumErroSensor._3.toString());
+			break;
+		case "-4":
+			sensorBean.setSuccess(false);
+			sensorBean.setDetail(EnumErroSensor._4.toString());
+			break;
+		default:
+			break;
+		}		
 	}
 }

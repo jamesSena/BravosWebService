@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import br.com.bravos.webservices.dao.UsuarioDAO;
 import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.model.UsuarioBean;
@@ -29,7 +27,6 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	public static final String ISSUER = "http://www.sp.senai.br";
 	
 	private UsuarioBean usuario;
-	private UsuarioDAO usuarioDAO;
 	private String retorno;
 	private List<UsuarioBean> usuarioList;
 
@@ -44,10 +41,9 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	 * @param JSON:
 	 *            ativo, email, idPerfil, idPropriedade, login, nome, senha
 	 * @return JSON: UsuarioBean
-	 * @throws JsonProcessingException
 	 */
 	@RequestMapping(value = "/cadastrarUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes= MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public UsuarioBean cadastrarUsuario(@RequestBody String jsonCadastro) throws JsonProcessingException {
+	public UsuarioBean cadastrarUsuario(@RequestBody String jsonCadastro){
 		usuario = new UsuarioBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
@@ -64,19 +60,14 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			tratamentoRetorno(usuario.getReason());
 		} catch (JSONException e) {
 			e.printStackTrace();
-			usuario.setSuccess(false);
-			usuario.setReason("-5");
-			usuario.setDetail(EnumErroUsuario._5_JSONException.toString());
+			usuario = new UsuarioBean(false, EnumErroUsuario._5_JSONException.toString(), "-5");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			usuario.setSuccess(false);
-			usuario.setReason("-6");
-			usuario.setDetail(EnumErroUsuario._6_SQLException.toString());
+			usuario = new UsuarioBean(false, EnumErroUsuario._6_SQLException.toString(), "-6");
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			usuario.setSuccess(false);
-			usuario.setReason("-7");
-			usuario.setDetail(EnumErroUsuario._7_ClassNotFoundException.toString());
+			e.printStackTrace();	
+			usuario = new UsuarioBean(false, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7");
+
 		} 
 		return usuario;
 
@@ -89,6 +80,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	public List<UsuarioBean> consultarUsuarios() {
 		try {
 			usuarioList = new UsuarioDAO().execUsuarioRetornarTodos();
+			tratamentoRetorno(usuarioList.get(0).getReason());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			usuarioList = new ArrayList<UsuarioBean>(); 
@@ -119,13 +111,13 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			tratamentoRetorno(usuario.getReason());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			usuario = new UsuarioBean(false, "-7", EnumErroUsuario._7_ClassNotFoundException.toString());
+			usuario = new UsuarioBean(false, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			usuario = new UsuarioBean(false, "-6", EnumErroUsuario._6_SQLException.toString());
+			usuario = new UsuarioBean(false, EnumErroUsuario._6_SQLException.toString(), "-6");
 		} catch (JSONException e) {
 			e.printStackTrace();
-			usuario = new UsuarioBean(false, "-5", EnumErroUsuario._5_JSONException.toString());
+			usuario = new UsuarioBean(false, EnumErroUsuario._5_JSONException.toString(), "-5");
 
 		}
 		return usuario;
@@ -160,19 +152,14 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			tratamentoRetorno(retorno);
 		} catch (JSONException e) {
 			e.printStackTrace();
-			usuario.setSuccess(false);
-			usuario.setReason("-5");
-			usuario.setDetail(EnumErroUsuario._5_JSONException.toString());
+			usuario = new UsuarioBean(true, EnumErroUsuario._5_JSONException.toString(), "-5");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			usuario.setSuccess(false);
-			usuario.setReason("-6");
-			usuario.setDetail(EnumErroUsuario._6_SQLException.toString());
+			usuario = new UsuarioBean(true, EnumErroUsuario._6_SQLException.toString(), "-6");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			usuario.setSuccess(false);
-			usuario.setReason("-7");
-			usuario.setDetail(EnumErroUsuario._7_ClassNotFoundException.toString());
+			usuario = new UsuarioBean(true, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7");
+
 		} 
 		return usuario;
 
@@ -193,8 +180,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			usuario.setIdUsuario(jsonObject.getInt("idUsuario"));
 			usuario.setLogin(jsonObject.getString("login"));
 			usuario.setSenha(jsonObject.getString("senha"));
-			usuarioDAO = new UsuarioDAO();
-			retorno = usuarioDAO.execUsuarioRemover(usuario.getIdUsuario(), usuario.getLogin(), usuario.getSenha());
+			retorno = new UsuarioDAO().execUsuarioRemover(usuario.getIdUsuario(), usuario.getLogin(), usuario.getSenha());
 			tratamentoRetorno(retorno);
 
 		} catch (JSONException e) {

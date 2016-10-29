@@ -20,6 +20,10 @@ import com.auth0.jwt.JWTVerifier;
 import br.com.bravos.webservices.controller.UsuarioRestController;
 
 
+/**
+ * @author JamessonSena
+ *
+ */
 @WebFilter("/*")
 public class FiltroJwt implements Filter{
 
@@ -27,6 +31,7 @@ public class FiltroJwt implements Filter{
 	public void destroy() {
 		
 	}
+	
 	
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
