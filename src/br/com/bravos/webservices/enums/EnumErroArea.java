@@ -1,5 +1,9 @@
 package br.com.bravos.webservices.enums;
 
+/**
+ * @author JamessonSena
+ *
+ */
 public enum EnumErroArea {
 	  _1 ("Falha (Genérico)"),
 	  _2 ("Area já existe"),

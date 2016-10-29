@@ -23,7 +23,7 @@ import br.com.bravos.webservices.model.UsuarioBean;
  *
  */
 @RestController
-public class UsuarioRestController implements TratamentoRetorno{
+public class UsuarioRestController implements _TratamentoRetorno{
 	
 	public static final String SECRET = "todolistrenan";
 	public static final String ISSUER = "http://www.sp.senai.br";
@@ -60,8 +60,7 @@ public class UsuarioRestController implements TratamentoRetorno{
 			usuario.setNome(jsonObject.getString("nome"));
 			usuario.setSenha(jsonObject.getString("senha"));
 			// Json ok
-			usuario.setReason(new UsuarioDAO().execUsuarioCadastrar(1, usuario.getLogin(), usuario.getSenha(),usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getEmail(), usuario.getNome(),
-							   								usuario.getIdPerfil()));
+			usuario.setReason(new UsuarioDAO().execUsuarioCadastrar(1, usuario.getLogin(), usuario.getSenha(),usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getEmail(), usuario.getNome(),usuario.getIdPerfil()));
 			tratamentoRetorno(usuario.getReason());
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -86,9 +85,7 @@ public class UsuarioRestController implements TratamentoRetorno{
 	/**
 	 * @return JSON: lista de UsuarioBean
 	 */
-	@RequestMapping(value = "/consultarUsuarios", 
-			        method = RequestMethod.GET,
-			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/consultarUsuarios", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<UsuarioBean> consultarUsuarios() {
 		try {
 			usuarioList = new UsuarioDAO().execUsuarioRetornarTodos();
@@ -117,9 +114,13 @@ public class UsuarioRestController implements TratamentoRetorno{
 			System.out.println(jsonObject.toString());
 			String login = jsonObject.getString("login");
 			String senha = jsonObject.getString("senha");
+<<<<<<< HEAD
 			System.out.println(usuario);
 			usuarioDAO = new UsuarioDAO();
 			usuario = usuarioDAO.execUsuarioRetornarEspecifico(login, senha);
+=======
+			usuario = new UsuarioDAO().execUsuarioRetornarEspecifico(login, senha);
+>>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
 			tratamentoRetorno(usuario.getReason());
 
 		} catch (ClassNotFoundException e) {

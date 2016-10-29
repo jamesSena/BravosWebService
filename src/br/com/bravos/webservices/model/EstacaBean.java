@@ -19,6 +19,7 @@ public class EstacaBean extends _BeanAbstract {
 	
 	
 	
+<<<<<<< HEAD
 	
 	/**
 	 * 
@@ -28,12 +29,18 @@ public class EstacaBean extends _BeanAbstract {
 		// TODO Auto-generated constructor stub
 	}
 	/**
+=======
+	public EstacaBean() {super();}
+	
+	/**
+>>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
 	 * @param success
 	 * @param detail
 	 * @param reason
 	 */
 	public EstacaBean(boolean success, String detail, String reason) {
 		super(success, detail, reason);
+<<<<<<< HEAD
 		// TODO Auto-generated constructor stub
 	}
 	/**
@@ -57,6 +64,10 @@ public class EstacaBean extends _BeanAbstract {
 		this.longitude = longitude;
 		this.dataCadastro = dataCadastro;
 	}
+=======
+		}
+	
+>>>>>>> 32994819c99a6dc40ccc58877545f7d2cd73eb9f
 	/**
 	 * @return the dataCadastro
 	 */

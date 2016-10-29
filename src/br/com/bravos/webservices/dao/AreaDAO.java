@@ -170,14 +170,14 @@ public class AreaDAO extends ConexaoDAO {
 	 *@param retorn
 	 *@throws SQLException
 	 */
-	public String execDeletarAreaPropriedadeEspecifica(int idUsuario, int idPropriedade, String nomeArea, int idArea) throws SQLException{
+	public String execDeletarAreaPropriedadeEspecifica(int idUsuario, int idArea) throws SQLException{
 		String retorno = "-1";
 		try {
 			callableStatement = connection.prepareCall("{ CALL spArea (?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 4);
 			callableStatement.setInt(2, idUsuario);
-			callableStatement.setInt(3, idPropriedade);
-			callableStatement.setString(4, nomeArea);
+			callableStatement.setInt(3, 0);
+			callableStatement.setString(4, null);
 			callableStatement.setInt(5, idArea);
 			callableStatement.registerOutParameter(6, java.sql.Types.VARCHAR);
 			callableStatement.execute();
