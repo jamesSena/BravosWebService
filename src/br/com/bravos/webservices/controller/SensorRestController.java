@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.bravos.webservices.dao.SensorDAO;
 import br.com.bravos.webservices.enums.EnumErroSensor;
-import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.model.SensorBean;
 /**
  * @author JamessonSena

@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import br.com.bravos.webservices.dao.PropriedadeDAO;
 import br.com.bravos.webservices.enums.EnumErroPropriedade;
+import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.model.PropriedadeBean;
 
 /**
@@ -27,7 +28,7 @@ import br.com.bravos.webservices.model.PropriedadeBean;
 @RestController
 public class PropriedadeRestController implements _TratamentoRetorno {
 	
-	private PropriedadeBean proprieade;
+	private PropriedadeBean proprieadeBean;
 	private PropriedadeDAO propriedadeDAO;
 	/**
 	 * 
@@ -41,62 +42,62 @@ public class PropriedadeRestController implements _TratamentoRetorno {
 	 */
 	@RequestMapping(value = "/cadastrarPropriedade", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public PropriedadeBean cadastrarPropriedade(@RequestBody String jsonCadastro){
-		proprieade = new PropriedadeBean();
+		proprieadeBean = new PropriedadeBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
 			System.out.println(jsonObject.toString());
-			proprieade.setIdUsuario(jsonObject.getInt("idUsuario"));
-			proprieade.setNomePropriedade(jsonObject.getString("nomePropriedade"));
-			proprieade.setResponsavel(jsonObject.getString("responsavel"));
-			proprieade.setLatitude(jsonObject.getString("latitude"));
-			proprieade.setLongitude(jsonObject.getString("longitude"));
+			proprieadeBean.setIdUsuario(jsonObject.getInt("idUsuario"));
+			proprieadeBean.setNomePropriedade(jsonObject.getString("nomePropriedade"));
+			proprieadeBean.setResponsavel(jsonObject.getString("responsavel"));
+			proprieadeBean.setLatitude(jsonObject.getString("latitude"));
+			proprieadeBean.setLongitude(jsonObject.getString("longitude"));
 			// Json ok
-			proprieade.setReason(new PropriedadeDAO().execPropriedadeCadastrar(proprieade.getIdUsuario(), proprieade.getNomePropriedade(), proprieade.getResponsavel(), proprieade.getEmailResponsavel(), proprieade.getLatitude(), proprieade.getLongitude()));
-			tratamentoRetorno(proprieade.getReason());
+			proprieadeBean.setReason(new PropriedadeDAO().execPropriedadeCadastrar(proprieadeBean.getIdUsuario(), proprieadeBean.getNomePropriedade(), proprieadeBean.getResponsavel(), proprieadeBean.getEmailResponsavel(), proprieadeBean.getLatitude(), proprieadeBean.getLongitude()));
+			tratamentoRetorno(proprieadeBean.getReason());
 		} catch (JSONException e) {
 			e.printStackTrace();
-			proprieade.setSuccess(false);
-			proprieade.setReason("-5");
-			proprieade.setDetail(EnumErroPropriedade._5_JSONException.toString());
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-5");
+			proprieadeBean.setDetail(EnumErroPropriedade._5_JSONException.toString());
 		} catch (SQLException e) {
 			e.printStackTrace();
-			proprieade.setSuccess(false);
-			proprieade.setReason("-6");
-			proprieade.setDetail(EnumErroPropriedade._6_SQLException.toString());
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-6");
+			proprieadeBean.setDetail(EnumErroPropriedade._6_SQLException.toString());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			proprieade.setSuccess(false);
-			proprieade.setReason("-7");
-			proprieade.setDetail(EnumErroPropriedade._7_ClassNotFoundException.toString());
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-7");
+			proprieadeBean.setDetail(EnumErroPropriedade._7_ClassNotFoundException.toString());
 		}
-		return proprieade;
+		return proprieadeBean;
 
 	}
 
 	@RequestMapping(value = "/consultarPropriedade/{idUsuario}/{idPropriedade}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public PropriedadeBean consultarPropriedade(@PathVariable("idPropriedade") int idPropriedade, @PathVariable("idUsuario") int idUsuario) throws JsonProcessingException {
-		proprieade = new PropriedadeBean();
+		proprieadeBean = new PropriedadeBean();
 		try {
-			proprieade = new PropriedadeDAO().execPropriedadeRetornar(idPropriedade, idUsuario);
-	
+			proprieadeBean = new PropriedadeDAO().execPropriedadeRetornar(idPropriedade, idUsuario);
+			tratamentoRetorno(proprieadeBean.getReason());
 		} catch (SQLException e) {
 			e.printStackTrace();
-			proprieade.setSuccess(false);
-			proprieade.setReason("-6");
-			proprieade.setDetail(EnumErroPropriedade._6_SQLException.toString());
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-6");
+			proprieadeBean.setDetail(EnumErroPropriedade._6_SQLException.toString());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			proprieade.setSuccess(false);
-			proprieade.setReason("-7");
-			proprieade.setDetail(EnumErroPropriedade._7_ClassNotFoundException.toString());
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-7");
+			proprieadeBean.setDetail(EnumErroPropriedade._7_ClassNotFoundException.toString());
 		}
-		return proprieade;
+		return proprieadeBean;
 
 	}
 
 	@RequestMapping(value = "/deletarPropriedade", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public PropriedadeBean deletarPropriedade(@RequestBody String jsonDeletarSensor) throws JsonProcessingException {
-		proprieade = new PropriedadeBean();
+		proprieadeBean = new PropriedadeBean();
 		try {
 
 			JSONObject jsonObject = new JSONObject(jsonDeletarSensor);
@@ -104,73 +105,84 @@ public class PropriedadeRestController implements _TratamentoRetorno {
 			int idUsuario = jsonObject.getInt("idUsuario");
 			int idPropriedade = jsonObject.getInt("idPropriedade");
 
-			proprieade = new PropriedadeDAO().execPropriedadeDeletar(idUsuario, idPropriedade);
-	
+			proprieadeBean = new PropriedadeDAO().execPropriedadeDeletar(idUsuario, idPropriedade);
+			tratamentoRetorno(proprieadeBean.getReason());
 		} catch (SQLException e) {
 			e.printStackTrace();
-			proprieade.setSuccess(false);
-			proprieade.setReason("-6");
-			proprieade.setDetail(EnumErroPropriedade._7_ClassNotFoundException.toString());
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-6");
+			proprieadeBean.setDetail(EnumErroPropriedade._7_ClassNotFoundException.toString());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			proprieade.setSuccess(false);
-			proprieade.setReason("-7");
-			proprieade.setDetail("Erro ao localizar o Driver de conexão");
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-7");
+			proprieadeBean.setDetail("Erro ao localizar o Driver de conexão");
 		} catch (JSONException e) {
 			e.printStackTrace();
-			proprieade.setSuccess(false);
-			proprieade.setReason("-5");
-			proprieade.setDetail("Formato JSON invalido ou campo faltando, por favor verificar");
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-5");
+			proprieadeBean.setDetail("Formato JSON invalido ou campo faltando, por favor verificar");
 		}
-		return proprieade;
+		return proprieadeBean;
 
 	}
 
 	@RequestMapping(value = "/atualizarPropriedade", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public PropriedadeBean atualizarPropriedade(@RequestBody String jsonAtualizar) throws JsonProcessingException {
-		proprieade = new PropriedadeBean();
+		proprieadeBean = new PropriedadeBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonAtualizar);
 			System.out.println(jsonObject.toString());
-			proprieade.setIdUsuario(jsonObject.getInt("idUsuario"));
-			proprieade.setIdPropriedade(jsonObject.getInt("idPropriedade"));
-			proprieade.setNomePropriedade(jsonObject.getString("nomePropriedade"));
-			proprieade.setResponsavel(jsonObject.getString("responsavel"));
-			proprieade.setLatitude(jsonObject.getString("latitude"));
-			proprieade.setLongitude(jsonObject.getString("longitude"));
+			proprieadeBean.setIdUsuario(jsonObject.getInt("idUsuario"));
+			proprieadeBean.setIdPropriedade(jsonObject.getInt("idPropriedade"));
+			proprieadeBean.setNomePropriedade(jsonObject.getString("nomePropriedade"));
+			proprieadeBean.setResponsavel(jsonObject.getString("responsavel"));
+			proprieadeBean.setLatitude(jsonObject.getString("latitude"));
+			proprieadeBean.setLongitude(jsonObject.getString("longitude"));
 			// Json ok
 			propriedadeDAO = new PropriedadeDAO();
-			String codigo = propriedadeDAO.execPropriedadeAtualizar(proprieade.getIdUsuario(), proprieade.getIdPropriedade(), proprieade.getNomePropriedade(), proprieade.getResponsavel(), proprieade.getEmailResponsavel(), proprieade.getLatitude(), proprieade.getLongitude());
-			proprieade.setReason(codigo);
-			if (proprieade.getReason().equals("1")) {
-				proprieade.setSuccess(true);
-				proprieade.setDetail("sucesso");
-			}
+			String codigo = propriedadeDAO.execPropriedadeAtualizar(proprieadeBean.getIdUsuario(), proprieadeBean.getIdPropriedade(), proprieadeBean.getNomePropriedade(), proprieadeBean.getResponsavel(), proprieadeBean.getEmailResponsavel(), proprieadeBean.getLatitude(), proprieadeBean.getLongitude());
+			proprieadeBean.setReason(codigo);
+			tratamentoRetorno(proprieadeBean.getReason());
 		} catch (JSONException e) {
 			e.printStackTrace();
-			proprieade.setSuccess(false);
-			proprieade.setReason("-5");
-			proprieade.setDetail("Formato JSON invalido ou campo faltando, por favor verificar");
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-5");
+			proprieadeBean.setDetail("Formato JSON invalido ou campo faltando, por favor verificar");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			proprieade.setSuccess(false);
-			proprieade.setReason("-6");
-			proprieade.setDetail("Inconsistência no SQL: " + e.getMessage());
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-6");
+			proprieadeBean.setDetail("Inconsistência no SQL: " + e.getMessage());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			proprieade.setSuccess(false);
-			proprieade.setReason("-7");
-			proprieade.setDetail("Erro ao localizar o Driver de conexão");
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-7");
+			proprieadeBean.setDetail("Erro ao localizar o Driver de conexão");
 		}
-		return proprieade;
+		return proprieadeBean;
 
 	}
 
 
 	@Override
 	public void tratamentoRetorno(String erro) {
-		// TODO Auto-generated method stub
-		
+		switch (erro) {
+		case "-1":
+			proprieadeBean.set_BeanAbstract(false, EnumErroUsuario._1.toString(), "-1");
+			break;
+		case "-2":			
+			proprieadeBean.set_BeanAbstract(false, EnumErroUsuario._2.toString(), "-2");
+			break;
+		case "-3":
+			proprieadeBean.set_BeanAbstract(false, EnumErroUsuario._3.toString(), "-3");
+			break;
+		case "-4":
+			proprieadeBean.set_BeanAbstract(false, EnumErroUsuario._3.toString(), "-4");
+			break;
+		default:
+			break;
+		}			
 	}
 
 }

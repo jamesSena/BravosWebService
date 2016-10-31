@@ -29,7 +29,6 @@ import br.com.bravos.webservices.model.NotificacaoBean;
 public class NotificacaoRestController implements _TratamentoRetorno {
 
 	private NotificacaoBean notificacaoBean;
-	private NotificacaoDAO notificacaoDAO;
 	private List<NotificacaoBean> notificacaoList;
 	
 	public NotificacaoRestController() {}
@@ -58,9 +57,8 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 			notificacaoBean.setDataFim(sdf.parse(strDataInicio));
 			notificacaoBean.setDataInicio(sdf.parse(strDataFim));
 			//Formatação Data ok
-			notificacaoDAO = new NotificacaoDAO();
-			notificacaoDAO.execNotificacaoCadastrar(notificacaoBean.getIdUsuario(), notificacaoBean.getIdSensor(), notificacaoBean.getIdArea(), notificacaoBean.getIdPropriedade(), notificacaoBean.getIdStatus(), notificacaoBean.getDataInicio(), notificacaoBean.getDataFim(), notificacaoBean.getIdNotificacao());
-			
+			notificacaoBean.setReason(new NotificacaoDAO().execNotificacaoCadastrar(notificacaoBean.getIdUsuario(), notificacaoBean.getIdSensor(), notificacaoBean.getIdArea(), notificacaoBean.getIdPropriedade(), notificacaoBean.getIdStatus(), notificacaoBean.getDataInicio(), notificacaoBean.getDataFim(), notificacaoBean.getIdNotificacao()));
+			tratamentoRetorno(notificacaoBean.getReason());
 		} catch (JSONException e) {
 			e.printStackTrace();
 			notificacaoBean.setSuccess(false);
@@ -96,6 +94,8 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 		try {
 
 			notificacaoList = new NotificacaoDAO().execNotificacaoRetornarTodas(idUsuario, idPropriedade);
+			if (!notificacaoList.isEmpty())
+				tratamentoRetorno(notificacaoList.get(0).getReason());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			notificacaoBean.setDetail(EnumErroNotificacao._7_ClassNotFoundException.toString());
@@ -135,7 +135,8 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 			Date dataFim = sdf.parse(strDataFim);
 
 			notificacaoList = new NotificacaoDAO().execNotificacaoRetornar(idUsuario, idPropriedade, dataInicio, dataFim);
-		
+			if (!notificacaoList.isEmpty())
+				tratamentoRetorno(notificacaoList.get(0).getReason());
 		} catch (JSONException e) {
 			
 			e.printStackTrace();
