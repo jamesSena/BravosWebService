@@ -2,6 +2,7 @@ package br.com.bravos.webservices.controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONException;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.auth0.jwt.JWTSigner;
 
 import br.com.bravos.webservices.dao.UsuarioDAO;
 import br.com.bravos.webservices.enums.EnumErroUsuario;
@@ -23,8 +27,9 @@ import br.com.bravos.webservices.model.UsuarioBean;
 @RestController
 public class UsuarioRestController implements _TratamentoRetorno{
 	
-	public static final String SECRET = "todolistrenan";
-	public static final String ISSUER = "http://www.sp.senai.br";
+	public static final String SECRET = "crifradoprograma"; // cifra para descriptografar.
+	public static final String ISSUER = "Eric Ogata"; // emissor do token.
+	
 	
 	private UsuarioBean usuario;
 	private String retorno;
@@ -100,14 +105,35 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	 */
 	@RequestMapping(value = "/consultarUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public UsuarioBean consultarUsuario(@RequestBody String jsonConsultarUsuario) {
+
 		try {
 			System.out.println(jsonConsultarUsuario);
 			JSONObject jsonObject = new JSONObject(jsonConsultarUsuario);
 			System.out.println(jsonObject.toString());
 			String login = jsonObject.getString("login");
 			String senha = jsonObject.getString("senha");
-			System.out.println(usuario);
 			usuario = new UsuarioDAO().execUsuarioRetornarEspecifico(login, senha);
+			
+			if (usuario!=null) { // ver se passou um usuario
+				// Data de emissão em segundos do Token
+				long iat = System.currentTimeMillis() / 1000;
+				// Data de Expiração do token, é o tempo atual mais 1 minuto
+				long exp = iat + 60;
+				
+				//Criptografor passando a senha
+				JWTSigner signer = new JWTSigner(SECRET);	
+				
+				//HashMap passando as informações necessaria para a criação do toker
+				HashMap<String, Object> claims = new HashMap<>();
+				claims.put("iat", iat);
+				claims.put("exp", exp);
+				claims.put("iss", ISSUER);
+				claims.put("id_usuario", usuario.getIdUsuario());
+				
+				// gerar Token
+				String jwt = signer.sign(claims); // Método crpitografa toda a HashMap na forma de um Token
+				usuario.setToken(jwt);
+			}
 			tratamentoRetorno(usuario.getReason());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -118,7 +144,6 @@ public class UsuarioRestController implements _TratamentoRetorno{
 		} catch (JSONException e) {
 			e.printStackTrace();
 			usuario = new UsuarioBean(false, EnumErroUsuario._5_JSONException.toString(), "-5");
-
 		}
 		return usuario;
 	}

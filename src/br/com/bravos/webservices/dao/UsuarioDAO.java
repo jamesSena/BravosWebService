@@ -184,6 +184,7 @@ public class UsuarioDAO extends ConexaoDAO {
 			usuarioBean = new UsuarioBean();
 
 			while (rs.next()) {
+				usuarioBean.setIdUsuario(rs.getInt("idusuario"));
 				usuarioBean.setAtivo(Boolean.parseBoolean(rs.getString("Ativo")));
 				usuarioBean.setIdPropriedade(rs.getInt("IdPropriedade"));
 				usuarioBean.setIdPerfil(rs.getInt("IDPerfil"));
