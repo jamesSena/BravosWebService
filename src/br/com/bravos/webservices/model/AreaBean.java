@@ -35,7 +35,6 @@ public class AreaBean extends _BeanAbstract{
 	 */
 	public AreaBean(boolean success, String detail, String reason) {
 		super(success, detail, reason);
-		// TODO Auto-generated constructor stub
 	}
 	/**
 	 * @return the nomeArea

@@ -73,7 +73,7 @@ public class TestesUnitarios {
 	//Teste execUsuarioCadastrar
 	private static void usuarioCadastrarTest() throws ClassNotFoundException, SQLException{
 		UsuarioDAO loginDAO = new UsuarioDAO();
-		loginDAO.execUsuarioCadastrar(idUsuario, login, senha, idPropriedade, ativo, email, nome, idPerfil);
+		loginDAO.execUsuarioCadastrar(idUsuario, login, senha, idPropriedade, ativo, nome, idPerfil);
 	}
 	//Teste usuarioRetornarTodos
 	private static void usuarioRetornarTodosTest() throws ClassNotFoundException, SQLException{
@@ -88,7 +88,7 @@ public class TestesUnitarios {
 	//Teste execUsuarioAtualizar
 	private static void usuarioAtualizarTest() throws ClassNotFoundException, SQLException{
 		UsuarioDAO loginDAO = new UsuarioDAO();
-		loginDAO.execUsuarioAtualizar(idUsuario, login, senha, idPropriedade, ativo, email, nome, idPerfil);
+		loginDAO.execUsuarioAtualizar(idUsuario, login, senha, idPropriedade, ativo,  nome, idPerfil);
 	}
 	//Teste execUsuarioExcluir
 	private static void usuarioExcluirTest() throws ClassNotFoundException, SQLException{

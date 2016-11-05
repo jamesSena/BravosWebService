@@ -47,29 +47,27 @@ public class UsuarioDAO extends ConexaoDAO {
 	 * @param senha
 	 * @param idPropriedade
 	 * @param ativo
-	 * @param email
 	 * @param nome
 	 * @param idPerfil
 	 * @return codigo de sucesso/erro
 	 * @throws SQLException
 	 */
 	public String execUsuarioCadastrar(int idUsuario, String login, String senha, int idPropriedade, boolean ativo,
-			String email, String nome, int idPerfil) throws SQLException {
+			 String nome, int idPerfil) throws SQLException {
 		String retorno = "-1";
 		try {
-			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 1);
 			callableStatement.setInt(2, idUsuario);
 			callableStatement.setString(3, login);
 			callableStatement.setString(4, senha);
 			callableStatement.setInt(5, idPropriedade);
 			callableStatement.setBoolean(6, ativo);
-			callableStatement.setString(7, email);
-			callableStatement.setString(8, nome);
-			callableStatement.setInt(9, idPerfil);
-			callableStatement.registerOutParameter(10, java.sql.Types.VARCHAR);
+			callableStatement.setString(7, nome);
+			callableStatement.setInt(8, idPerfil);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			callableStatement.execute();
-			retorno = callableStatement.getString(10);
+			retorno = callableStatement.getString(9);
 			System.out.println("retorno: " + retorno);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -88,8 +86,7 @@ public class UsuarioDAO extends ConexaoDAO {
 	public List<UsuarioBean> execUsuarioRetornarTodos() throws SQLException {
 		List<UsuarioBean> usuario = new ArrayList<>();
 		try {
-
-			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 2);
 			callableStatement.setInt(2, 0);
 			callableStatement.setString(3, "");
@@ -97,9 +94,8 @@ public class UsuarioDAO extends ConexaoDAO {
 			callableStatement.setInt(5, 0);
 			callableStatement.setBoolean(6, true);
 			callableStatement.setString(7, "");
-			callableStatement.setString(8, "");
-			callableStatement.setInt(9, 0);
-			callableStatement.registerOutParameter(10, java.sql.Types.VARCHAR);
+			callableStatement.setInt(8, 0);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			ResultSet rs = callableStatement.executeQuery();
 
 			while (rs.next()) {
@@ -107,14 +103,13 @@ public class UsuarioDAO extends ConexaoDAO {
 				usuarioBean.setAtivo(rs.getBoolean("Ativo"));
 				usuarioBean.setIdPropriedade(rs.getInt("IdPropriedade"));
 				usuarioBean.setIdPerfil(rs.getInt("IDPerfil"));
-				usuarioBean.setEmail(rs.getString("Email"));
 				usuarioBean.setNome(rs.getString("Nome"));
 				usuarioBean.setLogin(rs.getString("Login"));
 				usuarioBean.setSenha("*********");
 				usuario.add(usuarioBean);
 			}
 
-			String retorno = callableStatement.getString(10);
+			String retorno = callableStatement.getString(9);
 			System.out.println("retorno: " + retorno);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -140,16 +135,15 @@ public class UsuarioDAO extends ConexaoDAO {
 			callableStatement.setInt(5, 0);
 			callableStatement.setBoolean(6, true);
 			callableStatement.setString(7, "");
-			callableStatement.setString(8, "");
-			callableStatement.setInt(9, 0);
-			callableStatement.registerOutParameter(10, java.sql.Types.VARCHAR);
+			callableStatement.setInt(8, 0);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			ResultSet rs = callableStatement.executeQuery();
 
 			while (rs.next()) {
 				todoUsuario++;
 			}
 
-			String x = callableStatement.getString(10);
+			String x = callableStatement.getString(9);
 			System.out.println("retorno: " + x);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -169,7 +163,7 @@ public class UsuarioDAO extends ConexaoDAO {
 	 */
 	public UsuarioBean execUsuarioRetornarEspecifico(String login, String senha) throws SQLException {
 		try {
-			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 3);
 			callableStatement.setInt(2, 0);
 			callableStatement.setString(3, login);
@@ -177,9 +171,8 @@ public class UsuarioDAO extends ConexaoDAO {
 			callableStatement.setInt(5, 0);
 			callableStatement.setBoolean(6, true);
 			callableStatement.setString(7, "");
-			callableStatement.setString(8, "");
-			callableStatement.setInt(9, 0);
-			callableStatement.registerOutParameter(10, java.sql.Types.VARCHAR);
+			callableStatement.setInt(8, 0);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			ResultSet rs = callableStatement.executeQuery();
 			usuarioBean = new UsuarioBean();
 
@@ -188,12 +181,11 @@ public class UsuarioDAO extends ConexaoDAO {
 				usuarioBean.setAtivo(Boolean.parseBoolean(rs.getString("Ativo")));
 				usuarioBean.setIdPropriedade(rs.getInt("IdPropriedade"));
 				usuarioBean.setIdPerfil(rs.getInt("IDPerfil"));
-				usuarioBean.setEmail(rs.getString("Email"));
 				usuarioBean.setNome(rs.getString("Nome"));
 				usuarioBean.setLogin(rs.getString("Login"));
 				usuarioBean.setSenha("*********");
 			}
-
+			usuarioBean.setReason(callableStatement.getString(9));
 			System.out.println("retorno: " + callableStatement.getString("retorn"));
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -206,22 +198,21 @@ public class UsuarioDAO extends ConexaoDAO {
 
 	// -- idoperacao = 4 -> atualizar usuario
 	public String execUsuarioAtualizar(int idUsuario, String login, String senha, int idPropriedade, boolean ativo,
-			String email, String nome, int idPerfil) throws SQLException {
+			 String nome, int idPerfil) throws SQLException {
 		String retorno = "-1";
 		try {
-			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 4);
 			callableStatement.setInt(2, idUsuario);
 			callableStatement.setString(3, login);
 			callableStatement.setString(4, senha);
 			callableStatement.setInt(5, idPropriedade);
 			callableStatement.setBoolean(6, ativo);
-			callableStatement.setString(7, email);
-			callableStatement.setString(8, nome);
-			callableStatement.setInt(9, idPerfil);
-			callableStatement.registerOutParameter(10, java.sql.Types.VARCHAR);
+			callableStatement.setString(7, nome);
+			callableStatement.setInt(8, idPerfil);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			callableStatement.execute();
-			retorno = callableStatement.getString(10);
+			retorno = callableStatement.getString(9);
 			System.out.println("retorno: " + retorno);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -236,7 +227,7 @@ public class UsuarioDAO extends ConexaoDAO {
 	public String execUsuarioRemover(int idUsuario, String login, String senha) throws SQLException {
 		String retorno = "-1";
 		try {
-			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 5);
 			callableStatement.setInt(2, idUsuario);
 			callableStatement.setString(3, login);
@@ -244,9 +235,8 @@ public class UsuarioDAO extends ConexaoDAO {
 			callableStatement.setInt(5, 0);
 			callableStatement.setBoolean(6, false);
 			callableStatement.setString(7, "");
-			callableStatement.setString(8, "");
-			callableStatement.setInt(9, 0);
-			callableStatement.registerOutParameter(10, java.sql.Types.VARCHAR);
+			callableStatement.setInt(8, 0);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			callableStatement.execute();
 			retorno = callableStatement.getString("retorn");
 			System.out.println("retorno: " + retorno);
@@ -263,7 +253,7 @@ public class UsuarioDAO extends ConexaoDAO {
 	public String execUsuarioRemoverTodos(int idUsuario) throws SQLException {
 		String retorno = "-1";
 		try {
-			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 6);
 			callableStatement.setInt(2, idUsuario);
 			callableStatement.setString(3, "");
@@ -271,9 +261,8 @@ public class UsuarioDAO extends ConexaoDAO {
 			callableStatement.setInt(5, 0);
 			callableStatement.setBoolean(6, false);
 			callableStatement.setString(7, "");
-			callableStatement.setString(8, "");
-			callableStatement.setInt(9, 0);
-			callableStatement.registerOutParameter(10, java.sql.Types.VARCHAR);
+			callableStatement.setInt(8, 0);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			callableStatement.execute();
 			retorno = callableStatement.getString("retorn");
 			System.out.println("retorno: " + retorno);
@@ -290,7 +279,7 @@ public class UsuarioDAO extends ConexaoDAO {
 	public String execUsuarioBloquear(int idUsuario, String login, boolean ativo) throws SQLException {
 		String retorno = "-1";
 		try {
-			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 7);
 			callableStatement.setInt(2, idUsuario);
 			callableStatement.setString(3, login);
@@ -298,9 +287,8 @@ public class UsuarioDAO extends ConexaoDAO {
 			callableStatement.setInt(5, 0);
 			callableStatement.setBoolean(6, ativo);
 			callableStatement.setString(7, "");
-			callableStatement.setString(8, "");
-			callableStatement.setInt(9, 0);
-			callableStatement.registerOutParameter(10, java.sql.Types.VARCHAR);
+			callableStatement.setInt(8, 0);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			callableStatement.execute();
 			retorno = callableStatement.getString("retorn");
 			System.out.println("retorno: " + retorno);

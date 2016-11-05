@@ -27,7 +27,7 @@ import br.com.bravos.webservices.model.UsuarioBean;
 public class UsuarioRestController implements _TratamentoRetorno{
 	
 	public static final String SECRET = "crifradoprograma"; // cifra para descriptografar.
-	public static final String ISSUER = "Eric Ogata"; // emissor do token.
+	public static final String ISSUER = "Jamesson Sales de Sena"; // emissor do token.
 	
 	
 	private UsuarioBean usuario;
@@ -60,7 +60,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			usuario.setNome(jsonObject.getString("nome"));
 			usuario.setSenha(jsonObject.getString("senha"));
 			// Json ok
-			usuario.setReason(new UsuarioDAO().execUsuarioCadastrar(1, usuario.getLogin(), usuario.getSenha(),usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getEmail(), usuario.getNome(),usuario.getIdPerfil()));
+			usuario.setReason(new UsuarioDAO().execUsuarioCadastrar(1, usuario.getLogin(), usuario.getSenha(),usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getNome(),usuario.getIdPerfil()));
 			tratamentoRetorno(usuario.getReason());
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -119,7 +119,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 				// Data de Expiração do token, é o tempo atual mais 1 minuto
 				long exp = iat + 60;
 				
-				//Criptografor passando a senha
+				//Criptografa passando a senha
 				JWTSigner signer = new JWTSigner(SECRET);	
 				
 				//HashMap passando as informações necessaria para a criação do toker
@@ -170,8 +170,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			usuario.setNome(jsonObject.getString("nome"));
 			usuario.setSenha(jsonObject.getString("senha"));
 			retorno = new UsuarioDAO().execUsuarioAtualizar(idUsuario, usuario.getLogin(), usuario.getSenha(),
-					usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getEmail(), usuario.getNome(),
-					usuario.getIdPerfil());
+					usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getNome(),usuario.getIdPerfil());
 
 			tratamentoRetorno(retorno);
 		} catch (JSONException e) {
@@ -314,22 +313,18 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	//Traducao de todos os erros retornado pelo banco de dados para a consultas de usuario
 	@Override
 	public void tratamentoRetorno(String erro) {
-		switch (usuario.getReason()) {
+		switch (erro) {
 		case "-1":
-			usuario.setSuccess(false);
-			usuario.setDetail(EnumErroUsuario._1.toString());
+			usuario.set_BeanAbstract(false, EnumErroUsuario._1.toString(), "-1");
 			break;
 		case "-2":
-			usuario.setSuccess(false);
-			usuario.setDetail(EnumErroUsuario._2.toString());
+			usuario.set_BeanAbstract(false, EnumErroUsuario._2.toString(), "-2");
 			break;
 		case "-3":
-			usuario.setSuccess(false);
-			usuario.setDetail(EnumErroUsuario._3.toString());
+			usuario.set_BeanAbstract(false, EnumErroUsuario._3.toString(), "-3");
 			break;
 		case "-4":
-			usuario.setSuccess(false);
-			usuario.setDetail(EnumErroUsuario._4.toString());
+			usuario.set_BeanAbstract(false, EnumErroUsuario._4.toString(), "-4");
 			break;
 		default:
 			break;
