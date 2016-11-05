@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ import br.com.bravos.webservices.model.PropriedadeBean;
  * @author JamessonSena
  *
  */
+@CrossOrigin
 @RestController
 public class PropriedadeRestController implements _TratamentoRetorno {
 	
@@ -178,7 +180,7 @@ public class PropriedadeRestController implements _TratamentoRetorno {
 			proprieadeBean.set_BeanAbstract(false, EnumErroUsuario._3.toString(), "-3");
 			break;
 		case "-4":
-			proprieadeBean.set_BeanAbstract(false, EnumErroUsuario._3.toString(), "-4");
+			proprieadeBean.set_BeanAbstract(false, EnumErroPropriedade._4.toString(), "-4");
 			break;
 		default:
 			break;

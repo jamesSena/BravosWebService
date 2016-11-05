@@ -8,7 +8,7 @@ public enum EnumErroPropriedade {
 	  _1 ("Falha (Genérico)"),
 	  _2 ("Propriedade já existe"),
 	  _3 ("Propriedade não cadastrado"),
-	  _4 (""),
+	  _4 ("E-mail já associado a uma propriedade"),
 	  _5_JSONException ("Formato JSON invalido ou campo faltando, por favor verificar"),
 	  _6_SQLException ("Inconsistência no SQL"),
 	  _7_ClassNotFoundException ("Erro ao localizar o Driver de conexão"),	

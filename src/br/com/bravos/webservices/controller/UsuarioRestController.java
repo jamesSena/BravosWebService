@@ -7,7 +7,10 @@ import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +26,7 @@ import br.com.bravos.webservices.model.UsuarioBean;
  * @author JamessonSena
  *
  */
+@CrossOrigin
 @RestController
 public class UsuarioRestController implements _TratamentoRetorno{
 	
@@ -46,6 +50,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	 *            ativo, email, idPerfil, idPropriedade, login, nome, senha
 	 * @return JSON: UsuarioBean
 	 */
+
 	@RequestMapping(value = "/cadastrarUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes= MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public UsuarioBean cadastrarUsuario(@RequestBody String jsonCadastro){
 		usuario = new UsuarioBean();
@@ -80,8 +85,10 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	/**
 	 * @return JSON: lista de UsuarioBean
 	 */
+	
 	@RequestMapping(value = "/consultarUsuarios", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<UsuarioBean> consultarUsuarios() {
+		System.out.println("Teste");
 		try {
 			usuarioList = new UsuarioDAO().execUsuarioRetornarTodos();
 			tratamentoRetorno(usuarioList.get(0).getReason());
@@ -97,6 +104,10 @@ public class UsuarioRestController implements _TratamentoRetorno{
 		return usuarioList;
 	}
 
+	@RequestMapping(value="/**", method=RequestMethod.OPTIONS)
+	public ResponseEntity handle(){
+		return new ResponseEntity(HttpStatus.OK);
+	}
 	/**
 	 * @param email
 	 * @param senha
@@ -106,9 +117,9 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	public UsuarioBean consultarUsuario(@RequestBody String jsonConsultarUsuario) {
 
 		try {
-			System.out.println(jsonConsultarUsuario);
+			System.out.println("JSON: "+jsonConsultarUsuario);
 			JSONObject jsonObject = new JSONObject(jsonConsultarUsuario);
-			System.out.println(jsonObject.toString());
+			System.out.println("JSON TO STRING: "+jsonObject.toString());
 			String login = jsonObject.getString("login");
 			String senha = jsonObject.getString("senha");
 			usuario = new UsuarioDAO().execUsuarioRetornarEspecifico(login, senha);
@@ -129,7 +140,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 				claims.put("iss", ISSUER);
 				claims.put("id_usuario", usuario.getIdUsuario());
 				
-				// gerar Token
+				// gerar Token8
 				String jwt = signer.sign(claims); // Método crpitografa toda a HashMap na forma de um Token
 				usuario.setToken(jwt);
 			}

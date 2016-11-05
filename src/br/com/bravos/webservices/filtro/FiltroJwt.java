@@ -39,7 +39,7 @@ public class FiltroJwt implements Filter{
 		//Castign realizado pois é necessário utilizar métodos específicos do HttpServletRequest e Response
 		HttpServletRequest request = (HttpServletRequest)servletRequest;
 		HttpServletResponse response = (HttpServletResponse)servletResponse;
-		if(request.getRequestURI().contains("consultarUsuario")){
+		if(request.getRequestURI().contains("consultarUsuario") || request.getRequestURI().contains("cadastrarUsuario")){
 			filterChain.doFilter(request, response);
 			return;
 		}
