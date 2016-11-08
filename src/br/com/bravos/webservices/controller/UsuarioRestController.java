@@ -104,12 +104,8 @@ public class UsuarioRestController implements _TratamentoRetorno{
 		return usuarioList;
 	}
 
-	@RequestMapping(value="/**", method=RequestMethod.OPTIONS)
-	public ResponseEntity handle(){
-		return new ResponseEntity(HttpStatus.OK);
-	}
 	/**
-	 * @param email
+	 * @param login
 	 * @param senha
 	 * @return JSON: UsuarioBean
 	 */
