@@ -64,8 +64,8 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 		} catch (JSONException e) {
 			e.printStackTrace();
 			notificacaoBean.setSuccess(false);
-			notificacaoBean.setReason("-5");
-			notificacaoBean.setDetail(EnumErroNotificacao._5_JSONException.toString());
+			notificacaoBean.setReason("-9");
+			notificacaoBean.setDetail(EnumErroNotificacao._9_JSONException.toString());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			notificacaoBean.setSuccess(false);
@@ -128,7 +128,7 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 			int idUsuario = jsonObject.getInt("idUsuario");
 			int idPropriedade = jsonObject.getInt("idPropriedade");
 			String strDataInicio = jsonObject.getString("dataInicio");
-			String strDataFim = jsonObject.getString("");
+			String strDataFim = jsonObject.getString("dataFim");
 			
 			// Json ok
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -142,8 +142,8 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 		} catch (JSONException e) {
 			
 			e.printStackTrace();
-			notificacaoBean.setDetail(EnumErroNotificacao._5_JSONException.toString());
-			notificacaoBean.setReason("-5");
+			notificacaoBean.setDetail(EnumErroNotificacao._9_JSONException.toString());
+			notificacaoBean.setReason("-9");
 			notificacaoBean.setSuccess(false);
 			List<NotificacaoBean> notificacaoList =  new ArrayList<NotificacaoBean>();
 			notificacaoList.add(notificacaoBean);
@@ -190,8 +190,8 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 				tratamentoRetorno(notificacaoBean.getReason());
 			} catch (JSONException e) {
 				e.printStackTrace();
-				notificacaoBean.setDetail(EnumErroNotificacao._5_JSONException.toString());
-				notificacaoBean.setReason("-5");
+				notificacaoBean.setDetail(EnumErroNotificacao._9_JSONException.toString());
+				notificacaoBean.setReason("-9");
 				notificacaoBean.setSuccess(false);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -223,8 +223,8 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 				tratamentoRetorno(notificacaoBean.getReason());
 			} catch (JSONException e) {
 				e.printStackTrace();
-				notificacaoBean.setDetail(EnumErroNotificacao._5_JSONException.toString());
-				notificacaoBean.setReason("-5");
+				notificacaoBean.setDetail(EnumErroNotificacao._9_JSONException.toString());
+				notificacaoBean.setReason("-9");
 				notificacaoBean.setSuccess(false);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -245,19 +245,23 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 		switch (erro) {
 		case "-1":
 			notificacaoBean.setSuccess(false);
-			notificacaoBean.setDetail(EnumErroUsuario._1.toString());
+			notificacaoBean.setDetail(EnumErroNotificacao._1.toString());
 			break;
 		case "-2":
 			notificacaoBean.setSuccess(false);
-			notificacaoBean.setDetail(EnumErroUsuario._2.toString());
+			notificacaoBean.setDetail(EnumErroNotificacao._2.toString());
 			break;
 		case "-3":
 			notificacaoBean.setSuccess(false);
-			notificacaoBean.setDetail(EnumErroUsuario._3.toString());
+			notificacaoBean.setDetail(EnumErroNotificacao._3.toString());
 			break;
 		case "-4":
 			notificacaoBean.setSuccess(false);
-			notificacaoBean.setDetail(EnumErroUsuario._4.toString());
+			notificacaoBean.setDetail(EnumErroNotificacao._4.toString());
+			break;
+		case "-5":
+			notificacaoBean.setSuccess(false);
+			notificacaoBean.setDetail(EnumErroNotificacao._5.toString());
 			break;
 		default:
 			break;

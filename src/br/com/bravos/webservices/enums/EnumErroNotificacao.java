@@ -13,10 +13,11 @@ public enum EnumErroNotificacao {
 	  _2 ("Propriedade não existe"),
 	  _3 ("Area não existe"),
 	  _4 ("Sensor não existe"),
-	  _5_JSONException ("Formato JSON invalido ou campo faltando, por favor verificar"),
+	  _5 ("Status não existe"),
 	  _6_SQLException ("Inconsistência no SQL"),
 	  _7_ClassNotFoundException ("Erro ao localizar o Driver de conexão"),	
-	  _8_ParseException ("Erro no Formato da Data. [padrão: dd/MM/yyyy] ");	
+	  _8_ParseException ("Erro no Formato da Data. [padrão: dd/MM/yyyy] "),
+	  _9_JSONException ("Formato JSON invalido ou campo faltando, por favor verificar");
 
 	private String name = "";
 	   

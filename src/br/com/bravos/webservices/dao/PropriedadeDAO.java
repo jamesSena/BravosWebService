@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.bravos.webservices.model.PropriedadeBean;
-import br.com.bravos.webservices.model.UsuarioBean;
 
 /**
  * @author JamessonSena
