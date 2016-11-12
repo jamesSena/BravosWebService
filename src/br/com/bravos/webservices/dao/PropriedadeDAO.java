@@ -7,8 +7,11 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.bravos.webservices.model.PropriedadeBean;
+import br.com.bravos.webservices.model.UsuarioBean;
 
 /**
  * @author JamessonSena
@@ -84,7 +87,7 @@ public class PropriedadeDAO  extends ConexaoDAO {
 						propriedadeBean.setIdPropriedade(rs.getInt("iDPropriedade"));
 						propriedadeBean.setNomePropriedade(rs.getString("NomeProriedade"));
 						propriedadeBean.setResponsavel(rs.getString("Responsavel"));
-						propriedadeBean.setEmailResponsavel(rs.getString("EmailReposnsavel"));
+						propriedadeBean.setEmailResponsavel(rs.getString("EmailReponsavel"));
 						propriedadeBean.setLatitude(rs.getString("LocalizacaoLatitude"));
 						propriedadeBean.setLongitude(rs.getString("LocalizacaoLongitude"));
 						propriedadeBean.setDataCadastro(rs.getString("DataCadastro"));
@@ -154,4 +157,41 @@ public class PropriedadeDAO  extends ConexaoDAO {
 				return retorno;
 			}
 
+//		-- idoperacao = 5 -> retornar todas propriedades
+		public List<PropriedadeBean> execPropriedadesRetornar() throws SQLException {
+				List<PropriedadeBean> propriedadeList = new ArrayList<>();
+				try {
+					callableStatement = connection.prepareCall("{ CALL spPropriedade (?,?,?,?,?,?,?,?,?)}");
+					callableStatement.setInt(1, 5);
+					callableStatement.setInt(2, 0);
+					callableStatement.setInt(3, 0);
+					callableStatement.setString(4, "");
+					callableStatement.setString(5, "");
+					callableStatement.setString(6, "");
+					callableStatement.setString(7, "");
+					callableStatement.setString(8, "");
+					callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
+					ResultSet rs = callableStatement.executeQuery();
+					while (rs.next()) {
+						propriedadeBean = new PropriedadeBean();
+						propriedadeBean.setIdPropriedade(rs.getInt("iDPropriedade"));
+						propriedadeBean.setNomePropriedade(rs.getString("NomeProriedade"));
+						propriedadeBean.setResponsavel(rs.getString("Responsavel"));
+						propriedadeBean.setEmailResponsavel(rs.getString("EmailReponsavel"));
+						propriedadeBean.setLatitude(rs.getString("LocalizacaoLatitude"));
+						propriedadeBean.setLongitude(rs.getString("LocalizacaoLongitude"));
+						propriedadeBean.setDataCadastro(rs.getString("DataCadastro"));
+						propriedadeList.add(propriedadeBean);
+
+					}
+					propriedadeBean.setReason(callableStatement.getString(9));
+					System.out.println(propriedadeBean.toString());
+				} catch (SQLException e) {
+					e.printStackTrace();
+					throw e;
+				} finally {
+					super.dbClose(connection, callableStatement);
+				}
+				return propriedadeList;
+			}
 }

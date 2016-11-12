@@ -1,9 +1,10 @@
-/**
+ /**
  * 
  */
 package br.com.bravos.webservices.controller;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +52,7 @@ public class PropriedadeRestController implements _TratamentoRetorno {
 			proprieadeBean.setIdUsuario(jsonObject.getInt("idUsuario"));
 			proprieadeBean.setNomePropriedade(jsonObject.getString("nomePropriedade"));
 			proprieadeBean.setResponsavel(jsonObject.getString("responsavel"));
+			proprieadeBean.setEmailResponsavel(jsonObject.getString("emailResponsavel"));
 			proprieadeBean.setLatitude(jsonObject.getString("latitude"));
 			proprieadeBean.setLongitude(jsonObject.getString("longitude"));
 			// Json ok
@@ -96,7 +98,27 @@ public class PropriedadeRestController implements _TratamentoRetorno {
 		return proprieadeBean;
 
 	}
+	//Consultar Todas as propriedade
+	@RequestMapping(value = "/consultarPropriedades", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public List<PropriedadeBean> consultarPropriedades() {
+		List<PropriedadeBean> proprieadeList = null;
+		try {
+			proprieadeList = new PropriedadeDAO().execPropriedadesRetornar();
+	//		tratamentoRetorno(proprieadeBean.getReason());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-6");
+			proprieadeBean.setDetail(EnumErroPropriedade._6_SQLException.toString());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			proprieadeBean.setSuccess(false);
+			proprieadeBean.setReason("-7");
+			proprieadeBean.setDetail(EnumErroPropriedade._7_ClassNotFoundException.toString());
+		}
+		return proprieadeList;
 
+	}
 	@RequestMapping(value = "/deletarPropriedade", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public PropriedadeBean deletarPropriedade(@RequestBody String jsonDeletarSensor) throws JsonProcessingException {
 		proprieadeBean = new PropriedadeBean();

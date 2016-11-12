@@ -105,7 +105,9 @@ public class UsuarioDAO extends ConexaoDAO {
 				usuarioBean.setIdPerfil(rs.getInt("IDPerfil"));
 				usuarioBean.setNome(rs.getString("Nome"));
 				usuarioBean.setLogin(rs.getString("Login"));
+				usuarioBean.setEmail(rs.getString("Login"));
 				usuarioBean.setSenha("*********");
+				usuarioBean.setToken("*********");
 				usuario.add(usuarioBean);
 			}
 

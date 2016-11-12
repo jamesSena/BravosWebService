@@ -88,7 +88,6 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	
 	@RequestMapping(value = "/consultarUsuarios", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<UsuarioBean> consultarUsuarios() {
-		System.out.println("Teste");
 		try {
 			usuarioList = new UsuarioDAO().execUsuarioRetornarTodos();
 			tratamentoRetorno(usuarioList.get(0).getReason());
@@ -102,11 +101,6 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			usuarioList.add(new UsuarioBean(false, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7" ));
 		}
 		return usuarioList;
-	}
-
-	@RequestMapping(value="/**", method=RequestMethod.OPTIONS)
-	public ResponseEntity handle(){
-		return new ResponseEntity(HttpStatus.OK);
 	}
 	/**
 	 * @param email
@@ -128,7 +122,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 				// Data de emissão em segundos do Token
 				long iat = System.currentTimeMillis() / 1000;
 				// Data de Expiração do token, é o tempo atual mais 1 minuto
-				long exp = iat + 60;
+				long exp = iat + 6000;
 				
 				//Criptografa passando a senha
 				JWTSigner signer = new JWTSigner(SECRET);	
