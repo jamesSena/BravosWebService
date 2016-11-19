@@ -5,6 +5,8 @@ package br.com.bravos.webservices.model;
 
 import java.util.Date;
 
+import br.com.bravos.webservices.filtro.Token;
+
 /**
  * @author JamessonSena
  *
@@ -36,7 +38,12 @@ public class NotificacaoBean extends _BeanAbstract{
 		this.dataFim = dataFim;
 	}
 	public NotificacaoBean() {
-		super();
+		this.setToken(new Token().gerarToken(idUsuario));
+	}
+	public NotificacaoBean(String token) {
+		if(token.isEmpty()){this.setToken(token);return;}
+		this.setToken(new Token().gerarToken(idUsuario));
+
 	}
 	/**
 	 * @param success

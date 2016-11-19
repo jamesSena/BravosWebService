@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.bravos.webservices.dao.NotificacaoDAO;
 import br.com.bravos.webservices.enums.EnumErroNotificacao;
-import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.model.NotificacaoBean;
 
 /**
@@ -122,6 +121,7 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 	 */
 	@RequestMapping(value = "/consultarNotificao", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<NotificacaoBean> consultarNotificao(@RequestBody String jsonConsultarNotificao) {
+		notificacaoList = new ArrayList<>();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonConsultarNotificao);
 			System.out.println(jsonObject.toString());
@@ -131,14 +131,16 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 			String strDataFim = jsonObject.getString("dataFim");
 			
 			// Json ok
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			System.out.println(sdf.toString());
 			sdf.setLenient(false);		
 			Date dataInicio = sdf.parse(strDataInicio);
 			Date dataFim = sdf.parse(strDataFim);
 
 			notificacaoList = new NotificacaoDAO().execNotificacaoRetornar(idUsuario, idPropriedade, dataInicio, dataFim);
-			if (!notificacaoList.isEmpty())
-				tratamentoRetorno(notificacaoList.get(0).getReason());
+			System.out.println(notificacaoList.size());
+//			if (!notificacaoList.isEmpty())
+//				tratamentoRetorno(notificacaoList.get(0).getReason());
 		} catch (JSONException e) {
 			
 			e.printStackTrace();

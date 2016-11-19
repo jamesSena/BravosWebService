@@ -5,6 +5,8 @@ package br.com.bravos.webservices.model;
 
 import java.util.Date;
 
+import br.com.bravos.webservices.filtro.Token;
+
 /**
  * @author JamessonSena
  *
@@ -19,8 +21,14 @@ public class EstacaBean extends _BeanAbstract {
 	
 	
 	
-	public EstacaBean() {super();}
-	
+	public EstacaBean() {
+		this.setToken(new Token().gerarToken(idEstaca));
+	}
+	public EstacaBean(String token) {
+		if(token.isEmpty()){this.setToken(token);return;}
+		this.setToken(new Token().gerarToken(idEstaca));
+
+	}	
 	/**
 	 * @param success
 	 * @param detail

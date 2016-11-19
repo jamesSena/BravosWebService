@@ -3,6 +3,8 @@
  */
 package br.com.bravos.webservices.model;
 
+import br.com.bravos.webservices.filtro.Token;
+
 /**
  * @author JamessonSena
  *
@@ -12,6 +14,46 @@ public class PropriedadeBean extends _BeanAbstract{
 
 	private int idUsuario,	idPropriedade;
 	private String nomePropriedade, responsavel, emailResponsavel, latitude, longitude, dataCadastro;
+	
+	
+	
+	
+	/**
+	 * 
+	 */
+	public PropriedadeBean() {
+		this.setToken(new Token().gerarToken(idUsuario));
+	}
+	public PropriedadeBean(String token) {
+		if(token.isEmpty()){this.setToken(token);return;}
+		this.setToken(new Token().gerarToken(idUsuario));
+	}
+	/**
+	 * @param success
+	 * @param detail
+	 * @param reason
+	 * @param idUsuario
+	 * @param idPropriedade
+	 * @param nomePropriedade
+	 * @param responsavel
+	 * @param emailResponsavel
+	 * @param latitude
+	 * @param longitude
+	 * @param dataCadastro
+	 */
+	public PropriedadeBean(boolean success, String detail, String reason, int idUsuario, int idPropriedade,
+			String nomePropriedade, String responsavel, String emailResponsavel, String latitude, String longitude,
+			String dataCadastro) {
+		super(success, detail, reason);
+		this.idUsuario = idUsuario;
+		this.idPropriedade = idPropriedade;
+		this.nomePropriedade = nomePropriedade;
+		this.responsavel = responsavel;
+		this.emailResponsavel = emailResponsavel;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.dataCadastro = dataCadastro;
+	}
 	/**
 	 * @return the idUsuario
 	 */

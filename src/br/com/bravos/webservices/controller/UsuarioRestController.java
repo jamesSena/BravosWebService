@@ -1,25 +1,24 @@
 package br.com.bravos.webservices.controller;
 
 import java.sql.SQLException;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.auth0.jwt.JWTSigner;
-
 import br.com.bravos.webservices.dao.UsuarioDAO;
 import br.com.bravos.webservices.enums.EnumErroUsuario;
+import br.com.bravos.webservices.filtro.Token;
 import br.com.bravos.webservices.model.UsuarioBean;
 
 /**
@@ -30,14 +29,9 @@ import br.com.bravos.webservices.model.UsuarioBean;
 @RestController
 public class UsuarioRestController implements _TratamentoRetorno{
 	
-	public static final String SECRET = "crifradoprograma"; // cifra para descriptografar.
-	public static final String ISSUER = "Jamesson Sales de Sena"; // emissor do token.
-	
-	
 	private UsuarioBean usuario;
 	private String retorno;
 	private List<UsuarioBean> usuarioList;
-
 	/**
 	 * Construtor default
 	 */
@@ -90,6 +84,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	public List<UsuarioBean> consultarUsuarios() {
 		try {
 			usuarioList = new UsuarioDAO().execUsuarioRetornarTodos();
+			usuarioList.get(0).setToken(new Token().gerarToken(usuario.getIdUsuario()));
 			tratamentoRetorno(usuarioList.get(0).getReason());
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -119,24 +114,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			usuario = new UsuarioDAO().execUsuarioRetornarEspecifico(login, senha);
 			
 			if (usuario!=null) { // ver se passou um usuario
-				// Data de emissão em segundos do Token
-				long iat = System.currentTimeMillis() / 1000;
-				// Data de Expiração do token, é o tempo atual mais 1 minuto
-				long exp = iat + 6000;
-				
-				//Criptografa passando a senha
-				JWTSigner signer = new JWTSigner(SECRET);	
-				
-				//HashMap passando as informações necessaria para a criação do toker
-				HashMap<String, Object> claims = new HashMap<>();
-				claims.put("iat", iat);
-				claims.put("exp", exp);
-				claims.put("iss", ISSUER);
-				claims.put("id_usuario", usuario.getIdUsuario());
-				
-				// gerar Token8
-				String jwt = signer.sign(claims); // Método crpitografa toda a HashMap na forma de um Token
-				usuario.setToken(jwt);
+				usuario.setToken(new Token().gerarToken(usuario.getIdUsuario()));
 			}
 			tratamentoRetorno(usuario.getReason());
 		} catch (ClassNotFoundException e) {
@@ -154,13 +132,13 @@ public class UsuarioRestController implements _TratamentoRetorno{
 
 	/**
 	 * @param JSON:
-	 *            idUsuario, ativo, email, idPerfil, idPropriedade, login, nome,
+	 *            idUsuario, ativo, idPerfil, idPropriedade, login, nome,
 	 *            senha
 	 * @return UsuarioBean
 	 */
 	@RequestMapping(value = "/atualizarUsuario", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public UsuarioBean atualizarUsuario(@RequestBody String jsonAtualizar) {
-		System.out.println(jsonAtualizar.toString());
+	public UsuarioBean atualizarUsuario(@RequestBody String jsonAtualizar, @RequestHeader String Authorization) {
+		System.out.println(Authorization);
 		usuario = new UsuarioBean();
 		int idUsuario = 0;
 		try {
@@ -168,7 +146,6 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			System.out.println(jsonObject.toString());
 			idUsuario = jsonObject.getInt("idUsuario");
 			usuario.setAtivo(jsonObject.getBoolean("ativo"));
-			usuario.setEmail(jsonObject.getString("email"));
 			usuario.setIdPerfil(jsonObject.getInt("idPerfil"));
 			usuario.setIdPropriedade(jsonObject.getInt("idPropriedade"));
 			usuario.setLogin(jsonObject.getString("login"));
@@ -176,8 +153,8 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			usuario.setSenha(jsonObject.getString("senha"));
 			retorno = new UsuarioDAO().execUsuarioAtualizar(idUsuario, usuario.getLogin(), usuario.getSenha(),
 					usuario.getIdPropriedade(), usuario.isAtivo(), usuario.getNome(),usuario.getIdPerfil());
-
 			tratamentoRetorno(retorno);
+			usuario.setToken(new Token().gerarToken(usuario.getIdUsuario()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 			usuario = new UsuarioBean(true, EnumErroUsuario._5_JSONException.toString(), "-5");
@@ -210,6 +187,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			usuario.setSenha(jsonObject.getString("senha"));
 			retorno = new UsuarioDAO().execUsuarioRemover(usuario.getIdUsuario(), usuario.getLogin(), usuario.getSenha());
 			tratamentoRetorno(retorno);
+			usuario.setToken(new Token().gerarToken(usuario.getIdUsuario()));
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -231,14 +209,13 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	 */
 	@RequestMapping(value = "/excluirTodosUsuario", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public UsuarioBean excluirTodosUsuario(@RequestBody String jsonExcluirTodos) {
-		System.out.println(jsonExcluirTodos.toString());
 		usuario = new UsuarioBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonExcluirTodos);
-			System.out.println(jsonObject.toString());
 			usuario.setIdUsuario(jsonObject.getInt("idUsuario"));
 			retorno = new UsuarioDAO().execUsuarioRemoverTodos(usuario.getIdUsuario());
 			tratamentoRetorno(retorno);
+			usuario.setToken(new Token().gerarToken(usuario.getIdUsuario()));
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -261,7 +238,6 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	@RequestMapping(value = "/bloquearUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
 	public UsuarioBean bloquearUsuario(@RequestBody String jsonBloquear) {
-		System.out.println(jsonBloquear.toString());
 		usuario = new UsuarioBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonBloquear);
@@ -271,6 +247,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			usuario.setSenha(jsonObject.getString("senha"));
 			retorno = new UsuarioDAO().execUsuarioBloquear(usuario.getIdUsuario(), usuario.getLogin(), false);
 			tratamentoRetorno(retorno);
+			usuario.setToken(new Token().gerarToken(usuario.getIdUsuario()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 			usuario = new UsuarioBean(true, EnumErroUsuario._5_JSONException.toString(), "-5");
@@ -301,6 +278,8 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			usuario.setSenha(jsonObject.getString("senha"));
 			retorno = new UsuarioDAO().execUsuarioBloquear(usuario.getIdUsuario(), usuario.getLogin(), true);
 			tratamentoRetorno(retorno);
+			usuario.setToken(new Token().gerarToken(usuario.getIdUsuario()));
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 			usuario = new UsuarioBean(true, EnumErroUsuario._5_JSONException.toString(), "-5");

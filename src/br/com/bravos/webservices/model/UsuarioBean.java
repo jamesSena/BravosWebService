@@ -5,7 +5,7 @@ package br.com.bravos.webservices.model;
  *
  */
 public class UsuarioBean extends _BeanAbstract {
-	private String login, senha, email, nome, token;
+	private String login, senha, email, nome;
 	private int idUsuario, idPropriedade, idPerfil;
 	private boolean ativo;
 	
@@ -48,22 +48,6 @@ public class UsuarioBean extends _BeanAbstract {
 	public UsuarioBean() {
 	}
 	
-	
-	/**
-	 * @return the token
-	 */
-	public String getToken() {
-		return token;
-	}
-
-
-	/**
-	 * @param token the token to set
-	 */
-	public void setToken(String token) {
-		this.token = token;
-	}
-
 
 	/**
 	 * @return

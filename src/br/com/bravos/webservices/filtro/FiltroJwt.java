@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 
 import com.auth0.jwt.JWTVerifier;
 
-import br.com.bravos.webservices.controller.UsuarioRestController;
 
 
 /**
@@ -44,8 +43,9 @@ public class FiltroJwt implements Filter{
 			return;
 		}
 		String token = request.getHeader("Authorization"); // Token se encontra no elemento Authorization do cabeçalho.
+		new Token().setToken(token);
 		try{
-			JWTVerifier verifier = new JWTVerifier(UsuarioRestController.SECRET);
+			JWTVerifier verifier = new JWTVerifier(Token.SECRET);
 			Map<String, Object> claims = verifier.verify(token);
 			System.out.println(claims);
 			filterChain.doFilter(servletRequest, servletResponse);

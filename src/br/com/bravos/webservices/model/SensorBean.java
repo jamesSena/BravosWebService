@@ -3,6 +3,7 @@
  */
 package br.com.bravos.webservices.model;
 
+import br.com.bravos.webservices.filtro.Token;
 
 /**
  * @author JamessonSena
@@ -25,7 +26,14 @@ public class SensorBean extends _BeanAbstract {
 		super(success, detail, reason);
 	}
 
+	public SensorBean() {
+		this.setToken(new Token().gerarToken(idUsuario));
+	}
+	public SensorBean(String token) {
+		if(token.isEmpty()){this.setToken(token);return;}
+		this.setToken(new Token().gerarToken(idUsuario));
 
+	}
 	/**
 	 * @param success
 	 * @param detail
@@ -38,7 +46,7 @@ public class SensorBean extends _BeanAbstract {
 	 * @param longitude
 	 * @param latitude
 	 */
-	public SensorBean(boolean success, String detail, String reason,  int idSensor, int idCodArea,
+	public SensorBean(boolean success, String detail, String reason, int idSensor, int idCodArea,
 			int idUsuario, String nome, String longitude, String latitude) {
 		super(success, detail, reason);
 	
@@ -49,17 +57,6 @@ public class SensorBean extends _BeanAbstract {
 		this.longitude = longitude;
 		this.latitude = latitude;
 	}
-
-
-	/**
-	 * 
-	 */
-	public SensorBean() {
-		super();
-	}
-	
-	
-	
 	
 	/**
 	 * @return the iDPropriedade

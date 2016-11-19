@@ -7,6 +7,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -85,9 +86,10 @@ public class NotificacaoDAO extends ConexaoDAO {
 				callableStatement.setInt(9, 0);
 				callableStatement.registerOutParameter(10, java.sql.Types.VARCHAR);
 				ResultSet resultSet = callableStatement.executeQuery();
-		
+				String tokenList = "";
 				while (resultSet.next()) {
-					notificacaoBean = new NotificacaoBean();
+					notificacaoBean = new NotificacaoBean(tokenList);
+					tokenList = notificacaoBean.getToken();
 					notificacaoBean.setIdNotificacao(resultSet.getInt("IDNotificacao"));
 					notificacaoBean.setIdSensor(resultSet.getInt("IDSensor"));
 					notificacaoBean.setIdPropriedade(resultSet.getInt("IDPropriedade"));
@@ -114,6 +116,7 @@ public class NotificacaoDAO extends ConexaoDAO {
 //	-- idoperacao = 3 -> retornar notificação entre datas de uma propriedade
 	public List<NotificacaoBean> execNotificacaoRetornar(int idUsuario, int idPropriedade, Date dataInicio, Date dataFim ) throws SQLException {
 		retorno = "-1";
+		NotificacaoList = new ArrayList<NotificacaoBean>();
 		try {
 			
 			callableStatement = connection.prepareCall("{ CALL spNotificacao (?,?,?,?,?,?,?,?,?,?)}");
@@ -124,31 +127,46 @@ public class NotificacaoDAO extends ConexaoDAO {
 			callableStatement.setInt(5, idPropriedade);
 			callableStatement.setInt(6, 0);
 			callableStatement.setDate(7, new java.sql.Date(dataInicio.getTime()));
-			callableStatement.setDate(8, new java.sql.Date(dataInicio.getTime()));
+			callableStatement.setDate(8, new java.sql.Date(dataFim.getTime()));
 			callableStatement.setInt(9, 0);
 			callableStatement.registerOutParameter(10, java.sql.Types.VARCHAR);
 			ResultSet resultSet = callableStatement.executeQuery();
-	
+			//Se não retornar o id da notificação é porque não tem notificação e a aplicação não vai executar as linhas abaaixo
+			if(callableStatement.getMoreResults()){
+
+				 resultSet =	callableStatement.getResultSet();
+			}
+			int i =0;
 			while (resultSet.next()) {
+		
 				notificacaoBean = new NotificacaoBean();
+
+				
 				notificacaoBean.setIdNotificacao(resultSet.getInt("IDNotificacao"));
 				notificacaoBean.setIdSensor(resultSet.getInt("IDSensor"));
 				notificacaoBean.setIdPropriedade(resultSet.getInt("IDPropriedade"));
 				notificacaoBean.setIdArea(resultSet.getInt("IDArea"));
+				System.out.println(notificacaoBean.toString());
+				notificacaoBean.setDataFim(new java.util.Date(resultSet.getDate("Data").getTime()));
 				notificacaoBean.setDataFim(new java.util.Date(resultSet.getDate("Data").getTime()));
 				notificacaoBean.setIdStatus(resultSet.getInt("Status"));
 				NotificacaoList.add(notificacaoBean);
-			}
+				System.out.println("retorno: teste de loop " + i++);
+
+				}
 			
 			retorno = callableStatement.getString(10);
-			System.out.println("retorno: " + retorno);
+			System.out.println("retorno: teste " + retorno);
 			
-			
-			
+	
+			System.out.println(NotificacaoList.toString());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
-		} finally {
+		} catch (Exception e){
+			e.printStackTrace();
+
+		}finally {
 			super.dbClose(connection, callableStatement);
 		}
 		return NotificacaoList;

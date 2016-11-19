@@ -3,6 +3,8 @@
  */
 package br.com.bravos.webservices.model;
 
+import br.com.bravos.webservices.filtro.Token;
+
 /**
  * @author JamessonSena
  *
@@ -12,6 +14,11 @@ public class AreaBean extends _BeanAbstract{
 	private int idArea,idPropriedade;
 	
 	public AreaBean() {
+		this.setToken(new Token().gerarToken(idArea));
+	}
+	public AreaBean(String token) {
+		if(token.isEmpty()){this.setToken(token);return;}
+		this.setToken(new Token().gerarToken(idArea));
 
 	}
 	/**
@@ -22,7 +29,7 @@ public class AreaBean extends _BeanAbstract{
 	 * @param idArea
 	 * @param idPropriedade
 	 */
-	public AreaBean(boolean success, String detail, String reason, String nomeArea, int idArea, int idPropriedade) {
+	public AreaBean(boolean success, String detail, String reason, String token, String nomeArea, int idArea, int idPropriedade) {
 		super(success, detail, reason);
 		this.nomeArea = nomeArea;
 		this.idArea = idArea;
@@ -74,11 +81,13 @@ public class AreaBean extends _BeanAbstract{
 	}
 	@Override
 	public String toString() {
-		return String.format("AreaBean [nomeArea=%s, idArea=%s, idPropriedade=%s, super()=%s]", nomeArea, idArea,
-				idPropriedade, super.toString());
+		return String.format(
+				"AreaBean [nomeArea=%s, idArea=%s, idPropriedade=%s, isSuccess()=%s, getDetail()=%s, getReason()=%s, getToken()=%s]",
+				nomeArea, idArea, idPropriedade, isSuccess(), getDetail(), getReason(), getToken());
 	}
-	
 
+	
+	
 	
 
 }

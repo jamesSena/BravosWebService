@@ -6,7 +6,7 @@ package br.com.bravos.webservices.model;
  */
 public class _BeanAbstract {
 	private boolean success = true;
-	private String detail ="sucesso", reason = "1";
+	private String detail ="sucesso", reason = "1", token;
 
 	/**
 	 * @param success
@@ -28,7 +28,7 @@ public class _BeanAbstract {
 	public _BeanAbstract() {
 	}
 
-	public void set_BeanAbstract(boolean success, String detail, String reason) {
+	public void set_BeanAbstract(boolean success, String detail, String reason ) {
 		this.success = success;
 		this.detail = detail;
 		this.reason = reason;
@@ -76,13 +76,30 @@ public class _BeanAbstract {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+
+	/**
+	 * @return the token
 	 */
+	public String getToken() {
+		return token;
+	}
+
+
+
+	/**
+	 * @param token the token to set
+	 */
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	@Override
 	public String toString() {
-		return String.format("_BeanAbstract [success=%s, detail=%s, reason=%s]", success, detail, reason);
+		return "_BeanAbstract [success=" + success + ", detail=" + detail + ", reason=" + reason + ", token=" + token
+				+ "]";
 	}
+
+
 
 
 

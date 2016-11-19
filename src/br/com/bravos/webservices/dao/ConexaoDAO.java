@@ -11,7 +11,6 @@ import java.sql.SQLException;
  */
 public class ConexaoDAO {
 
-	private String ambiente = "welton";
 	private String stringConexao, usuario, senha;
 	private Connection connection;
 
@@ -38,21 +37,10 @@ public class ConexaoDAO {
 	 * #Construtor default com as informações básicas de conexao
 	 */
 	public ConexaoDAO() {
-		switch (ambiente) {
-		case "welton":
-			stringConexao = "jdbc:sqlserver://192.168.2.124:1433;databaseName=BDBovControlProd";
+			stringConexao = "jdbc:sqlserver://192.168.2.113:1433;databaseName=BDBovControlProd";
 			usuario = "sa";
-			senha = "1014231563";
-			break;
-		case "jamesson":
-			stringConexao = "jdbc:sqlserver://localhost:1433;databaseName=BDBovControl";
-			usuario = "sa";
-			senha = "jamessonsena";
-		default:
-			break;
-		}
-		
-		
+		//	senha = "jamessonSena";
+		senha = "1014231563";
 	}
 
 	/**
@@ -94,11 +82,18 @@ public class ConexaoDAO {
 		return connection;
 	}
 
-	protected void dbClose(Connection connection, CallableStatement callableStatement) throws SQLException {
-		if (connection != null && !connection.isClosed() && callableStatement != null && !callableStatement.isClosed())
-			callableStatement.close();
+	protected void dbClose(Connection connection, CallableStatement callableStatement)  {
+	
 
-		if (connection != null && !connection.isClosed())
-			connection.close();
+			try {
+				if (connection != null && !connection.isClosed() && callableStatement != null && !callableStatement.isClosed())
+					callableStatement.close();
+				if (connection != null && !connection.isClosed())
+					connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+	
 	}
 }
