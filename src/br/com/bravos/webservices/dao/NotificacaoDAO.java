@@ -94,6 +94,7 @@ public class NotificacaoDAO extends ConexaoDAO {
 					notificacaoBean.setIdSensor(resultSet.getInt("IDSensor"));
 					notificacaoBean.setIdPropriedade(resultSet.getInt("IDPropriedade"));
 					notificacaoBean.setIdArea(resultSet.getInt("IDArea"));
+					notificacaoBean.setDataInicio(new java.util.Date(resultSet.getDate("Data").getTime()));
 					notificacaoBean.setDataFim(new java.util.Date(resultSet.getDate("Data").getTime()));
 					notificacaoBean.setIdStatus(resultSet.getInt("Status"));
 					NotificacaoList.add(notificacaoBean);
@@ -148,7 +149,7 @@ public class NotificacaoDAO extends ConexaoDAO {
 				notificacaoBean.setIdArea(resultSet.getInt("IDArea"));
 				System.out.println(notificacaoBean.toString());
 				notificacaoBean.setDataFim(new java.util.Date(resultSet.getDate("Data").getTime()));
-				notificacaoBean.setDataFim(new java.util.Date(resultSet.getDate("Data").getTime()));
+				notificacaoBean.setDataInicio(new java.util.Date(resultSet.getDate("Data").getTime()));
 				notificacaoBean.setIdStatus(resultSet.getInt("Status"));
 				NotificacaoList.add(notificacaoBean);
 				System.out.println("retorno: teste de loop " + i++);
