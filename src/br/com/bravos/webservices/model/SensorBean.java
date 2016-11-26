@@ -12,7 +12,7 @@ import br.com.bravos.webservices.filtro.Token;
 public class SensorBean extends _BeanAbstract {
 
 	private int idSensor,idCodArea, idUsuario,iDPropriedade;
-	private String nome, longitude, latitude, Data;
+	private String nome, longitude, latitude, Data, nomeAreaAssociada;
 
 
 	
@@ -58,6 +58,23 @@ public class SensorBean extends _BeanAbstract {
 		this.latitude = latitude;
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public String getNomeAreaAssociada() {
+		return nomeAreaAssociada;
+	}
+
+	public void setNomeAreaAssociada(String nomeAreaAssociada) {
+		this.nomeAreaAssociada = nomeAreaAssociada;
+	}
+
 	/**
 	 * @return the iDPropriedade
 	 */

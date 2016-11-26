@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -46,7 +47,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	 */
 
 	@RequestMapping(value = "/cadastrarUsuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes= MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public UsuarioBean cadastrarUsuario(@RequestBody String jsonCadastro){
+	public ResponseEntity<UsuarioBean> cadastrarUsuario(@RequestBody String jsonCadastro){
 		usuario = new UsuarioBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
@@ -72,7 +73,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 			usuario = new UsuarioBean(false, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7");
 
 		} 
-		return usuario;
+		return ResponseEntity.ok(usuario);
 
 	}
 

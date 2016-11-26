@@ -7,6 +7,8 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -137,22 +139,21 @@ public class NotificacaoDAO extends ConexaoDAO {
 
 				 resultSet =	callableStatement.getResultSet();
 			}
-			int i =0;
 			while (resultSet.next()) {
-		
 				notificacaoBean = new NotificacaoBean();
 
-				
 				notificacaoBean.setIdNotificacao(resultSet.getInt("IDNotificacao"));
 				notificacaoBean.setIdSensor(resultSet.getInt("IDSensor"));
 				notificacaoBean.setIdPropriedade(resultSet.getInt("IDPropriedade"));
-				notificacaoBean.setIdArea(resultSet.getInt("IDArea"));
-				System.out.println(notificacaoBean.toString());
-				notificacaoBean.setDataFim(new java.util.Date(resultSet.getDate("Data").getTime()));
-				notificacaoBean.setDataInicio(new java.util.Date(resultSet.getDate("Data").getTime()));
+				//notificacaoBean.setIdArea(resultSet.getInt("IDArea"));
+				notificacaoBean.setDataFim(dataFim);
+				notificacaoBean.setDataInicio(dataInicio);
 				notificacaoBean.setIdStatus(resultSet.getInt("Status"));
+
+				DateFormat df1 = new SimpleDateFormat("dd/MM/yyyy");
+				String dataStr = df1.format(resultSet.getDate("Data"));
+				notificacaoBean.setDataNotificacao(dataStr);
 				NotificacaoList.add(notificacaoBean);
-				System.out.println("retorno: teste de loop " + i++);
 
 				}
 			
@@ -166,7 +167,7 @@ public class NotificacaoDAO extends ConexaoDAO {
 			throw e;
 		} catch (Exception e){
 			e.printStackTrace();
-
+			throw e;
 		}finally {
 			super.dbClose(connection, callableStatement);
 		}

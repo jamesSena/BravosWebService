@@ -14,8 +14,9 @@ import br.com.bravos.webservices.filtro.Token;
 public class NotificacaoBean extends _BeanAbstract{
 	private int idUsuario, idSensor, idArea, idPropriedade, idStatus, idNotificacao;
 	private Date dataInicio, dataFim;
+	private String dataNotificacao;
 	
-	
+
 	/**
 	 * @param idUsuario
 	 * @param idSensor
@@ -148,6 +149,14 @@ public class NotificacaoBean extends _BeanAbstract{
 	 */
 	public void setDataFim(Date dataFim) {
 		this.dataFim = dataFim;
+	}
+	
+	
+	public String getDataNotificacao() {
+		return dataNotificacao;
+	}
+	public void setDataNotificacao(String dataNotificacao) {
+		this.dataNotificacao = dataNotificacao;
 	}
 	@Override
 	public String toString() {

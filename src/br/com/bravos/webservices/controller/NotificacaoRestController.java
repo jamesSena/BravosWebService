@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.bravos.webservices.dao.NotificacaoDAO;
 import br.com.bravos.webservices.enums.EnumErroNotificacao;
 import br.com.bravos.webservices.model.NotificacaoBean;
+import br.com.bravos.webservices.model.NotificacaoListBean;
 
 /**
  * @author JamessonSena
@@ -120,8 +121,8 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 	 * @return Lista de NotificacaoBean
 	 */
 	@RequestMapping(value = "/consultarNotificao", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public List<NotificacaoBean> consultarNotificao(@RequestBody String jsonConsultarNotificao) {
-		notificacaoList = new ArrayList<>();
+	public NotificacaoListBean consultarNotificao(@RequestBody String jsonConsultarNotificao) {
+		NotificacaoListBean notificacaoListBean= new NotificacaoListBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonConsultarNotificao);
 			System.out.println(jsonObject.toString());
@@ -132,15 +133,13 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 			
 			// Json ok
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-			System.out.println(sdf.toString());
 			sdf.setLenient(false);		
 			Date dataInicio = sdf.parse(strDataInicio);
 			Date dataFim = sdf.parse(strDataFim);
 
-			notificacaoList = new NotificacaoDAO().execNotificacaoRetornar(idUsuario, idPropriedade, dataInicio, dataFim);
-			System.out.println(notificacaoList.size());
-//			if (!notificacaoList.isEmpty())
-//				tratamentoRetorno(notificacaoList.get(0).getReason());
+			notificacaoListBean.setNotificacaoList(new NotificacaoDAO().execNotificacaoRetornar(idUsuario, idPropriedade, dataInicio, dataFim));
+
+			
 		} catch (JSONException e) {
 			
 			e.printStackTrace();
@@ -172,7 +171,7 @@ public class NotificacaoRestController implements _TratamentoRetorno {
 			List<NotificacaoBean> notificacaoList =  new ArrayList<NotificacaoBean>();
 			notificacaoList.add(notificacaoBean);
 	}
-		return notificacaoList;
+		return notificacaoListBean;
 	}
 	
 	/**

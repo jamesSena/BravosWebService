@@ -192,6 +192,136 @@ public class SensorRestController implements _TratamentoRetorno{
 	}
 
 
+	/**
+	 * @return JSON: codigo
+	 */
+	@RequestMapping(value = "/associarSensorArea", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public SensorBean associarSensorArea(@RequestBody String jsonAssociarSensor) {
+		try {
+			
+			JSONObject jsonObject = new JSONObject(jsonAssociarSensor);
+			System.out.println(jsonObject.toString());
+			int idUsuario = jsonObject.getInt("idUsuario");
+			int idArea = jsonObject.getInt("idArea");
+			int idSensor = jsonObject.getInt("idSensor");
+			sensorBean.setReason(new SensorDAO().execSensorAssociarArea(idUsuario, idSensor, idArea));
+			tratamentoRetorno(sensorBean.getReason());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._6_SQLException.toString(), "-6");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._7_ClassNotFoundException.toString(), "-7");
+		} catch (JSONException e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._5_JSONException.toString(), "-5");
+
+		}
+		return sensorBean;
+	}
+	
+	/**
+	 * @return JSON: codigo
+	 */
+	@RequestMapping(value = "/retornarSensorPropriedade", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public List<SensorBean> sensorRetornarTodosdaPropriedade(@RequestBody String jsonAssociarSensor) {
+		try {
+			
+			JSONObject jsonObject = new JSONObject(jsonAssociarSensor);
+			System.out.println(jsonObject.toString());
+			int idUsuario = jsonObject.getInt("idUsuario");
+			int idArea = jsonObject.getInt("idArea");
+			int idSensor = jsonObject.getInt("idSensor");
+			int idPropriedade =  jsonObject.getInt("idPropriedade");
+			sensorList = new SensorDAO().execSensorRetornarTodosdaPropriedade(idUsuario, idSensor, idArea, idPropriedade);
+			tratamentoRetorno(sensorBean.getReason());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._6_SQLException.toString(), "-6");
+			sensorList.add(sensorBean);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._7_ClassNotFoundException.toString(), "-7");
+			sensorList.add(sensorBean);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._5_JSONException.toString(), "-5");
+			sensorList.add(sensorBean);
+		}catch (Exception e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._5_JSONException.toString(), "-5");
+			sensorList.add(sensorBean);
+		}
+		return sensorList;
+	}
+	/**
+	 * @return JSON: codigo
+	 */
+	@RequestMapping(value = "/sensorDeletarDaPropriedade", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public SensorBean sensorDeletarDaPropriedade(@RequestBody String jsonAssociarSensor) {
+		try {
+			
+			JSONObject jsonObject = new JSONObject(jsonAssociarSensor);
+			System.out.println(jsonObject.toString());
+			int idUsuario = jsonObject.getInt("idUsuario");
+			int idArea = jsonObject.getInt("idArea");
+			int idSensor = jsonObject.getInt("idSensor");
+			int idPropriedade =  jsonObject.getInt("idPropriedade");
+			String retorno = new SensorDAO().execSensorDeletarDaPropriedade(idUsuario, idSensor, idArea, idPropriedade);
+			tratamentoRetorno(retorno);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._6_SQLException.toString(), "-6");
+			sensorList.add(sensorBean);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._7_ClassNotFoundException.toString(), "-7");
+			sensorList.add(sensorBean);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._5_JSONException.toString(), "-5");
+			sensorList.add(sensorBean);
+		}catch (Exception e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._5_JSONException.toString(), "-5");
+			sensorList.add(sensorBean);
+		}
+		return sensorBean;
+	}
+	/**
+	 * @return JSON: codigo
+	 */
+	@RequestMapping(value = "/sensoresSemAssociacao", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public List<SensorBean> sensoresSemAssociacao(@RequestBody String jsonAssociarSensor) {
+		try {
+			
+			JSONObject jsonObject = new JSONObject(jsonAssociarSensor);
+			System.out.println(jsonObject.toString());
+			int idUsuario = jsonObject.getInt("idUsuario");
+			int idArea = jsonObject.getInt("idArea");
+			int idSensor = jsonObject.getInt("idSensor");
+			int idPropriedade =  jsonObject.getInt("idPropriedade");
+			sensorList = new SensorDAO().execSensoresSemAssociacao(idUsuario, idSensor, idArea, idPropriedade);
+			tratamentoRetorno(sensorBean.getReason());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._6_SQLException.toString(), "-6");
+			sensorList.add(sensorBean);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._7_ClassNotFoundException.toString(), "-7");
+			sensorList.add(sensorBean);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._5_JSONException.toString(), "-5");
+			sensorList.add(sensorBean);
+		}catch (Exception e) {
+			e.printStackTrace();
+			sensorBean.set_BeanAbstract(false, EnumErroSensor._5_JSONException.toString(), "-5");
+			sensorList.add(sensorBean);
+		}
+		return sensorList;
+	}
 	@Override
 	public void tratamentoRetorno(String erro) {
 		switch (erro) {
@@ -211,7 +341,14 @@ public class SensorRestController implements _TratamentoRetorno{
 			sensorBean.setSuccess(false);
 			sensorBean.setDetail(EnumErroSensor._4.toString());
 			break;
+		case "-5":
+			sensorBean.setSuccess(false);
+			sensorBean.setDetail(EnumErroSensor._5.toString());
+			break;
 		default:
+			sensorBean.setSuccess(true);
+			sensorBean.setDetail("sucesso");
+			
 			break;
 		}		
 	}
