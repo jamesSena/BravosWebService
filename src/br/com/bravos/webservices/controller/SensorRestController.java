@@ -1,6 +1,7 @@
 package br.com.bravos.webservices.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.bravos.webservices.dao.SensorDAO;
 import br.com.bravos.webservices.enums.EnumErroSensor;
+import br.com.bravos.webservices.model.NotificacaoBean;
 import br.com.bravos.webservices.model.SensorBean;
+import br.com.bravos.webservices.model.SensorListBean;
 /**
  * @author JamessonSena
  *
@@ -28,6 +31,7 @@ public class SensorRestController implements _TratamentoRetorno{
 	private SensorBean sensorBean;
 	private SensorDAO sensorDAO;
 	private List<SensorBean> sensorList;
+	private SensorListBean sensorListBean;
 	public SensorRestController() {
 		sensorBean = new SensorBean();
 	}
@@ -329,39 +333,32 @@ public class SensorRestController implements _TratamentoRetorno{
  * @return JSON: codigo
  */
 @RequestMapping(value = "/sensoresPorPropriedade/{idUsuario}/{idPropriedade}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public List<SensorBean> sensoresPorPropriedade(@PathVariable("idPropriedade")int idPropriedade, @PathVariable("idUsuario")int idUsuario) {
+public SensorListBean sensoresPorPropriedade(@PathVariable("idPropriedade")int idPropriedade, @PathVariable("idUsuario")int idUsuario) {
+	SensorListBean sensorList = new SensorListBean()  ;
 	try {
-		sensorList = new SensorDAO().execSensoresPorPropriedade(idUsuario, idPropriedade);
-		if(!sensorList.isEmpty()){
-		tratamentoRetorno(sensorList.get(0).getReason());}
-		else{
-		tratamentoRetorno("-1");
-		sensorList.add(sensorBean);
-		}
+		sensorList.setSensorList(new SensorDAO().execSensoresPorPropriedade(idUsuario, idPropriedade));
+		if(sensorList != null){
+		tratamentoRetorno(sensorList.getSensorList().get(0).getReason());}
 	} catch (SQLException e) {
 		e.printStackTrace();
 		sensorBean.set_BeanAbstract(false, EnumErroSensor._6_SQLException.toString(), "-6");
-		sensorList.add(sensorBean);
+		List<SensorBean> SensorBeanList =  new ArrayList<SensorBean>();
+		sensorList.setSensorList(SensorBeanList);
 	} catch (ClassNotFoundException e) {
 		e.printStackTrace();
 		sensorBean.set_BeanAbstract(false, EnumErroSensor._7_ClassNotFoundException.toString(), "-7");
-		sensorList.add(sensorBean);
+		List<SensorBean> SensorBeanList =  new ArrayList<SensorBean>();
+		SensorBeanList.add(sensorBean);
+		sensorList.setSensorList(SensorBeanList);
 	} catch (Exception e) {
 		e.printStackTrace();
 		sensorBean.set_BeanAbstract(false, EnumErroSensor._5_JSONException.toString(), "-5");
-		sensorList.add(sensorBean);
+		List<SensorBean> SensorBeanList =  new ArrayList<SensorBean>();
+		SensorBeanList.add(sensorBean);
+		sensorList.setSensorList(SensorBeanList);
 	}
 	return sensorList;
-}
-
-
-	
-	
-	
-	
-	
-	
-	
+}	
 	@Override
 	public void tratamentoRetorno(String erro) {
 		switch (erro) {

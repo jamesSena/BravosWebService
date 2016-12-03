@@ -4,6 +4,7 @@
 package br.com.bravos.webservices.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
@@ -21,7 +22,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import br.com.bravos.webservices.dao.PropriedadeDAO;
 import br.com.bravos.webservices.enums.EnumErroPropriedade;
 import br.com.bravos.webservices.enums.EnumErroUsuario;
+import br.com.bravos.webservices.model.ColaboradorListBean;
 import br.com.bravos.webservices.model.PropriedadeBean;
+import br.com.bravos.webservices.model.UsuarioBean;
 
 /**
  * @author JamessonSena
@@ -188,7 +191,27 @@ public class PropriedadeRestController implements _TratamentoRetorno {
 
 	}
 
+	/**
+	 * @return JSON: lista de UsuarioBean
+	 */
+	
+	@RequestMapping(value = "/consultarUsuariosPropriedade/{idPropriedade}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ColaboradorListBean consultarUsuariosPropriedade(@PathVariable("idPropriedade") int idPropriedade) {
+		ColaboradorListBean usuarioList = new ColaboradorListBean();
+		try {
+			usuarioList.setColaboradorList(new PropriedadeDAO().execPropriedadesRetornarFuncionarios(idPropriedade));
 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			usuarioList.setColaboradorList(new ArrayList<UsuarioBean>()); 
+			usuarioList.getColaboradorList().add(new UsuarioBean(false, EnumErroUsuario._6_SQLException.toString(), "-6"));
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			usuarioList.setColaboradorList(new ArrayList<UsuarioBean>()); 
+			usuarioList.getColaboradorList().add(new UsuarioBean(false, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7" ));
+		}
+		return usuarioList;
+	}
 	@Override
 	public void tratamentoRetorno(String erro) {
 		switch (erro) {

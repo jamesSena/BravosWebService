@@ -21,6 +21,8 @@ import br.com.bravos.webservices.dao.EstacaDAO;
 
 import br.com.bravos.webservices.enums.EnumErroEstaca;
 import br.com.bravos.webservices.model.EstacaBean;
+import br.com.bravos.webservices.model.EstacaListBean;
+import br.com.bravos.webservices.model.SensorBean;
 
 
 
@@ -236,20 +238,25 @@ public class EstacaRestController implements _TratamentoRetorno {
 	@RequestMapping(value = "/consultarEstacasDaPropriedade/{idUsuario}/{idPropriedade}", 
 			        method = RequestMethod.GET,
 			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public List<EstacaBean> consultarEstacasDaPropriedade(@PathVariable("idPropriedade")int idPropriedade, @PathVariable("idUsuario")int idUsuario) {
+	public EstacaListBean consultarEstacasDaPropriedade(@PathVariable("idPropriedade")int idPropriedade, @PathVariable("idUsuario")int idUsuario) {
+		EstacaListBean estacaListBean = new EstacaListBean();
 		try {
-			estacaList = new EstacaDAO().execEstacaRetornarTodosDaPropriedade(idPropriedade, idUsuario);
+			estacaListBean.setEstacaBean(new EstacaDAO().execEstacaRetornarTodosDaPropriedade(idPropriedade, idUsuario));
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			estacaList = new ArrayList<EstacaBean>(); 
 			estacaList.add(new EstacaBean(false, EnumErroEstaca._6_SQLException.toString(), "-6"));
+			List<EstacaBean> estacaBeanList =  new ArrayList<EstacaBean>();
+			estacaBeanList.add(estacaBean);
+			estacaListBean.setEstacaBean(estacaBeanList);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			estacaList = new ArrayList<EstacaBean>(); 
-			estacaList.add(new EstacaBean(false, EnumErroEstaca._7_ClassNotFoundException.toString(), "-7"));
+			estacaBean = new EstacaBean(false, EnumErroEstaca._7_ClassNotFoundException.toString(), "-7");
+			List<EstacaBean> estacaBeanList =  new ArrayList<EstacaBean>();
+			estacaBeanList.add(estacaBean);
+			estacaListBean.setEstacaBean(estacaBeanList);
 		}
-		return estacaList;
+		return estacaListBean;
 	}	
 	
 	

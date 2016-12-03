@@ -37,10 +37,10 @@ public class ConexaoDAO {
 	 * #Construtor default com as informações básicas de conexao
 	 */
 	public ConexaoDAO() {
-			stringConexao = "jdbc:sqlserver://192.168.1.33:1433;databaseName=BDBovControlProd";
+			stringConexao = "jdbc:sqlserver://192.168.3.11:1433;databaseName=BDBovControlProd";
 			usuario = "sa";
-			senha = "jamessonsena";
-		//senha = "1014231563";
+		//	senha = "jamessonSena";
+		senha = "1014231563";
 	}
 
 	/**

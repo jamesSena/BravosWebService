@@ -294,6 +294,39 @@ public class UsuarioRestController implements _TratamentoRetorno{
 		return usuario;
 	}
 
+	/**
+	 * @param JSON:
+	 *            idUsuario, ativo, idPerfil, idPropriedade, login, nome,
+	 *            senha
+	 * @return UsuarioBean
+	 */
+	@RequestMapping(value = "/atualizarUsuarioPropriedade", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public UsuarioBean atualizarUsuarioPropriedade(@RequestBody String jsonAtualizar, @RequestHeader String Authorization) {
+		System.out.println(Authorization);
+		usuario = new UsuarioBean();
+		try {
+			JSONObject jsonObject = new JSONObject(jsonAtualizar);
+			System.out.println(jsonObject.toString());
+			usuario.setIdPropriedade(jsonObject.getInt("idPropriedade"));
+			usuario.setLogin(jsonObject.getString("email"));
+			usuario.setEmail(jsonObject.getString("email"));
+			retorno = new UsuarioDAO().execUsuarioAtualizarPropriedade(usuario.getLogin(), usuario.getIdPropriedade());
+			tratamentoRetorno(retorno);
+			usuario.setToken(new Token().gerarToken(usuario.getIdUsuario()));
+		} catch (JSONException e) {
+			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._5_JSONException.toString(), "-5");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._6_SQLException.toString(), "-6");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			usuario = new UsuarioBean(true, EnumErroUsuario._7_ClassNotFoundException.toString(), "-7");
+
+		} 
+		return usuario;
+
+	}
 
 	//Traducao de todos os erros retornado pelo banco de dados para a consultas de usuario
 	@Override

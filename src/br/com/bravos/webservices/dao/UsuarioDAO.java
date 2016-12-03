@@ -302,5 +302,30 @@ public class UsuarioDAO extends ConexaoDAO {
 		}
 		return retorno;
 	}
+	// -- idoperacao = 8 -> atualizar usuario
+	public String execUsuarioAtualizarPropriedade(String login, int idPropriedade) throws SQLException {
+		String retorno = "-1";
+		try {
+			callableStatement = connection.prepareCall("{ CALL spUsuarios (?,?,?,?,?,?,?,?,?)}");
+			callableStatement.setInt(1, 8);
+			callableStatement.setInt(2, -1);
+			callableStatement.setString(3, login);
+			callableStatement.setString(4, "");
+			callableStatement.setInt(5, idPropriedade);
+			callableStatement.setBoolean(6, false);
+			callableStatement.setString(7, "");
+			callableStatement.setInt(8, -1);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
+			callableStatement.execute();
+			retorno = callableStatement.getString(9);
+			System.out.println("retorno: " + retorno);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			super.dbClose(connection, callableStatement);
+		}
+		return retorno;
+	}
 
 }

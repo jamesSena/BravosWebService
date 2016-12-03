@@ -17,42 +17,46 @@ import org.springframework.http.HttpStatus;
 
 import com.auth0.jwt.JWTVerifier;
 
-
-
 /**
  * @author JamessonSena
  *
  */
+
 @WebFilter("/*")
-public class FiltroJwt implements Filter{
+public class FiltroJwt implements Filter {
 
 	@Override
 	public void destroy() {
-		
+
 	}
-	
-	
+
 	@Override
-	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-		
-		//Castign realizado pois é necessário utilizar métodos específicos do HttpServletRequest e Response
-		HttpServletRequest request = (HttpServletRequest)servletRequest;
-		HttpServletResponse response = (HttpServletResponse)servletResponse;
-		if(request.getRequestURI().contains("consultarUsuario") || request.getRequestURI().contains("cadastrarUsuario")){
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+			throws IOException, ServletException {
+
+		// Castign realizado pois é necessário utilizar métodos específicos do
+		// HttpServletRequest e Response
+		HttpServletRequest request = (HttpServletRequest) servletRequest;
+		HttpServletResponse response = (HttpServletResponse) servletResponse;
+		if (request.getMethod().contains("OPTIONS") || request.getRequestURI().contains("consultarUsuario")
+				|| request.getRequestURI().contains("cadastrarUsuario")) {
 			filterChain.doFilter(request, response);
 			return;
 		}
-		String token = request.getHeader("Authorization"); // Token se encontra no elemento Authorization do cabeçalho.
+		String token = request.getHeader("Authorization"); // Token se encontra
+															// no elemento
+															// Authorization do
+															// cabeçalho.
 		new Token().setToken(token);
-		try{
+		try {
 			JWTVerifier verifier = new JWTVerifier(Token.SECRET);
 			Map<String, Object> claims = verifier.verify(token);
 			System.out.println(claims);
 			filterChain.doFilter(servletRequest, servletResponse);
-		}catch (Exception e) {
-			if(token == null){
+		} catch (Exception e) {
+			if (token == null) {
 				response.sendError(HttpStatus.UNAUTHORIZED.value());
-			}else{
+			} else {
 				response.sendError(HttpStatus.FORBIDDEN.value());
 			}
 		}
@@ -60,7 +64,7 @@ public class FiltroJwt implements Filter{
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
-		
+
 	}
 
 }

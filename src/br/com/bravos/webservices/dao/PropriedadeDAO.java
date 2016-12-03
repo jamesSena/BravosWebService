@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.bravos.webservices.model.PropriedadeBean;
+import br.com.bravos.webservices.model.UsuarioBean;
 
 /**
  * @author JamessonSena
@@ -193,4 +194,42 @@ public class PropriedadeDAO  extends ConexaoDAO {
 				}
 				return propriedadeList;
 			}
+		//		-- idoperacao = 6 -> retornar todos funcionarios de uma propriedades
+		public List<UsuarioBean> execPropriedadesRetornarFuncionarios(int idPropriedade) throws SQLException {
+			List<UsuarioBean> usuario = new ArrayList<>();
+			UsuarioBean usuarioBean;
+			try {
+				callableStatement = connection.prepareCall("{ CALL spPropriedade (?,?,?,?,?,?,?,?,?)}");
+				callableStatement.setInt(1, 6);
+				callableStatement.setInt(2, 0);
+				callableStatement.setInt(3, idPropriedade);
+				callableStatement.setString(4, "");
+				callableStatement.setString(5, "");
+				callableStatement.setString(6, "");
+				callableStatement.setString(7, "");
+				callableStatement.setString(8, "");
+				callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
+				ResultSet rs = callableStatement.executeQuery();
+				while (rs.next()) {
+					usuarioBean = new UsuarioBean();
+					usuarioBean.setIdUsuario(rs.getInt("IDUsuario"));
+					usuarioBean.setAtivo(rs.getBoolean("Ativo"));
+					usuarioBean.setIdPropriedade(rs.getInt("IdPropriedade"));
+					usuarioBean.setIdPerfil(rs.getInt("IDPerfil"));
+					usuarioBean.setNome(rs.getString("Nome"));
+					usuarioBean.setLogin(rs.getString("Login"));
+					usuarioBean.setEmail(rs.getString("Login"));
+					usuarioBean.setSenha("*********");
+					usuarioBean.setToken("*********");
+					usuario.add(usuarioBean);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				super.dbClose(connection, callableStatement);
+			}
+			return usuario;
+		}
 }
+
