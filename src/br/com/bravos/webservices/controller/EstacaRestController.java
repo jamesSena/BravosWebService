@@ -226,6 +226,35 @@ public class EstacaRestController implements _TratamentoRetorno {
 		return estacaBean;
 
 	}
+	
+	/**
+	 * @method GET
+	 * @param idArea
+	 * @param idUsuario
+	 * @return JSON: lista de EstacaBean
+	 */
+	@RequestMapping(value = "/consultarEstacasDaPropriedade/{idUsuario}/{idPropriedade}", 
+			        method = RequestMethod.GET,
+			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public List<EstacaBean> consultarEstacasDaPropriedade(@PathVariable("idPropriedade")int idPropriedade, @PathVariable("idUsuario")int idUsuario) {
+		try {
+			estacaList = new EstacaDAO().execEstacaRetornarTodosDaPropriedade(idPropriedade, idUsuario);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			estacaList = new ArrayList<EstacaBean>(); 
+			estacaList.add(new EstacaBean(false, EnumErroEstaca._6_SQLException.toString(), "-6"));
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			estacaList = new ArrayList<EstacaBean>(); 
+			estacaList.add(new EstacaBean(false, EnumErroEstaca._7_ClassNotFoundException.toString(), "-7"));
+		}
+		return estacaList;
+	}	
+	
+	
+	
+	
 	public void tratamentoRetorno(String erro) {
 		switch (erro) {
 		case "-1":

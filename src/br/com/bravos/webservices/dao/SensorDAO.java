@@ -356,4 +356,51 @@ public class SensorDAO extends ConexaoDAO {
 			}
 			return sensorListBean;
 		}
+//			-- idoperacao = 11 -> Retornar todos os sensores de uma propriedade
+			public List<SensorBean> execSensoresPorPropriedade(int idUsuario, int idPropriedade) throws SQLException {
+				List<SensorBean>  sensorListBean = new ArrayList<SensorBean>();
+
+			try {
+				callableStatement = connection.prepareCall("{ CALL spSensor (?,?,?,?,?,?,?,?,?)}");
+				callableStatement.setInt(1, 11);
+				callableStatement.setInt(2, idUsuario);
+				callableStatement.setInt(3, 0);
+				callableStatement.setInt(4, 0);
+				callableStatement.setString(5, "");
+				callableStatement.setString(6, "");
+				callableStatement.setString(7, "");
+				callableStatement.setInt(8, idPropriedade);
+				callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
+				ResultSet resultSet = callableStatement.executeQuery();
+				
+
+				while (resultSet.next()) {
+					sensorBean = new SensorBean();
+					sensorBean.setIdUsuario(idUsuario);
+					sensorBean.setiDPropriedade(idPropriedade);
+					sensorBean.setIdSensor(resultSet.getInt("IDSensor"));
+					sensorBean.setLatitude(resultSet.getString("Latitude"));
+					sensorBean.setLongitude(resultSet.getString("Longitude"));
+					sensorBean.setNome(resultSet.getString("Nome"));
+					sensorBean.setIdCodArea(resultSet.getInt("IDArea"));
+					sensorBean.setNomeAreaAssociada(resultSet.getString("NomeArea"));
+					
+					sensorBean.setData(resultSet.getDate("DataCadastro").toString());
+
+					sensorListBean.add(sensorBean);
+				} 
+				if (sensorListBean.size() >=1 && sensorListBean.get(0) != null){
+					sensorListBean.get(0).setReason(callableStatement.getString(9));
+					}else{
+						sensorListBean.add(new SensorBean(true, "Propriedade sem sensores", callableStatement.getString(9)));
+					}
+				System.out.println("retorno: " + retorno);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				super.dbClose(connection, callableStatement);
+			}
+			return sensorListBean;
+		}
 }

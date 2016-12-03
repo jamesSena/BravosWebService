@@ -322,6 +322,46 @@ public class SensorRestController implements _TratamentoRetorno{
 		}
 		return sensorList;
 	}
+	
+	
+
+/**
+ * @return JSON: codigo
+ */
+@RequestMapping(value = "/sensoresPorPropriedade/{idUsuario}/{idPropriedade}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+public List<SensorBean> sensoresPorPropriedade(@PathVariable("idPropriedade")int idPropriedade, @PathVariable("idUsuario")int idUsuario) {
+	try {
+		sensorList = new SensorDAO().execSensoresPorPropriedade(idUsuario, idPropriedade);
+		if(!sensorList.isEmpty()){
+		tratamentoRetorno(sensorList.get(0).getReason());}
+		else{
+		tratamentoRetorno("-1");
+		sensorList.add(sensorBean);
+		}
+	} catch (SQLException e) {
+		e.printStackTrace();
+		sensorBean.set_BeanAbstract(false, EnumErroSensor._6_SQLException.toString(), "-6");
+		sensorList.add(sensorBean);
+	} catch (ClassNotFoundException e) {
+		e.printStackTrace();
+		sensorBean.set_BeanAbstract(false, EnumErroSensor._7_ClassNotFoundException.toString(), "-7");
+		sensorList.add(sensorBean);
+	} catch (Exception e) {
+		e.printStackTrace();
+		sensorBean.set_BeanAbstract(false, EnumErroSensor._5_JSONException.toString(), "-5");
+		sensorList.add(sensorBean);
+	}
+	return sensorList;
+}
+
+
+	
+	
+	
+	
+	
+	
+	
 	@Override
 	public void tratamentoRetorno(String erro) {
 		switch (erro) {

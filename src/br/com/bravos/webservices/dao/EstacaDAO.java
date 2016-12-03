@@ -43,7 +43,7 @@ public class EstacaDAO extends ConexaoDAO{
 			String longitude) throws SQLException {
 		retorno = "-1";
 		try {
-			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 1);
 			callableStatement.setInt(2, idUsuario);
 			callableStatement.setInt(3, idEstaca);
@@ -51,9 +51,10 @@ public class EstacaDAO extends ConexaoDAO{
 			callableStatement.setString(5, nome);
 			callableStatement.setString(6, latitude);
 			callableStatement.setString(7, longitude);
-			callableStatement.registerOutParameter(8, java.sql.Types.VARCHAR);
+			callableStatement.setInt(8, 0);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			callableStatement.execute();
-			retorno = callableStatement.getString(8);
+			retorno = callableStatement.getString(9);
 			System.out.println("retorno: " + retorno);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -69,7 +70,7 @@ public class EstacaDAO extends ConexaoDAO{
 		List<EstacaBean> estacas = new ArrayList<>();
 		String retorno = "-1";
 		try {
-			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 2);
 			callableStatement.setInt(2, idUsuario);
 			callableStatement.setInt(3, 1);
@@ -77,7 +78,8 @@ public class EstacaDAO extends ConexaoDAO{
 			callableStatement.setString(5, "");
 			callableStatement.setString(6, "");
 			callableStatement.setString(7, "");
-			callableStatement.registerOutParameter(8, java.sql.Types.VARCHAR);
+			callableStatement.setInt(8, 1);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			ResultSet rs = callableStatement.executeQuery();
 
 			while (rs.next()) {
@@ -88,7 +90,7 @@ public class EstacaDAO extends ConexaoDAO{
 				estacaBean.setDataCadastro(new java.util.Date(rs.getDate("DataCadastro").getTime()));
 				estacas.add(estacaBean);
 			}
-			retorno = callableStatement.getString(8);
+			retorno = callableStatement.getString(9);
 			System.out.println("retorno: " + retorno);
 
 		} catch (SQLException e) {
@@ -103,7 +105,7 @@ public class EstacaDAO extends ConexaoDAO{
 //	-- idoperacao = 3 -> retornar estaca especifica de uma area
 	public EstacaBean execEstacaRetornarEspecifico(int idEstaca, int idArea) throws SQLException {
 		try {
-			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 3);
 			callableStatement.setInt(2, 1);
 			callableStatement.setInt(3, idEstaca);
@@ -111,7 +113,8 @@ public class EstacaDAO extends ConexaoDAO{
 			callableStatement.setString(5, "");
 			callableStatement.setString(6, "");
 			callableStatement.setString(7, "");
-			callableStatement.registerOutParameter(8, java.sql.Types.VARCHAR);
+			callableStatement.setInt(8, 1);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			ResultSet rs = callableStatement.executeQuery();
 
 			while (rs.next()) {
@@ -121,7 +124,7 @@ public class EstacaDAO extends ConexaoDAO{
 				estacaBean.setNome(rs.getString("Nome"));
 				estacaBean.setDataCadastro(new java.util.Date(rs.getDate("DataCadastro").getTime()));
 				}
-			retorno = callableStatement.getString(8);
+			retorno = callableStatement.getString(9);
 			System.out.println("retorno: " + retorno);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -136,7 +139,7 @@ public class EstacaDAO extends ConexaoDAO{
 	public String execEstacaRemover(int idEstaca, int idArea) throws SQLException {
 		String retorno = "-1";
 		try {
-			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 4);
 			callableStatement.setInt(2, 1);
 			callableStatement.setInt(3, idEstaca);
@@ -144,9 +147,10 @@ public class EstacaDAO extends ConexaoDAO{
 			callableStatement.setString(5, "");
 			callableStatement.setString(6, "");
 			callableStatement.setString(7, "");
-			callableStatement.registerOutParameter(8, java.sql.Types.VARCHAR);
+			callableStatement.setInt(8, 1);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			callableStatement.execute();
-			retorno = callableStatement.getString(8);
+			retorno = callableStatement.getString(9);
 			System.out.println("retorno: " + retorno);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -161,7 +165,7 @@ public class EstacaDAO extends ConexaoDAO{
 	public String execEstacaRemoverTodos(int idUsuario, int idArea, int idEstaca) throws SQLException {
 		String retorno = "-1";
 		try {
-			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 5);
 			callableStatement.setInt(2, idUsuario);
 			callableStatement.setInt(3, idEstaca);
@@ -169,9 +173,10 @@ public class EstacaDAO extends ConexaoDAO{
 			callableStatement.setString(5, "");
 			callableStatement.setString(6, "");
 			callableStatement.setString(7, "");
-			callableStatement.registerOutParameter(8, java.sql.Types.VARCHAR);
+			callableStatement.setInt(8, 1);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			callableStatement.execute();
-			retorno = callableStatement.getString(8);
+			retorno = callableStatement.getString(9);
 			System.out.println("retorno: " + retorno);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -187,7 +192,7 @@ public class EstacaDAO extends ConexaoDAO{
 			String longitude) throws SQLException {
 		retorno = "-1";
 		try {
-			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?)}");
+			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 6);
 			callableStatement.setInt(2, idUsuario);
 			callableStatement.setInt(3, idEstaca);
@@ -195,9 +200,10 @@ public class EstacaDAO extends ConexaoDAO{
 			callableStatement.setString(5, nome);
 			callableStatement.setString(6, latitude);
 			callableStatement.setString(7, longitude);
-			callableStatement.registerOutParameter(8, java.sql.Types.VARCHAR);
+			callableStatement.setInt(8, 1);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			callableStatement.execute();
-			retorno = callableStatement.getString(8);
+			retorno = callableStatement.getString(9);
 			System.out.println("retorno: " + retorno);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -206,6 +212,46 @@ public class EstacaDAO extends ConexaoDAO{
 			super.dbClose(connection, callableStatement);
 		}
 		return retorno;
+	}
+
+//	-- idoperacao = 7 -> retornar todas as estacas de uma propriedade 
+	public List<EstacaBean> execEstacaRetornarTodosDaPropriedade(int idPropriedade, int idUsuario) throws SQLException {
+		List<EstacaBean> estacas = new ArrayList<>();
+		String retorno = "-1";
+		try {
+			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?,?)}");
+			callableStatement.setInt(1, 7);
+			callableStatement.setInt(2, idUsuario);
+			callableStatement.setInt(3, 1);
+			callableStatement.setInt(4, 0);
+			callableStatement.setString(5, "");
+			callableStatement.setString(6, "");
+			callableStatement.setString(7, "");
+			callableStatement.setInt(8, idPropriedade);
+			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
+			ResultSet rs = callableStatement.executeQuery();
+
+			while (rs.next()) {
+				estacaBean = new EstacaBean();
+				estacaBean.setIdArea(rs.getInt("iDArea"));
+				estacaBean.setIdEstaca(rs.getInt("IDEstaca"));
+				estacaBean.setNome(rs.getString("Nome"));
+				estacaBean.setLongitude(rs.getString("Longitude"));
+				estacaBean.setLatitude(rs.getString("Latitude"));
+				estacaBean.setDataCadastro(new java.util.Date(rs.getDate("DataCadastro").getTime()));
+				estacas.add(estacaBean);
+			}
+			
+			retorno = callableStatement.getString(9);
+			System.out.println("retorno: " + retorno);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			super.dbClose(connection, callableStatement);
+		}
+		return estacas;
 	}
 
 }
