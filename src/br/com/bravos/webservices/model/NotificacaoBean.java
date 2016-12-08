@@ -13,6 +13,7 @@ import br.com.bravos.webservices.filtro.Token;
  */
 public class NotificacaoBean extends _BeanAbstract{
 	private int idUsuario, idSensor, idArea, idPropriedade, idStatus, idNotificacao;
+	private String sensorNome;
 	private Date dataInicio, dataFim;
 	private String dataNotificacao;
 	
@@ -164,6 +165,12 @@ public class NotificacaoBean extends _BeanAbstract{
 				"NotificacaoBean [idUsuario=%s, idSensor=%s, idArea=%s, idPropriedade=%s, idStatus=%s, idNotificacao=%s, dataInicio=%s, dataFim=%s, super()=%s]",
 				idUsuario, idSensor, idArea, idPropriedade, idStatus, idNotificacao, dataInicio, dataFim,
 				super.toString());
+	}
+	public String getSensorNome() {
+		return sensorNome;
+	}
+	public void setSensorNome(String sensorNome) {
+		this.sensorNome = sensorNome;
 	}
 
 	

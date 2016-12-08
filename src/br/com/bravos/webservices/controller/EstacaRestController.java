@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.bravos.webservices.dao.AreaDAO;
 import br.com.bravos.webservices.dao.EstacaDAO;
-
+import br.com.bravos.webservices.dao.PropriedadeDAO;
 import br.com.bravos.webservices.enums.EnumErroEstaca;
+import br.com.bravos.webservices.model.AreaBean;
 import br.com.bravos.webservices.model.EstacaBean;
 import br.com.bravos.webservices.model.EstacaListBean;
+import br.com.bravos.webservices.model.PropriedadeBean;
 import br.com.bravos.webservices.model.SensorBean;
 
 
@@ -257,6 +260,49 @@ public class EstacaRestController implements _TratamentoRetorno {
 			estacaListBean.setEstacaBean(estacaBeanList);
 		}
 		return estacaListBean;
+	}	
+	
+	
+	
+	/**
+	 * @method GET
+	 * @param idArea
+	 * @param idUsuario
+	 * @return JSON: lista de EstacaBean
+	 */
+	@RequestMapping(value = "/consultarEstacasDaPropriedade1/{idUsuario}/{idPropriedade}", 
+			        method = RequestMethod.GET,
+			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public List<AreaBean> consultarEstacasDaPropriedade1(@PathVariable("idPropriedade")int idPropriedade, @PathVariable("idUsuario")int idUsuario) {
+		List<AreaBean> piquete = new ArrayList<AreaBean>() ;
+		
+		try {	
+			//pegando os piquetes passando a propriedade
+
+			
+				 piquete = new AreaDAO().execRetornarAreasPropriedade(idUsuario, idPropriedade);
+					for (AreaBean areaBean : piquete) {
+						estacaList = new EstacaDAO().execEstacaRetornarTodos(areaBean.getIdArea(), idUsuario);
+						areaBean.setEstacaBean(estacaList);
+					}
+			
+
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			estacaList.add(new EstacaBean(false, EnumErroEstaca._6_SQLException.toString(), "-6"));
+			List<EstacaBean> estacaBeanList =  new ArrayList<EstacaBean>();
+			estacaBeanList.add(estacaBean);
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			estacaBean = new EstacaBean(false, EnumErroEstaca._7_ClassNotFoundException.toString(), "-7");
+			List<EstacaBean> estacaBeanList =  new ArrayList<EstacaBean>();
+			estacaBeanList.add(estacaBean);
+		
+		}
+		return piquete;
 	}	
 	
 	

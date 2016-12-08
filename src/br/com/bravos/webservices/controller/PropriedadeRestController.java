@@ -164,8 +164,8 @@ public class PropriedadeRestController implements _TratamentoRetorno {
 			proprieadeBean.setIdPropriedade(jsonObject.getInt("idPropriedade"));
 			proprieadeBean.setNomePropriedade(jsonObject.getString("nomePropriedade"));
 			proprieadeBean.setResponsavel(jsonObject.getString("responsavel"));
-			proprieadeBean.setLatitude(jsonObject.getString("latitude"));
-			proprieadeBean.setLongitude(jsonObject.getString("longitude"));
+			proprieadeBean.setLatitude(String.valueOf(jsonObject.getDouble("latitude")));
+			proprieadeBean.setLongitude(String.valueOf(jsonObject.getDouble("longitude")));
 			// Json ok
 			propriedadeDAO = new PropriedadeDAO();
 			String codigo = propriedadeDAO.execPropriedadeAtualizar(proprieadeBean.getIdUsuario(), proprieadeBean.getIdPropriedade(), proprieadeBean.getNomePropriedade(), proprieadeBean.getResponsavel(), proprieadeBean.getEmailResponsavel(), proprieadeBean.getLatitude(), proprieadeBean.getLongitude());

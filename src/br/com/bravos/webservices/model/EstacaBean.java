@@ -14,7 +14,7 @@ import br.com.bravos.webservices.filtro.Token;
 
 public class EstacaBean extends _BeanAbstract {
 	private int idEstaca, idArea;
-	private String nome, latitude, longitude;
+	private String nome, latitude, longitude , lat, lng;
 	private Date dataCadastro;
 	
 	
@@ -136,6 +136,18 @@ public class EstacaBean extends _BeanAbstract {
 		return String.format(
 				"EstacaBean [idEstaca=%s, idArea=%s, nome=%s, latitude=%s, longitude=%s, dataCadastro=%s, super()=%s]",
 				idEstaca, idArea, nome, latitude, longitude, dataCadastro, super.toString());
+	}
+	public String getLat() {
+		return lat;
+	}
+	public void setLat(String lat) {
+		this.lat = lat;
+	}
+	public String getLng() {
+		return lng;
+	}
+	public void setLng(String lng) {
+		this.lng = lng;
 	}
 	
 

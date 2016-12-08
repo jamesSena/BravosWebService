@@ -85,7 +85,7 @@ public class UsuarioRestController implements _TratamentoRetorno{
 	public List<UsuarioBean> consultarUsuarios() {
 		try {
 			usuarioList = new UsuarioDAO().execUsuarioRetornarTodos();
-			usuarioList.get(0).setToken(new Token().gerarToken(usuario.getIdUsuario()));
+			usuarioList.get(0).setToken(new Token().gerarToken(usuarioList.get(0).getIdUsuario()));
 			tratamentoRetorno(usuarioList.get(0).getReason());
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -3,6 +3,8 @@
  */
 package br.com.bravos.webservices.model;
 
+import java.util.List;
+
 import br.com.bravos.webservices.filtro.Token;
 
 /**
@@ -12,6 +14,7 @@ import br.com.bravos.webservices.filtro.Token;
 public class AreaBean extends _BeanAbstract{
 	private String nomeArea;
 	private int idArea,idPropriedade;
+	private List<EstacaBean> estacaBean;
 	
 	public AreaBean() {
 		this.setToken(new Token().gerarToken(idArea));
@@ -84,6 +87,12 @@ public class AreaBean extends _BeanAbstract{
 		return String.format(
 				"AreaBean [nomeArea=%s, idArea=%s, idPropriedade=%s, isSuccess()=%s, getDetail()=%s, getReason()=%s, getToken()=%s]",
 				nomeArea, idArea, idPropriedade, isSuccess(), getDetail(), getReason(), getToken());
+	}
+	public List<EstacaBean> getEstacaBean() {
+		return estacaBean;
+	}
+	public void setEstacaBean(List<EstacaBean> estacaBean) {
+		this.estacaBean = estacaBean;
 	}
 
 	

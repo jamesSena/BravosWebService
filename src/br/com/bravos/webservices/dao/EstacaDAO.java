@@ -81,12 +81,20 @@ public class EstacaDAO extends ConexaoDAO{
 			callableStatement.setInt(8, 1);
 			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			ResultSet rs = callableStatement.executeQuery();
+			if(callableStatement.getMoreResults()){
 
+				 rs =	callableStatement.getResultSet();
+			}
 			while (rs.next()) {
 				estacaBean = new EstacaBean();
 				estacaBean.setIdArea(rs.getInt("idArea"));
 				estacaBean.setIdEstaca(rs.getInt("IDEstaca"));
 				estacaBean.setNome(rs.getString("Nome"));
+				estacaBean.setLatitude(rs.getString("Latitude"));
+				estacaBean.setLongitude(rs.getString("Longitude"));
+				
+				estacaBean.setLat(rs.getString("Latitude"));
+				estacaBean.setLng(rs.getString("Latitude"));
 				estacaBean.setDataCadastro(new java.util.Date(rs.getDate("DataCadastro").getTime()));
 				estacas.add(estacaBean);
 			}
