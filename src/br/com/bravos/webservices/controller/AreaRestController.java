@@ -15,6 +15,7 @@ import br.com.bravos.webservices.dao.AreaDAO;
 import br.com.bravos.webservices.enums.EnumErroArea;
 import br.com.bravos.webservices.enums.EnumErroUsuario;
 import br.com.bravos.webservices.model.AreaBean;
+import br.com.bravos.webservices.model.AreaListBean;
 /**
  * @author WeltonBatista
  *
@@ -26,7 +27,7 @@ public class AreaRestController implements _TratamentoRetorno {
 	private AreaBean areaBean;
 	private AreaDAO areaDAO;
 	private String retorno;
-	private List<AreaBean> areaList;
+	
 	
 	/**
 	 * Construtor default
@@ -75,22 +76,27 @@ public class AreaRestController implements _TratamentoRetorno {
 	/**
 	 * @method GET
 	 * @param idPropriedade
-	 * @return JSON: Lista de AreaBean
+	 * 9@return JSON: Lista de AreaBean
 	 */
 	@RequestMapping(value = "/consultarAreas/{idPropriedade}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public List<AreaBean> consultarAreas(@PathVariable("idPropriedade") int idPropriedade) {
+	public AreaListBean consultarAreas(@PathVariable("idPropriedade") int idPropriedade) {
+		AreaListBean areaList = new AreaListBean();
 		try {
-			areaList = new AreaDAO().execRetornarAreasPropriedade(1, idPropriedade);
+			List<AreaBean> temp = new ArrayList<AreaBean>();
+			temp = new AreaDAO().execRetornarAreasPropriedade(1, idPropriedade);
+			areaList.setAreaList(temp);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			areaList = new ArrayList<AreaBean>();
-			areaList.add(new AreaBean(true, EnumErroArea._6_SQLException.toString(), "-6"));
+			List<AreaBean> temp = new ArrayList<AreaBean>();
+			temp.add(new AreaBean(true, EnumErroArea._6_SQLException.toString(), "-6"));
+			areaList.setAreaList(temp);
 	
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			areaList = new ArrayList<AreaBean>();
-			areaList.add(new AreaBean(true, EnumErroArea._7_ClassNotFoundException.toString(), "-7"));
+			List<AreaBean> temp = new ArrayList<AreaBean>();
+			temp.add(new AreaBean(true, EnumErroArea._7_ClassNotFoundException.toString(), "-7"));
+			//areaList.setAreaList(areaList);
 		}
 		return areaList;
 	}

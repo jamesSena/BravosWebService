@@ -3,6 +3,8 @@
  */
 package br.com.bravos.webservices.model;
 
+import java.util.List;
+
 import br.com.bravos.webservices.filtro.Token;
 
 /**
@@ -13,10 +15,18 @@ public class SensorBean extends _BeanAbstract {
 
 	private int idSensor,idCodArea, idUsuario,iDPropriedade;
 	private String nome, longitude, latitude, Data, nomeAreaAssociada;
-
+	private List<AreaBean> areaList; 
 
 	
 	
+	public List<AreaBean> getAreaList() {
+		return areaList;
+	}
+
+	public void setAreaList(List<AreaBean> areaList) {
+		this.areaList = areaList;
+	}
+
 	/**
 	 * @param success
 	 * @param detail

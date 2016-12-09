@@ -150,6 +150,7 @@ public class NotificacaoDAO extends ConexaoDAO {
 				notificacaoBean.setDataInicio(dataInicio);
 				notificacaoBean.setIdStatus(resultSet.getInt("Status"));
 				notificacaoBean.setSensorNome(resultSet.getString("Nome"));
+				System.out.println(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(resultSet.getDate("Data")));
 				DateFormat df1 = new SimpleDateFormat("dd/MM/yyyy");
 				String dataStr = df1.format(resultSet.getDate("Data"));
 				notificacaoBean.setDataNotificacao(dataStr);

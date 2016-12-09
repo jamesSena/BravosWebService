@@ -55,7 +55,7 @@ public class EstacaDAO extends ConexaoDAO{
 			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			callableStatement.execute();
 			retorno = callableStatement.getString(9);
-			System.out.println("retorno: " + retorno);
+			System.out.println("teste" + retorno);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
@@ -69,16 +69,19 @@ public class EstacaDAO extends ConexaoDAO{
 	public List<EstacaBean> execEstacaRetornarTodos(int idArea, int idUsuario) throws SQLException {
 		List<EstacaBean> estacas = new ArrayList<>();
 		String retorno = "-1";
+		System.out.println("Piquete: " + idArea);
+		System.out.println("propriedade: " + idUsuario);
+
 		try {
 			callableStatement = connection.prepareCall("{ CALL spEstaca (?,?,?,?,?,?,?,?,?)}");
 			callableStatement.setInt(1, 2);
-			callableStatement.setInt(2, idUsuario);
+			callableStatement.setInt(2, 1);
 			callableStatement.setInt(3, 1);
 			callableStatement.setInt(4, idArea);
 			callableStatement.setString(5, "");
 			callableStatement.setString(6, "");
 			callableStatement.setString(7, "");
-			callableStatement.setInt(8, 1);
+			callableStatement.setInt(8, idUsuario);
 			callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 			ResultSet rs = callableStatement.executeQuery();
 			if(callableStatement.getMoreResults()){
@@ -86,8 +89,8 @@ public class EstacaDAO extends ConexaoDAO{
 				 rs =	callableStatement.getResultSet();
 			}
 			while (rs.next()) {
-				estacaBean = new EstacaBean();
-				estacaBean.setIdArea(rs.getInt("idArea"));
+				EstacaBean estacaBean = new EstacaBean();
+				estacaBean.setIdArea(rs.getInt("iDArea"));
 				estacaBean.setIdEstaca(rs.getInt("IDEstaca"));
 				estacaBean.setNome(rs.getString("Nome"));
 				estacaBean.setLatitude(rs.getString("Latitude"));
@@ -99,8 +102,14 @@ public class EstacaDAO extends ConexaoDAO{
 				estacas.add(estacaBean);
 			}
 			retorno = callableStatement.getString(9);
-			System.out.println("retorno: " + retorno);
+			System.out.println("retorno: ---" + retorno);
 
+			if(estacas.isEmpty()){
+				EstacaBean estaca = new EstacaBean();
+				estaca.set_BeanAbstract(true, "vazio", "-45");
+				estacas.add(estaca);
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;

@@ -51,7 +51,7 @@ public class EstacaRestController implements _TratamentoRetorno {
 	 */
 	@RequestMapping(value = "/cadastrarEstaca", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public EstacaBean cadastrarEstaca(@RequestBody String jsonCadastro){
-		estacaBean = new EstacaBean();
+		EstacaBean estacaBean = new EstacaBean();
 		try {
 			JSONObject jsonObject = new JSONObject(jsonCadastro);
 			System.out.println(jsonObject.toString());
@@ -66,8 +66,8 @@ public class EstacaRestController implements _TratamentoRetorno {
 			estacaBean.setReason(new EstacaDAO().execEstacaCadastrar(idUsuario, estacaBean.getIdEstaca(), estacaBean.getIdArea(), estacaBean.getNome(),  estacaBean.getLatitude(), estacaBean.getLongitude()));
 			tratamentoRetorno(estacaBean.getReason());
 
-			retorno = new EstacaDAO().execEstacaCadastrar(idUsuario, estacaBean.getIdEstaca(), estacaBean.getIdArea(), estacaBean.getNome(),  estacaBean.getLatitude(), estacaBean.getLongitude());
-			estacaBean.setReason(retorno);
+		//	retorno = new EstacaDAO().execEstacaCadastrar(idUsuario, estacaBean.getIdEstaca(), estacaBean.getIdArea(), estacaBean.getNome(),  estacaBean.getLatitude(), estacaBean.getLongitude());
+		//	estacaBean.setReason(retorno);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			estacaBean.set_BeanAbstract(false, EnumErroEstaca._5_JSONException.toString(), "-5");
@@ -91,12 +91,15 @@ public class EstacaRestController implements _TratamentoRetorno {
 	 * @param idUsuario
 	 * @return JSON: lista de EstacaBean
 	 */
-	@RequestMapping(value = "/consultarEstacas/{idArea}/{idUsuario}", 
+	@RequestMapping(value = "/consultarEstacas/{idArea}/{idPropriedade}", 
 			        method = RequestMethod.GET,
 			        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public List<EstacaBean> consultarEstacas(@PathVariable("idArea")int idArea, @PathVariable("idUsuario")int idUsuario) {
+	public EstacaListBean consultarEstacas(@PathVariable("idArea")int idArea, @PathVariable("idPropriedade")int idPropriedade) {
+		EstacaListBean estacalistBean = new EstacaListBean();
 		try {
-			estacaList = new EstacaDAO().execEstacaRetornarTodos(idArea, idUsuario);
+			
+			estacaList = new EstacaDAO().execEstacaRetornarTodos(idArea, idPropriedade);
+			estacalistBean.setEstacaBean(estacaList);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			estacaList = new ArrayList<EstacaBean>(); 
@@ -106,7 +109,7 @@ public class EstacaRestController implements _TratamentoRetorno {
 			estacaList = new ArrayList<EstacaBean>(); 
 			estacaList.add(new EstacaBean(false, EnumErroEstaca._7_ClassNotFoundException.toString(), "-7"));
 		}
-		return estacaList;
+		return estacalistBean;
 	}	
 	
 	
@@ -132,7 +135,9 @@ public class EstacaRestController implements _TratamentoRetorno {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			estacaBean.set_BeanAbstract(false, EnumErroEstaca._7_ClassNotFoundException.toString().toString(), "-7");
-		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			}
 		return estacaBean;
 	}
 
