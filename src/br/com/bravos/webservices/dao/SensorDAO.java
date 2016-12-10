@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.bravos.webservices.model.AreaBean;
+import br.com.bravos.webservices.model.EstacaBean;
 import br.com.bravos.webservices.model.SensorBean;
 
 /**
@@ -357,10 +359,13 @@ public class SensorDAO extends ConexaoDAO {
 			return sensorListBean;
 		}
 //			-- idoperacao = 11 -> Retornar todos os sensores de uma propriedade
-			public List<SensorBean> execSensoresPorPropriedade(int idUsuario, int idPropriedade) throws SQLException {
+			public List<SensorBean> execSensoresPorPropriedade(int idUsuario, int idPropriedade) throws SQLException, ClassNotFoundException {
 				List<SensorBean>  sensorListBean = new ArrayList<SensorBean>();
 
 			try {
+				List<AreaBean> temp = new AreaDAO().execRetornarAreasPropriedade(1, idPropriedade);
+				List<AreaBean> retornoDePiquetes = new ArrayList<AreaBean>();
+				
 				callableStatement = connection.prepareCall("{ CALL spSensor (?,?,?,?,?,?,?,?,?)}");
 				callableStatement.setInt(1, 11);
 				callableStatement.setInt(2, idUsuario);
@@ -373,7 +378,6 @@ public class SensorDAO extends ConexaoDAO {
 				callableStatement.registerOutParameter(9, java.sql.Types.VARCHAR);
 				ResultSet resultSet = callableStatement.executeQuery();
 				
-
 				while (resultSet.next()) {
 					sensorBean = new SensorBean();
 					sensorBean.setIdUsuario(idUsuario);
@@ -384,9 +388,16 @@ public class SensorDAO extends ConexaoDAO {
 					sensorBean.setNome(resultSet.getString("Nome"));
 					sensorBean.setIdCodArea(resultSet.getInt("IDArea"));
 					sensorBean.setNomeAreaAssociada(resultSet.getString("NomeArea"));
-					
 					sensorBean.setData(resultSet.getDate("DataCadastro").toString());
 
+					for (AreaBean areaBean : temp) {
+						if (sensorBean.getIdCodArea() == areaBean.getIdArea() ) {
+							List<EstacaBean> estacasDoPiquete  =  new EstacaDAO().execEstacaRetornarTodos(sensorBean.getIdCodArea(), idPropriedade);
+							areaBean.setEstacaBean(estacasDoPiquete);
+							retornoDePiquetes.add(areaBean);
+						}
+					}
+					sensorBean.setAreaList(retornoDePiquetes);					
 					sensorListBean.add(sensorBean);
 				} 
 				if (sensorListBean.size() >=1 && sensorListBean.get(0) != null){
@@ -396,6 +407,10 @@ public class SensorDAO extends ConexaoDAO {
 					}
 				System.out.println("retorno: " + retorno);
 			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 				throw e;
 			} finally {
